@@ -27,7 +27,7 @@ bb.gdm.check <- function (object, plots.mfrow = c(2, 2),...)
   lp<- X%*%coefs + offset
   pi <- plogis(lp)
   plot(pi, res, xlab="Predicted Dissimilarity",ylab="Random Quantile Residuals",...)
-  plot(pi,y[,1]/y[,2] xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",...)
+  plot(pi,y[,1]/y[,2], xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",...)
   mtext("Original GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
   ## Now for bayesian boot strap estimates
   par(mfrow=plots.mfrow)
