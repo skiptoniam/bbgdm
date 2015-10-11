@@ -7,15 +7,15 @@
 #' @return A matrix of dimension c(length(x), df), where df was supplied.
 #' @export
 
-ispline <- function (x, spline.knots = 3, knots = NULL, spline.degree = 3) 
+ispline <- function (x, spline.knots = 2, knots = NULL, spline.degree = 3) 
 {
   if (is.null(knots)) {
     quantiles <- seq(0, 1, length = spline.knots + 2)
     interval <- quantile(x, probs = quantiles, names = FALSE)
     knots <- unique(interval)
   }
-  if (length(knots) <= 2) {
-    I <- structure(normalize(x, standardize = "interval"), 
+  if (length(knots) < 2) {
+    I <- structure(normalise(x, standardize = "interval"), 
                    dim = c(length(x), 1))
     return(I)
   }
@@ -23,8 +23,7 @@ ispline <- function (x, spline.knots = 3, knots = NULL, spline.degree = 3)
     spline.degree <- min(length(knots) - 1, spline.degree)
     isplinebase <- function (x, knots, d) 
     {
-      if (is.null(knots) || any(is.na(knots)) || any(diff(knots) == 
-                                                       0) || length(knots) <= 2) 
+      if (is.null(knots) || any(is.na(knots)) || any(diff(knots) == 0) || length(knots) <= 2) 
         return(x)
       m <- length(knots)
       n <- length(x)

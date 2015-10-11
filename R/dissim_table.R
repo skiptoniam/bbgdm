@@ -14,14 +14,14 @@
 #' y <- simulate_covariates(x,4)
 #' diff_table <- dissim_table(x,y,dissim="bray_curtis")
 
-dissim_table <- function(sp.dat,env.dat,dism_metric="bray_curtis",spline_type="bspline",spline_df=3,
-                         spline_knots=NULL, coord.names=c("X","Y"),
+dissim_table <- function(sp.dat,env.dat,dism_metric="bray_curtis",spline_type="bspline",spline_df=1,
+                         spline_knots=2, coord.names=c("X","Y"),
                          geo=FALSE,geo.type="euclidean",lc_data=NULL,minr=NULL,maxr=NULL){ 
   if(!is.matrix(env.dat)) env.dat <- as.matrix(env.dat)
   if(geo){
     coords <- as.matrix(env.dat[,which(colnames(env.dat)%in%coord.names)])
     geos <- calc_geo_dist(coords,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr) 
-    env.dat <- env.dat[,-which(colnames(env.dat)%in%coord.names)]  
+    env.dat <- env.dat[,-which(colnames(env.dat)%in%coord.names),drop=FALSE]  
   }
     if(dism_metric=="bray_curtis"){
     xdism <- pam2dissim(sp.dat,dism_metric)
@@ -96,7 +96,7 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="bray_curtis",spline_type="b
   cat("Transforming covariates to ",spline_type," with ",spline_df,"degrees of freedom.\n")
   if(dism_metric=='number_shared'){
   if(geo){
-    diff_table <- cbind(diff_table[,2:3],geos=geos[,5],diff_table[,4:ncol(diff_table)])
+    diff_table <- cbind(diff_table[,2:3],geos=geos[,5],diff_table[,4:ncol(diff_table),drop=FALSE])
     tmp <- spline.trans(x=diff_table[,3:ncol(diff_table)],spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots)
     diff_table_final <- tmp$spline
     diff_table_final <- cbind(diff_table[,1:2],diff_table_final)

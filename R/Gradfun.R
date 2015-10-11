@@ -1,16 +1,16 @@
 GradFun <- function(params,X,y,wt,offset){
   if(!is.null(dim(y))){
-    paramsTrans <- c(params[1], exp( params[-1]))
-    lp <- X %*% paramsTrans + offset
+    lp <- X %*% c(params[1],exp(params[-1])) + offset
     np<-length(params)
     ns<-nrow(X)
     deri<- matrix(NA,ns,np)
+    p <- make.link(link = "logit")
     for(i in 1:ns){
-      mu <- y[i,2]*exp(lp[i])/(1+exp(lp[i]))
-      dldm <- y[i,1]/mu - (1-y[i,1]) / (1-mu)
+      mu <- y[i,2]*p$linkinv(lp[i])
+      dldm <- (y[i,1]/mu) - ((1-y[i,1])/(1-mu))
       dmde <- mu*(1-mu)
-      dedb <- X[i,]
-      dbdg <-  c(params[1], exp( params[-1]))
+      dedb <-  X[i,]
+      dbdg <- exp(params) 
       deri[i,] <- wt[i] * dldm * dmde * dedb * dbdg
     }
     sum_deri <- apply(deri,2,sum)

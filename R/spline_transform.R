@@ -9,7 +9,7 @@
 #' @export
 
 
-spline.trans <- function(x,spline_type ="bspline",spline_df=2,spline_knots=NULL){
+spline.trans <- function(x,spline_type ="bspline",spline_df=2,spline_knots=1){
   if(!is.data.frame(x)) x <- as.data.frame(x)
 #   stop("Covariates aren't a data.frame object")
   require(splines)
@@ -18,24 +18,24 @@ spline.trans <- function(x,spline_type ="bspline",spline_df=2,spline_knots=NULL)
 #   n_spl <- ncol(spline_knots)+(spline_df-2)
 #   spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
   if(spline_type=="bspline"){
-    if(is.null(spline_knots)) spline_knots <- t(apply(x,2,function(x)quantile(x,c(0.25,.5,.75))))
-    tmp <- bs(x[,1],degree=spline_df,knots=spline_knots[1,])
+    if(is.null(spline_knots)) spline_knots <- t(apply(x,2,function(x)quantile(x,c(.5))))
+    tmp <- bs(x[,1],degree=spline_df,knots=spline_knots[1])
     n_spl <- dim(tmp)[2]
     spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
       for(ii in 1:ncol(x)){  
-      tmp.st <- bs(x[,ii],degree=spline_df,knots=spline_knots[ii,])
+      tmp.st <- bs(x[,ii],degree=spline_df,knots=spline_knots[ii])
       spline.attr[[ii]] <- attributes(tmp.st)
       spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
       index <- index + spline.attr[[ii]]$dim[2]
     }
   } 
   if(spline_type=="ispline") {
-    if(is.null(spline_knots)) spline_knots <- t(apply(x,2,function(x)quantile(x,c(0,.25,.5,.75,1))))
-    tmp <- ispline(x[,1],knots=spline_knots[1,],spline.degree = spline_df)
+    if(is.null(spline_knots)) spline_knots <- 1#t(apply(x,2,function(x)quantile(x,c(0,0.25,.5,.75,1))))
+    tmp <- ispline(x[,1],spline.knots=spline_knots,spline.degree = spline_df)
     n_spl <- dim(tmp)[2]
     spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
     for(ii in 1:ncol(x)){
-      tmp.st <- ispline(x[,ii],knots=spline_knots[ii,],spline.degree = spline_df)
+      tmp.st <- ispline(x[,ii],spline.knots=spline_knots,spline.degree = spline_df)
       spline.attr[[ii]] <- attributes(tmp.st)
       spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
       index <- index + spline.attr[[ii]]$dim[2]

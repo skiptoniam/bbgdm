@@ -8,16 +8,16 @@
 
 rqr_function <- function(X,y,coefs,offset){ 
   lp <- (X %*% coefs + offset)
-  pi <- plogis(lp)
+  p <- make.link(link = "logit")
   if(!is.null(dim(y))){
     n <- rep(1, length(y[,1]))
     y[,1] <- n * y[,1]
-    a <- pbinom((y[,1])-1, y[,2], pi)#-1
-    b <- pbinom(y[,1], y[,2], pi)
+    a <- pbinom(y[,1]-1, y[,2], p$linkinv(lp))#-1
+    b <- pbinom(y[,1], y[,2], p$linkinv(lp))
     u <- runif(n = length(y[,1]), min = a, max = b)
     res <- qnorm(u)
-    res[res==Inf]<-max(res[res!=Inf])
-    res[res==-Inf]<-min(res[res!=-Inf])
+#     res[res==Inf]<-max(res[res!=Inf])
+#     res[res==-Inf]<-min(res[res!=-Inf])
     } else {
   n <- rep(1, length(y))
   y <- n * y
@@ -25,8 +25,8 @@ rqr_function <- function(X,y,coefs,offset){
   b <- pbinom(y, n, pi)
   u <- runif(n = length(y), min = a, max = b)
   res <- qnorm(u)
-  res[res==Inf]<-max(res[res!=Inf])
-  res[res==-Inf]<-min(res[res!=-Inf])
+#   res[res==Inf]<-max(res[res!=Inf])
+#   res[res==-Inf]<-min(res[res!=-Inf])
   }
   return(res)
 }

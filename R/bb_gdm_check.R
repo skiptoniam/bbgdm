@@ -42,7 +42,7 @@ bb.gdm.check <- function (object, plots.mfrow = c(2, 2),...)
   ## Now for bayesian boot strap estimates
   par(mfrow=plots.mfrow)
   if(is.null(dim(y))){
-    coefs_bb <- object$mean.coefs.se[1:ncol(X)]
+    coefs_bb <- object$median.coefs.se[1:ncol(X)]
     lp_bb <- X%*%coefs_bb + offset
     pi_bb <- plogis(lp_bb)
     res <- rqr_function(X,y,coefs_bb,offset)
@@ -55,7 +55,7 @@ bb.gdm.check <- function (object, plots.mfrow = c(2, 2),...)
          main = "Observed Vs. Fitted Values",...)
     mtext("Bayesian Bootstrap GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
   } else {
-  coefs_bb <- object$mean.coefs.se[1:ncol(X)]
+  coefs_bb <- object$median.coefs.se[1:ncol(X)]
   lp_bb <- X%*%coefs_bb + offset
   pi_bb <- plogis(lp_bb)
   res <- rqr_function(X,y,coefs_bb,offset)

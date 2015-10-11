@@ -41,7 +41,7 @@ plot.gdm.bb <- function(object,plot.layout = c(2,2),plot.colour='black',plot.lin
     overlayY.org <- link.fun$linkinv(overlayX.org)
     lines(overlayX.org, overlayY.org, lwd = plot.linewidth,col=line.col)    
 
-    bb.lp <- X%*%object$mean.coefs.se + offset
+    bb.lp <- X%*%object$median.coefs.se + offset
     bb.lp.05 <- X%*%object$quantiles.coefs.se[1,] + offset
     bb.lp.95 <- X%*%object$quantiles.coefs.se[2,] + offset
     bb.pred <- link.fun$linkinv(bb.lp) #inverse_logit 1/(1+exp(-1*X%*%object$stats.median[1:length(coef(object$starting_gdm))]))
@@ -80,7 +80,7 @@ plot.gdm.bb <- function(object,plot.layout = c(2,2),plot.colour='black',plot.lin
       y.est.runs[,ii] <- link.fun$linkinv(lp)
       lp.runs[,ii]<-lp
     }
-    bb.lp <- X%*%object$mean.coefs.se + offset
+    bb.lp <- X%*%object$median.coefs.se + offset
     quantiles.bb.lp.05 <- X%*%object$quantiles.coefs.se[1,] + offset
     quantiles.bb.lp.95 <- X%*%object$quantiles.coefs.se[2,] + offset
     

@@ -5,7 +5,7 @@
 \title{Create dissimilarity table for bbGDM.}
 \usage{
 dissim_table(sp.dat, env.dat, dism_metric = "bray_curtis",
-  spline_type = "bspline", spline_df = 3, spline_knots = NULL,
+  spline_type = "bspline", spline_df = 1, spline_knots = 2,
   coord.names = c("X", "Y"), geo = FALSE, geo.type = "euclidean",
   lc_data = NULL, minr = NULL, maxr = NULL)
 }

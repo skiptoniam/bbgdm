@@ -1,10 +1,9 @@
 LogLikFun <- function(params,X,y,wt,offset){
   if(!is.null(dim(y))){
-    paramsTrans <- c(params[1],exp(params[-1]))
-    lp <- X %*% paramsTrans + offset
-    mu <- plogis(lp)
-    lprob <- dbinom( y[,1], y[,2], mu, log=TRUE)
-    ll.contr <- sum(wt * lprob)
+    lp <- X %*% c(params[1],exp(params[-1])) + offset
+    p <- make.link(link = "logit")
+    lb <- dbinom(y[,1], y[,2], p$linkinv(lp),log = TRUE)*wt
+    ll.contr<-sum(lb)
     } else {
     paramsTrans <- c(params[1], exp( params[-1]))
     lp <- X %*% paramsTrans + offset

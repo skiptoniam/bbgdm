@@ -4,8 +4,7 @@
 \alias{spline.trans}
 \title{Transformation of Covariates to Splines.}
 \usage{
-spline.trans(x, spline_type = "bspline", spline_df = 2,
-  spline_knots = NULL)
+spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 1)
 }
 \arguments{
 \item{x}{data.frame of covariates to use as predictors in bbGDM.}

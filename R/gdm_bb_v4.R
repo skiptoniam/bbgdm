@@ -17,7 +17,7 @@
 #' test.gdm.bb <- gdm.bb(form,sp.dat, env.dat,family="binomial", dism_metric="number_shared",nboot=100, scale_covar=F)
 
 gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_shared", nboot=100, 
-                   spline_type="ispline",spline_df=2,spline_knots=NULL,scale_covar=FALSE,
+                   spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
                    geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                    lc_data=NULL,minr=0,maxr=NULL,control=logit_glm_control()){
   cat(family,"regression is on the way. \n")
@@ -46,6 +46,7 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
     sd.env.dat <- apply(X.t, 2, sd)
     env.dat <- scale(X.t)        
   }
+  env.dat <- model.frame(as.data.frame(env.dat))
   offset <- model.offset(env.dat)
   if(!is.null(offset)) {
     offset_name <- colnames(env.dat)[length(colnames(env.dat))]
@@ -77,7 +78,7 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
     nreps <- nboot
     mods <- list()
     for (ii in 1:nreps){
-      w <- gtools::rdirichlet(Nsite, rep(1/ii,Nsite))
+      w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
       mods[[ii]] <- logit_glm_fit(X,y,wt=wij,offset=offset,control=control)
@@ -87,20 +88,21 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
   #summary stats
   library(plyr)
   all.stats.ll.aic.bic.deviance <- ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
-  mean.ll.aic.bic.deviance <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,mean,na.rm=T)
+  median.ll.aic.bic.deviance <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,median,na.rm=T)
   quantiles.ll.aic.bic.deviance <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
   all.coefs.se <-  ldply(mods, function(x) c(x$coef))
-  mean.coefs.se <- apply(ldply(mods, function(x) c(x$coef)),2,mean,na.rm=T)
+  median.coefs.se <- apply(ldply(mods, function(x) c(x$coef)),2,median,na.rm=T)
   quantiles.coefs.se <- apply(ldply(mods, function(x) c(x$coef)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
+#   vcov <- apply()
   
   gdm.bb.results <- list()
   gdm.bb.results$starting_gdm <- mod
   gdm.bb.results$bb_gdms <- mods
   gdm.bb.results$all.stats.ll.aic.bic.deviance <- all.stats.ll.aic.bic.deviance
-  gdm.bb.results$mean.ll.aic.bic.deviance <- mean.ll.aic.bic.deviance
+  gdm.bb.results$median.ll.aic.bic.deviance <- median.ll.aic.bic.deviance
   gdm.bb.results$quantiles.ll.aic.bic.deviance <- quantiles.ll.aic.bic.deviance
   gdm.bb.results$all.coefs.se <- all.coefs.se
-  gdm.bb.results$mean.coefs.se <- mean.coefs.se
+  gdm.bb.results$median.coefs.se <- median.coefs.se
   gdm.bb.results$quantiles.coefs.se <- quantiles.coefs.se
   gdm.bb.results$nboots <-nboot
   gdm.bb.results$formula <- form
@@ -114,7 +116,11 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
   gdm.bb.results$dissim_dat_params <- dissim_dat_params
   gdm.bb.results$family <- as.character(family)[1]
   gdm.bb.results$geo <- geo
-  
+  gdm.bb.results$scale_covar <- scale_covar
+  if(scale_covar){
+    gdm.bb.results$mean.env.dat <- mean.env.dat
+    gdm.bb.results$sd.env.dat <- sd.env.dat
+  }
   if(geo){
     gdm.bb.results$geo.type <- geo.type
     gdm.bb.results$lc_data=lc_data

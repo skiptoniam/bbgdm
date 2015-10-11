@@ -6,7 +6,7 @@
 \usage{
 gdm.bb(form, sp.dat, env.dat, family = "binomial",
   dism_metric = "number_shared", nboot = 100, spline_type = "ispline",
-  spline_df = 2, spline_knots = NULL, scale_covar = FALSE, geo = TRUE,
+  spline_df = 2, spline_knots = 1, scale_covar = FALSE, geo = TRUE,
   geo.type = "euclidean", coord.names = c("X", "Y"), lc_data = NULL,
   minr = 0, maxr = NULL, control = logit_glm_control())
 }

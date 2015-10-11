@@ -4,7 +4,7 @@
 \alias{ispline}
 \title{Function to calculate isplines.}
 \usage{
-ispline(x, spline.knots = 3, knots = NULL, spline.degree = 3)
+ispline(x, spline.knots = 2, knots = NULL, spline.degree = 3)
 }
 \arguments{
 \item{x}{data.frame of covariates to use as predictors in bbGDM.}

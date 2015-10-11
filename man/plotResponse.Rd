@@ -4,8 +4,7 @@
 \alias{plotResponse}
 \title{Function for plotting bb.GDM response curves.}
 \usage{
-plotResponse(object, plotdim = c(2, 2), plot.error = F, monotonic = F,
-  ...)
+plotResponse(object, plotdim = c(2, 2))
 }
 \arguments{
 \item{gdm.bb_object}{As derived from gdm.bb function}
@@ -23,6 +22,6 @@ x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
 #' env.dat <- simulate_covariates(x,2)
 form <- y ~ covar_1 + covar_2
 test.gdm.bb <- gdm.bb(form,family="binomial", dism_metric="number_shared", nboot=100)
-plotResponse(test.gdm.bb,plot.error=T)
+plotResponse(test.gdm.bb)
 }
 
