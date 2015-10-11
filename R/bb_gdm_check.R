@@ -23,50 +23,27 @@ bb.gdm.check <- function (object, plots.mfrow = c(2, 2),...)
   res <- rqr_function(X,y,coefs,offset)
   qqnorm(res)
   qqline(res, col = 'red')
-  hist(res, xlab = "Residuals", main = "Histogram of residuals")
-  if(is.null(dim(y))) {
-    lp<- X%*%coefs + offset
-    pi <- plogis(lp)
-    plot(pi, res, main = "Fitted vs. Linear pred.",xlab = "fitted", ylab = "residuals",...)
-    plot(y,pi, xlab = "Observed Values", ylab = "Response", 
-         main = "Observed vs. Fitted Values",...)
-  } else {
-    lp<- X%*%coefs + offset
-    pi <- plogis(lp)
-    plot(pi*y[,2], res, xlab = "Predicted Values", ylab = "Residuals", 
-         main = "Fitted Values Vs. Residuals",...)
-    plot(y[,1],pi*y[,2], xlab = "Observed Values", ylab = "Predicted Values", 
-         main = "Observed Vs. Fitted Values",...)
-  }
+  hist(res, xlab = "Residuals", main = "Histogram of residuals",...)
+  lp<- X%*%coefs + offset
+  pi <- plogis(lp)
+  plot(pi, res, xlab="Predicted Dissimilarity",ylab="Random Quantile Residuals",...)
+  plot(pi,y[,1]/y[,2] xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",...)
   mtext("Original GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
   ## Now for bayesian boot strap estimates
   par(mfrow=plots.mfrow)
-  if(is.null(dim(y))){
-    coefs_bb <- object$median.coefs.se[1:ncol(X)]
-    lp_bb <- X%*%coefs_bb + offset
-    pi_bb <- plogis(lp_bb)
-    res <- rqr_function(X,y,coefs_bb,offset)
-    qqnorm(res)
-    qqline(res, col = 2)
-    hist(res, xlab = "Residuals", main = "Histogram of residuals")
-    plot(pi_bb, res, main = "Fitted Values Vs. Residuals", 
-         xlab = "Predicted Values", ylab = "Residuals",...)
-    plot(y,pi_bb, xlab = "Observed Values", ylab = "Predicted Values", 
-         main = "Observed Vs. Fitted Values",...)
+   preds<- matrix(0L,1000,nrow(y))
+    for(i in 1:1000)preds[i,] <- p$linkinv(X%*%t(as.matrix(object$all.coefs.se[i,])))
+    pi<-apply(preds,2,mean)
+    a <- pbinom(y[,1]-1, y[,2], pi)#-1
+    b <- pbinom(y[,1], y[,2], pi)
+    u <- runif(n = length(y[,1]), min = a, max = b)
+    res <- qnorm(u)
+    qqnorm(res,ylab='Random Quantile Residuals',main = "")
+    qqline(res, col = 'red')
+    hist(res, xlab = "Random Quantile Residuals",main = "",...)
+    plot(pi,res,cex=.5,pch=16, xlab="Predicted Dissimilarity",ylab="Random Quantile Residuals",...)
+    plot(pi,y[,1]/y[,2],cex=.5,pch=16, xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",...)
     mtext("Bayesian Bootstrap GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
-  } else {
-  coefs_bb <- object$median.coefs.se[1:ncol(X)]
-  lp_bb <- X%*%coefs_bb + offset
-  pi_bb <- plogis(lp_bb)
-  res <- rqr_function(X,y,coefs_bb,offset)
-  qqnorm(res)
-  qqline(res, col = 2)
-  hist(res, xlab = "Residuals", main = "Histogram of residuals")
-  plot(pi_bb*y[,2], res, main = "Fitted Values Vs. Residuals", 
-                                xlab = "Predicted Values", ylab = "Residuals",...)
-  plot(y[,1],pi_bb*y[,2], xlab = "Observed Values", ylab = "Predicted Values", 
-     main = "Observed Vs. Fitted Values",...)
-  }
-mtext("Bayesian Bootstrap GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
+
 }
  
