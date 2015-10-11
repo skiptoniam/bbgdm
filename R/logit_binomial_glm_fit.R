@@ -41,42 +41,14 @@ logit_glm_fit <- function(X, y, wt=NULL,offset, control=logit_glm_control(...),.
   p<-make.link(link = "logit")
   pi <- p$linkinv(lp)
   dev.weights <- rep(1,length(wt))
-#   var <- NULL
-#   if (est.var) {
-#     print("Calculating the variance of the estiamtes")
-#     var <- solve(fit$hessian)#(nH2(pt = esti$par, fun = my.fun))
-#     colnames(var) <- rownames(var) <- names(esti$par)
-#   }
-  if(!is.null(dim(y))){
-    a <- pbinom((y[,1]-1), y[,2], pi)#-1
-    b <- pbinom(y[,1], y[,2], pi)
-    u <- runif(n = length(y[,1]), min = a, max = b)
-    res <- qnorm(u)
-    res[res==Inf]<-max(res[res!=Inf])
-    res[res==-Inf]<-min(res[res!=-Inf])
-    wtdmu <- sum(dev.weights * (y[,1]/y[,2]))/sum(dev.weights)
-    d <- sum(binomial()$dev.resids(y[,1]/y[,2],pi, dev.weights),na.rm=T)
-    dn <- sum(binomial()$dev.resids(y[,1]/y[,2],wtdmu, dev.weights),na.rm=T)
-    dev_exp <- (dn - d) /dn
-  } else {
-    n <- rep(1, length(y))
-    y <- n * y
-    a <- pbinom(y-1, n, pi)
-    b <- pbinom(y, n, pi)
-    u <- runif(n = length(y), min = a, max = b)
-    res <- qnorm(u)
-    res[res==Inf]<-max(res[res!=Inf])
-    res[res==-Inf]<-min(res[res!=-Inf])
-    wtdmu <- sum(dev.weights * y)/sum(dev.weights)
-    d <- sum(binomial()$dev.resids(y,pi, dev.weights),na.rm=T)
-    dn <- sum(binomial()$dev.resids(y,wtdmu, dev.weights),na.rm=T)
-    dev_exp <- (dn - d) /dn
+  var <- NULL
+  if (hessian) {
+    print("Calculating the variance of the estiamtes")
+    var <- solve(fit$hessian)#(nH2(pt = esti$par, fun = my.fun))
+    colnames(var) <- rownames(var) <- names(fit$par)
   }
-  AIC <- 2 * fit$value + 2 * length(fit$par)
-  BIC <- 2 * fit$value + log(nrow(X)) * length(fit$par)
-  out <- list(coef = fit$par, logl = fit$value, AIC = AIC, BIC=BIC,
-              gdm.deviance=d,null.deviance=dn,deviance.explained=dev_exp,
-              counts=fit$counts, fitted = pi, residuals = res, 
+  out <- list(coef = fit$par, logl = fit$value, 
+              counts=fit$counts, fitted = pi, var=var,#residuals = res, 
               X=X, y=y,method = method, control=control)
   class(out) <- "logit_bin_GLM"
   return(out)

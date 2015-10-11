@@ -4,7 +4,7 @@
 \alias{bbgdm.wald.test}
 \title{Function to perform a non-parametric wald-test on bootstrap parameter estimates}
 \usage{
-bbgdm.wald.test(object, H0 = 0)
+bbgdm.wald.test(object, H0 = 0, gdm = FALSE)
 }
 \arguments{
 \item{object}{Returned mode from \link[bbgdm]{gdm.bb}.}

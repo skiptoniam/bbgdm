@@ -73,7 +73,7 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
     stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
                   length(offset), NROW(y)), domain = NA)}
     X <- model.matrix(form, as.data.frame(dissim_dat_table))
-    mod  <- logit_glm_fit(X,y,offset=offset,control=control)
+    mod  <- logit_glm_fit(X,y,offset=offset,control=logit_glm_control(hessian=TRUE))
     Nsite <- nrow(sp.dat)
     nreps <- nboot
     mods <- list()
