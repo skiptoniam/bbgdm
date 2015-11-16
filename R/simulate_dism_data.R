@@ -25,5 +25,5 @@ simulate_dism_data <- function(form,dat,theta,nsp){
   sim_nnss <- rbinom(dim(X)[1], max_sp_site, p)
   sim_dism <- sim_nnss/max_sp_site
   vars <- (sim_nnss*p)*(1-p)
-  return(list('X'=X,'nnss'=sim_nnss,'dism'=sim_dism,'max_sp_site'= max_sp_site,'theta'=theta,'vars'=vars))
+  return(list('X'=X,'nnss'=sim_nnss,'dism'=sim_dism,'max_sp_site'= max_sp_site,'theta'=theta,'vars'=vars,'y'=data.frame(SharedSpp_ij=sim_nnss, MaxSpp_ij=max_sp_site)))
 }
