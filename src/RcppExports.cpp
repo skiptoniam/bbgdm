@@ -9,14 +9,10 @@ using namespace Rcpp;
 NumericMatrix diff_table_cpp(NumericMatrix env_dat);
 RcppExport SEXP bbgdm_diff_table_cpp(SEXP env_datSEXP) {
 BEGIN_RCPP
-    SEXP __sexp_result;
-    {
-        Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< NumericMatrix >::type env_dat(env_datSEXP );
-        NumericMatrix __result = diff_table_cpp(env_dat);
-        PROTECT(__sexp_result = Rcpp::wrap(__result));
-    }
-    UNPROTECT(1);
-    return __sexp_result;
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type env_dat(env_datSEXP);
+    __result = Rcpp::wrap(diff_table_cpp(env_dat));
+    return __result;
 END_RCPP
 }
