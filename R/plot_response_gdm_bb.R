@@ -18,7 +18,7 @@ plotResponse <- function(object, plotdim = c(2, 2)){
   Xold <- data.matrix(object$dissim_dat)
   splineLength <- sapply(object$dissim_dat_params, `[[`, "dim")[2,]
   betas <- object$median.coefs.se[2:length(object$median.coefs.se)]
-  betas.quantiles <- object$quantiles.coefs.se[,2:length(object$starting_gdm$coef)]
+  betas.quantiles <- object$quantiles.coefs.se[,2:length(object$starting_gdm$coef),drop=FALSE]
   if(object$geo){ k <- ncol(object$env.dat)-1
                   coords <- as.matrix(object$env.dat[,1:2])
                   lc_data<-object$lc_data

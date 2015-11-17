@@ -25,7 +25,7 @@ sim_bbgdm <- function(X,y,offset=NULL,Nsite,nboots=10,control=logit_glm_control(
   nreps <- nboots
   if(is.null(offset))offset <- rep(0,dim(X)[1])
   cat('start your engines\n')
-  mod <- logit_glm_fit(Xs,y,wt=NULL,offset=offset,control=control)
+  mod <- logit_glm_fit(Xs,y,offset=offset,control=control)
   for (ii in 1:nreps){
     w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
     wij <- w%*%t(w)
