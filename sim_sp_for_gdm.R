@@ -73,7 +73,16 @@ head(dat)
 form <- ~ 1 + x + z
 fm1 <- bbgdm::gdm.bb(form,sim_data$sp_data,dat,nboot = 100,geo = FALSE)
 
-
+mean1 <- c(.5,-1.5,-.25) #for intercepts and slopes # a hypothesis on the response of each parameter...
+mean2 <- c(.5,1.2,1.44)
+means <- rbind(mean1,mean2)
+variances <- matrix(c(rep(1.5,dim(means)[2]),rep(2,dim(means)[2])),dim(means)[1],dim(means)[2],byrow=T)
+covariances <- apply(variances,1,function(x)1/(sqrt(mean(x))*sqrt(mean(x))))
+sim_data <- species_theta_generation_mixed_proportions(means,variances,covariances,nSp,dat,mix.prop,dist='bernoulli',plot=TRUE)
+sim_data$sp_data
+head(dat)
+form <- ~ 1 + x + z
+fm2 <- bbgdm::gdm.bb(form,sim_data$sp_data,dat,nboot = 100,geo = FALSE)
 
 
 
