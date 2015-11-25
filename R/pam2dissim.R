@@ -69,12 +69,12 @@ pam2dissim <- function(x,dissim="bray_curtis"){
       for(j_site in c(i_site+1):c(nrow(x))){
         no_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)==1)
         sum_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)!=0)
-#         max_sp[i_site,j_site] <- max(apply(x[c(i_site,j_site),],1,sum))
+        max_sp[i_site,j_site] <- max(apply(x[c(i_site,j_site),],1,sum))
       }
     }
   }
   if(dissim=="number_shared") {
-    dism <- list(no_share=no_share,sum_share=sum_share)
+    dism <- list(no_share=no_share,sum_share=sum_share,max_sp=max_sp)
     return(dism)
   }else{
     return(dism)
