@@ -83,7 +83,7 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="bray_curtis",spline_type="b
       {
         diff_table[pair,1]<-pair
         diff_table[pair,2]<-xdism$no_share[i_site,j_site]
-        diff_table[pair,3]<-xdism$max_sp[i_site,j_site]
+        diff_table[pair,3]<-xdism$sum_share[i_site,j_site]
 #         diff_table[pair,3]<-max(maxsppsite[i_site],maxsppsite[j_site])
         for(var in 1:ne)
         {

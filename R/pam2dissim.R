@@ -64,13 +64,13 @@ pam2dissim <- function(x,dissim="bray_curtis"){
     x <- as.matrix(x)
     no_share <- matrix(NA,nrow(x),nrow(x))
     sum_share <- matrix(NA,nrow(x),nrow(x))
-    max_sp <- matrix(NA,nrow(x),nrow(x))
+#     max_sp <- matrix(NA,nrow(x),nrow(x))
     for(i_site in 1:(nrow(x)-1)){
       for(j_site in c(i_site+1):c(nrow(x))){
 #         no_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)==2)
         no_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)==1)#orig
         sum_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)!=0)
-        max_sp[i_site,j_site] <- max(apply(x[c(i_site,j_site),],1,sum))
+#         max_sp[i_site,j_site] <- max(apply(x[c(i_site,j_site),],1,sum))
       }
     }
   }
