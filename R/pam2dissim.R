@@ -75,7 +75,7 @@ pam2dissim <- function(x,dissim="bray_curtis"){
     }
   }
   if(dissim=="number_shared") {
-    dism <- list(no_share=no_share,sum_share=sum_share,max_sp=max_sp)
+    dism <- list(no_share=no_share,sum_share=sum_share)#,max_sp=max_sp)
     return(dism)
   }else{
     return(dism)
