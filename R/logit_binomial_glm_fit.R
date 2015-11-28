@@ -25,23 +25,24 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
     if(trace)control$trace <- 1
   method <- control$method
   hessian <- control$hessian
-  start <- control$start
+  init.par <- control$start
   fsmaxit <- control$fsmaxit
   fstol <- control$fstol
-  control$method <- control$hessian <- control$start <- control$fsmaxit <- control$fstol <- NULL
-  if(is.null(start)){ 
+  control$method <- control$hessian <- control$init.par <- control$fsmaxit <- control$fstol <- NULL
+  if(is.null(init.par)){ 
     fm.b <- glm.fit(X,y,family=binomial("logit"))
-    start <- c(fm.b$coefficients)
+    init.par <- c(fm.b$coefficients)
   }
   if(est.var)hessian <- TRUE
-  fit <- optim(par = start, fn = my.fun, gr =my.grad,  
+  fit <- optim(par = init.par, fn = my.fun, gr =my.grad,  
                  method = method, hessian = hessian, control = control)
   } else { 
-    if(is.null(start)){ 
+    init.par <- control$start
+    if(is.null(init.par)){ 
       fm.b <- glm.fit(X,y,family=binomial("logit"))
-      start <- c(fm.b$coefficients)
+      init.par <- c(fm.b$coefficients)
     }
-    fit <- nlminb(start=start,objective=my.fun,gradient=my.grad,control = list(trace=trace))
+    fit <- nlminb(start=init.par,objective=my.fun,gradient=my.grad,control = list(trace=trace))
     fit$value <- fit$objective
     fit$counts <- fit$evaluations
   }
@@ -51,12 +52,12 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
   if (est.var) {
     cat("Calculating the variance of the estimates.\n")
     if(optim.meth) var <- solve(fit$hessian)
-    else var <- solve(numDeriv::hessian(my.fun,start))
+    else var <- solve(numDeriv::hessian(my.fun,init.par))
     colnames(var) <- rownames(var) <- names(fit$par)
   }
   out <- list(coef = fit$par, logl = fit$value, 
-              counts=fit$counts, fitted = pi, var=var,#residuals = res, 
-              X=X, y=y,method = method, control=control)
+              counts=fit$counts, fitted = pi, var=var,
+              X=X, y=y,control=control)
   class(out) <- "logit_bin_GLM"
   return(out)
 }
