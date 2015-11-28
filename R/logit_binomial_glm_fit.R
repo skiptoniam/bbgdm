@@ -37,14 +37,10 @@ logit_glm_fit <- function(X, y, wt=NULL,offset, control=logit_glm_control(...),.
 #   fit <- nlminb(start=start,objective=my.fun,gradient=my.grad)
   invisible(fit)
   fit$par <- c(fit$par[1],exp(fit$par[-1]))
-  lp <- (X %*% fit$par + offset)
-  p<-make.link(link = "logit")
-  pi <- p$linkinv(lp)
-  dev.weights <- rep(1,length(wt))
   var <- NULL
   if (hessian) {
-    print("Calculating the variance of the estiamtes")
-    var <- solve(fit$hessian)#(nH2(pt = esti$par, fun = my.fun))
+    cat("Calculating the variance of the estimates.")
+    var <- solve(fit$hessian)
     colnames(var) <- rownames(var) <- names(fit$par)
   }
   out <- list(coef = fit$par, logl = fit$value, 

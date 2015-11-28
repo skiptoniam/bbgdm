@@ -9,7 +9,8 @@ GradFun <- function(params,X,y,wt,offset){
       mu <- y[i,2]*p$linkinv(lp[i])
       dldm <- (y[i,1]/mu) - ((1-y[i,1])/(1-mu))
       dmde <- mu*(1-mu)
-      dedb <-  X[i,]
+      dedb <- X[i,]
+#       dbdg <- exp(params)
       dbdg <- c(1,exp(params[-1])) 
       deri[i,] <- wt[i] * dldm * dmde * dedb * dbdg
     }
