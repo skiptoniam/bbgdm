@@ -10,7 +10,7 @@
  
 
 
-logit_glm_fit <- function(X, y, wt=NULL,offset, control=logit_glm_control(...),...){
+logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, trace=FALSE, control=logit_glm_control(...),...){
   my.fun <- function(x) {
     -LogLikFun(x, X, y, wt, offset)
   }
@@ -21,7 +21,8 @@ logit_glm_fit <- function(X, y, wt=NULL,offset, control=logit_glm_control(...),.
     if(!is.null(dim(y))) wt <- rep(1,nrow(y))
     else wt <- rep(1,length(y))
   }
-  nbeta <- ncol(X)
+  if(optim.meth){
+    if(trace)control$trace <- 1
   method <- control$method
   hessian <- control$hessian
   start <- control$start
@@ -32,15 +33,23 @@ logit_glm_fit <- function(X, y, wt=NULL,offset, control=logit_glm_control(...),.
     fm.b <- glm.fit(X,y,family=binomial("logit"))
     start <- c(fm.b$coefficients)
   }
+  if(est.var)hessian <- TRUE
   fit <- optim(par = start, fn = my.fun, gr =my.grad,  
                  method = method, hessian = hessian, control = control)
-#   fit <- nlminb(start=start,objective=my.fun,gradient=my.grad)
+  } else { 
+    if(is.null(start)){ 
+      fm.b <- glm.fit(X,y,family=binomial("logit"))
+      start <- c(fm.b$coefficients)
+    }
+    fit <- nlminb(start=start,objective=my.fun,gradient=my.grad,control = list(trace=trace))
+  }
   invisible(fit)
   fit$par <- c(fit$par[1],exp(fit$par[-1]))
   var <- NULL
-  if (hessian) {
+  if (est.var) {
     cat("Calculating the variance of the estimates.")
-    var <- solve(fit$hessian)
+    if(optim) var <- solve(fit$hessian)
+    else var <- solve(numDeriv::hessian(my.fun,start))
     colnames(var) <- rownames(var) <- names(fit$par)
   }
   out <- list(coef = fit$par, logl = fit$value, 
