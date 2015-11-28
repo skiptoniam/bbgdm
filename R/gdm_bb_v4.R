@@ -85,7 +85,7 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
       wij <- wij[upper.tri(wij)]
       mods[[ii]] <- logit_glm_fit(X,y,wt=wij,offset=offset,optim.meth=optim.meth, est.var=est.var, trace=trace, control=control)
       cat(ii,"\n")
-      if(ii %% 20 ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
+      if(ii %% nboot/10 ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
     }
   #summary stats
   library(plyr)

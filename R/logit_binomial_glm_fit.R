@@ -42,13 +42,15 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
       start <- c(fm.b$coefficients)
     }
     fit <- nlminb(start=start,objective=my.fun,gradient=my.grad,control = list(trace=trace))
+    fit$value <- fit$objective
+    fit$counts <- fit$evaluations
   }
   invisible(fit)
   fit$par <- c(fit$par[1],exp(fit$par[-1]))
   var <- NULL
   if (est.var) {
-    cat("Calculating the variance of the estimates.")
-    if(optim) var <- solve(fit$hessian)
+    cat("Calculating the variance of the estimates.\n")
+    if(optim.meth) var <- solve(fit$hessian)
     else var <- solve(numDeriv::hessian(my.fun,start))
     colnames(var) <- rownames(var) <- names(fit$par)
   }
