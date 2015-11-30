@@ -28,7 +28,7 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
   init.par <- control$start
   fsmaxit <- control$fsmaxit
   fstol <- control$fstol
-  control$method <- control$hessian <- control$init.par <- control$fsmaxit <- control$fstol <- NULL
+  control$method <- control$hessian <- control$start <- control$fsmaxit <- control$fstol <- NULL
   if(is.null(init.par)){ 
     fm.b <- glm.fit(X,y,family=binomial("logit"))
     init.par <- c(fm.b$coefficients)
