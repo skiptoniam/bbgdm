@@ -10,7 +10,7 @@
  
 
 
-logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, trace=FALSE, control=logit_glm_control(...),...){
+logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, trace=FALSE,prior=FALSE, control=logit_glm_control(...),...){
   my.fun <- function(x) {
     -LogLikFun(x, X, y, wt, offset)
   }
@@ -32,15 +32,17 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
   if(is.null(init.par)){ 
     fm.b <- glm.fit(X,y,family=binomial("logit"))
     init.par <- c(fm.b$coefficients)
+    if(prior)init.par<-rbeta(length(init.par),2,2)
   }
   if(est.var)hessian <- TRUE
   fit <- optim(par = init.par, fn = my.fun, gr =my.grad,  
                  method = method, hessian = hessian, control = control)
   } else { 
     init.par <- control$start
-    if(is.null(init.par)){ 
+    if(is.null(init.par)){
       fm.b <- glm.fit(X,y,family=binomial("logit"))
       init.par <- c(fm.b$coefficients)
+      if(prior)init.par<-rbeta(length(init.par),2,2)
     }
     fit <- nlminb(start=init.par,objective=my.fun,gradient=my.grad,control = list(trace=trace))
     fit$value <- fit$objective
