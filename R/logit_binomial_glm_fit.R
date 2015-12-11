@@ -10,7 +10,7 @@
  
 
 
-logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, trace=FALSE,prior=FALSE, control=logit_glm_control(...),...){
+logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE, control=logit_glm_control(...),...){
   my.fun <- function(x) {
     -LogLikFun(x, X, y, wt, offset)
   }
@@ -21,7 +21,7 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
     if(!is.null(dim(y))) wt <- rep(1,nrow(y))
     else wt <- rep(1,length(y))
   }
-  if(optim.meth){
+  if(optim.meth=="optim"){
     if(trace)control$trace <- 1
   method <- control$method
   hessian <- control$hessian
@@ -37,7 +37,8 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
   if(est.var)hessian <- TRUE
   fit <- optim(par = init.par, fn = my.fun, gr =my.grad,  
                  method = method, hessian = hessian, control = control)
-  } else { 
+  }
+  if (optim.meth=="nlmnib"){
     init.par <- control$start
     if(is.null(init.par)){
       fm.b <- glm.fit(X,y,family=binomial("logit"))
@@ -48,13 +49,30 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth=TRUE, est.var=TRUE, tr
     fit$value <- fit$objective
     fit$counts <- fit$evaluations
   }
+  if (optim.meth=='admb'){
+    init.par <- control$start
+    if(is.null(init.par)){
+      init.par <- rep(0,ncol(X))
+      if(prior)init.par<-rbeta(length(init.par),2,2)
+    }
+    dyn.load(dynlib("logit_reg"))
+    obj <- MakeADFun(
+      data = list(x = X[,-1], y = y, w = wt,offset=offset), 
+      parameters = list(a =init.par[1], b = init.par[-1]),
+      DLL = "logit_reg",hessian=TRUE,silent=TRUE)
+      fit <- suppressWarnings(nlminb(obj$par,obj$fn,obj$gr,control =list(trace=trace)))
+      fit$value <- fit$objective
+      fit$counts <- fit$evaluations
+  }
   invisible(fit)
   fit$par <- c(fit$par[1],exp(fit$par[-1]))
+  names(fit$par) <- colnames(X)
   var <- NULL
   if (est.var) {
     cat("Calculating the variance of the estimates.\n")
-    if(optim.meth) var <- solve(fit$hessian)
-    else var <- solve(numDeriv::hessian(my.fun,init.par))
+    if(optim.meth=='optim') var <- solve(fit$hessian)
+    if(optim.meth=='nlmnib') var <- solve(numDeriv::hessian(my.fun,init.par))
+    if(optim.meth=='admb') var <- solve(numDeriv::hessian(obj$fn,obj$par))
     colnames(var) <- rownames(var) <- names(fit$par)
   }
   out <- list(coef = fit$par, logl = fit$value, 

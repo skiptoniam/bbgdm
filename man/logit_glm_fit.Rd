@@ -4,8 +4,9 @@
 \alias{logit_glm_fit}
 \title{Function to perform postive binomial logistic regression.}
 \usage{
-logit_glm_fit(X, y, wt = NULL, offset, optim.meth = TRUE, est.var = TRUE,
-  trace = FALSE, prior = FALSE, control = logit_glm_control(...), ...)
+logit_glm_fit(X, y, wt = NULL, offset, optim.meth = "optim",
+  est.var = TRUE, trace = FALSE, prior = FALSE,
+  control = logit_glm_control(...), ...)
 }
 \arguments{
 \item{X}{Model matirx of predictors, see \link[stats]{model.matrix}.}

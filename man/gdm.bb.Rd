@@ -8,7 +8,7 @@ gdm.bb(form, sp.dat, env.dat, family = "binomial",
   dism_metric = "number_shared", nboot = 100, spline_type = "ispline",
   spline_df = 2, spline_knots = 1, scale_covar = FALSE, geo = TRUE,
   geo.type = "euclidean", coord.names = c("X", "Y"), lc_data = NULL,
-  minr = 0, maxr = NULL, optim.meth = TRUE, est.var = FALSE,
+  minr = 0, maxr = NULL, optim.meth = "nlmnib", est.var = FALSE,
   trace = FALSE, prior = FALSE, control = logit_glm_control())
 }
 \arguments{
@@ -25,6 +25,8 @@ gdm.bb(form, sp.dat, env.dat, family = "binomial",
 \item{nboot}{number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.}
 
 \item{spline_type}{type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".}
+
+\item{optim.meth}{"optim", "nlmnib" or "admb" for different optimization approaches.}
 }
 \value{
 a gdm.bb model object
@@ -34,8 +36,8 @@ Runs a Generalised dissimilarity model with bayesian bootstrap.
 }
 \examples{
 sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
-env.dat <- simulate_covariates(x,2)
+env.dat <- simulate_covariates(sp.dat,2)
 form <- ~ 1 + covar_1 + covar_2
-test.gdm.bb <- gdm.bb(form,sp.dat, env.dat,family="binomial", dism_metric="number_shared",nboot=100, scale_covar=F)
+test.gdm.bb <- gdm.bb(form,sp.dat, env.dat,family="binomial",dism_metric="number_shared",nboot=10, scale_covar=F,geo=F,optim.meth='admb')
 }
 

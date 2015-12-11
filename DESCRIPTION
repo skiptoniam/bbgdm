@@ -12,3 +12,5 @@ Imports:
     Rcpp (>= 0.11.4)
 LinkingTo: Rcpp
 RoxygenNote: 5.0.1
+Depends: TMB
+LinkingTo: TMB

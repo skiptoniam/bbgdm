@@ -8,19 +8,21 @@
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
 #' @param env.dat environmental or spatial covariates at each site.
 #' @param spline_type type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".
+#' @param optim.meth "optim", "nlmnib" or "admb" for different optimization approaches. 
 #' @return a gdm.bb model object
 #' @export
 #' @examples
+#' 
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
-#' env.dat <- simulate_covariates(x,2)
+#' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.gdm.bb <- gdm.bb(form,sp.dat, env.dat,family="binomial", dism_metric="number_shared",nboot=100, scale_covar=F)
+#' test.gdm.bb <- gdm.bb(form,sp.dat, env.dat,family="binomial",dism_metric="number_shared",nboot=10, scale_covar=F,geo=F,optim.meth='admb')
 
 gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_shared", nboot=100, 
                    spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
                    geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                    lc_data=NULL,minr=0,maxr=NULL,
-                   optim.meth=TRUE, est.var=FALSE, trace=FALSE,prior=FALSE,
+                   optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,
                    control=logit_glm_control()){
   cat(family,"regression is on the way. \n")
     if (is.character(family)) 
