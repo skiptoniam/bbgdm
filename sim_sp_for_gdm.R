@@ -69,19 +69,35 @@ species_theta_generation_mixed_proportions <- function(means,variances,covarianc
 }
 
 set.seed(42)
-sim_data <- species_theta_generation_mixed_proportions(means,variances,covariances,nSp,dat,mix.prop,dist='bernoulli',plot=TRUE)
+sim_data <- species_theta_generation_mixed_proportions(means,variances,covariances,nSp,dat,mix.prop,dist='poisson',plot=TRUE)
 sim_data$sp_data
 
 head(dat)
 form <- ~ 1 + x
 library(bbgdm)
-fm1 <- bbgdm::gdm.bb(form,sim_data$sp_data,dat,nboot = 10,geo = FALSE)
+fm1 <- bbgdm::gdm.bb(form,sim_data$sp_data,dat,nboot = 100,geo = FALSE,optim.meth = 'admb',control=logit_glm_control(start=rbeta(4,2,2)))
 bbgdm::bb.gdm.check(fm1)
 bbgdm::plotResponse(fm1)
+bbgdm::bbgdm.wald.test(fm1)
 bbgdm::plot.gdm.bb(fm1)
 
+library(plyr)
+bbgdm_coefs_sim <- fm1$all.coefs.se
+link.fun <- make.link("logit")
+par(mfrow=c(1,2))
+x <- seq(0,4,length.out = 105)                                                
+xs <- bbgdm::spline.trans(x,spline_type = 'ispline')
 
-sim_data$mu
+x1<-diff_table_cpp(as.matrix(dat[,2]))
 
 
-
+plot(x1,fm1$starting_gdm$y[,1]/fm1$starting_gdm$y[,2],ylim=c(0.2,.8),xlim=c(0,4),col = "grey60",cex=.6,pch=16,ylab='dissimilarity')
+link.fun <- make.link("logit")
+all_results <- matrix(0,100,105)
+for(i in 1:nrow(bbgdm_coefs_sim)) {
+  lines(x, link.fun$linkinv(cbind(1,xs$spline)%*%as.vector(as.matrix(bbgdm_coefs_sim[i,]))), col = "#00000030")
+  # lines(x, link.fun$linkinv(cbind(1,xs$spline)%*%as.vector(as.matrix(bbgdm_coefs_var_sim[i,1:4]))), col = "#00000030")
+  # lines(x, link.fun$linkinv(cbind(1,xs$spline)%*%as.vector(as.matrix(bbgdm_coefs_var_sim[i,5:8]))), col = "#00000030")
+  all_results[i,] <- link.fun$linkinv(cbind(1,xs$spline)%*%as.vector(as.matrix(bbgdm_coefs_sim[i,])))
+}
+lines(x, apply(all_results,2,mean), col = "red",lwd=2)

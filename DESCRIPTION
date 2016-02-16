@@ -10,7 +10,5 @@ Description: Logitic regression model that runs a Bayesian Bootstrap
 License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.11.4)
-LinkingTo: Rcpp
 RoxygenNote: 5.0.1
-Depends: TMB
-LinkingTo: TMB
+Depends: TMB, Rcpp, RcppEigen
