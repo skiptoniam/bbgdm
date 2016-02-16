@@ -12,4 +12,4 @@ Imports:
     Rcpp (>= 0.11.4)
 RoxygenNote: 5.0.1
 Depends: TMB, Rcpp, RcppEigen, numDeriv
-LinkingTo: TMB
+LinkingTo: TMB, Rcpp
