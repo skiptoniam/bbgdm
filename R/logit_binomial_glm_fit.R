@@ -69,7 +69,7 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE,
   names(fit$par) <- colnames(X)
   var <- NULL
   if (est.var) {
-    cat("Calculating the variance of the estimates.\n")
+    # cat("Calculating the variance of the estimates.\n")
     if(optim.meth=='optim') var <- solve(fit$hessian)
     if(optim.meth=='nlmnib') var <- solve(numDeriv::hessian(my.fun,init.par))
     if(optim.meth=='admb') var <- solve(numDeriv::hessian(obj$fn,obj$par))

@@ -3,11 +3,11 @@
 \alias{bbgdm}
 \docType{package}
 \title{
-What the package does (short line)
+Bayesian Bootstrap Generalised Dissimilarity Models.
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Logitic regression model that runs a Bayesian Bootstrap
+    implementation of GDM.
 }
 \details{
 \tabular{ll}{
@@ -20,9 +20,9 @@ License: \tab GPL (>= 2)\cr
 ~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
-Your Name
+Skipton Woolley
 
-Maintainer: Your Name <your@email.com>
+Maintainer: Skipton Woolley <swoolley@museum.vic.gov.au>
 }
 \references{
 ~~ Literature or other references for background information ~~

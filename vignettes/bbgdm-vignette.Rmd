@@ -4,7 +4,7 @@ author: "Skipton Woolley"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Run simple BBGDM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,14 +15,17 @@ Here we present a basic vignette that runs through taking a species by sites mat
 - Fit a bbgdm model to this these data.
 - Run diagnostic, inference and plotting functions.
 
-## Generate some simulated data
-Generate species with responses to covariates and to mix it up (skew the distributions).
-
-```{r loadlibraries, echo = FALSE, warning=FALSE, message=FALSE}
+### Load the required libaries
+```{r loadlibraries, echo = TRUE, error=FALSE, warning=FALSE, message=FALSE}
 library(bbgdm)
+library(mvtnorm)
+library(MASS)
 ```
 
-```{r simulate data, warning=FALSE, message=FALSE}
+### Generate some simulated data
+Generate community of species with responses to covariate and to mix it up, this is based on the mixture model apporach explained in (Ovaskainen 2010). 
+
+```{r simulate data, error=FALSE, warning=FALSE, message=FALSE}
 mean1 <- c(1.5,1.5) #for intercepts and slopes # a hypothesis on the response of each parameter...
 mean2 <- c(-1.5,-1.5)
 means <- rbind(mean1,mean2)
@@ -88,14 +91,30 @@ species_theta_generation_mixed_proportions <- function(means,variances,covarianc
 }
 
 set.seed(42)
-sim_data <- species_theta_generation_mixed_proportions(means,variances,covariances,nSp,dat,mix.prop,dist='bernoulli',plot=TRUE)
+sim_data <- species_theta_generation_mixed_proportions(means,variances,covariances,nSp,dat,mix.prop,dist='bernoulli',plot=FALSE)
 ```
 
+### Fit a bbgdm
+Now we have a species by sites matrix of simulated data and a set data for a one dimensional gradient.
 ```{r fit model, results="hide", error=FALSE, warning=FALSE, message=FALSE}
 form <- ~1+x
-fm1_nlm <-bbgdm::gdm.bb(form,sim_data$sp_data,dat,nboot = 100,geo = FALSE,spline_type = "ispline",optim.meth = 'nlmnib', est.var = TRUE)
+fm1_nlm <-bbgdm(form,sim_data$sp_data,dat,nboot = 100,geo = FALSE,spline_type = "ispline",optim.meth = 'nlmnib', est.var = TRUE)
 ```
 
-```{r, fig.show='hold' ,echo = FALSE, fig.height=6,fig.width=8}
+### Plot response curves
+```{r, fig.show='hold' ,echo = TRUE, fig.height=6,fig.width=8}
 plotResponse(fm1_nlm,plotdim = c(1,1))
 ```
+
+### Plot diagnostics
+```{r, fig.show='hold' ,echo = TRUE, fig.height=6,fig.width=8}
+bbgdm.check(fm1_nlm)
+```
+
+### Plot diagnostics
+```{r}
+bbgdm.wald.test(fm1_nlm)
+```
+
+### References
+Ovaskainen, O., Hottola, J. & Siitonen, J. (2010) Modeling species co-occurrence by multivariate logistic regression generates new hypotheses on fungal interactions. Ecology, 91, 2514-2521.

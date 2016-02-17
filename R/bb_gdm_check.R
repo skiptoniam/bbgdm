@@ -19,17 +19,17 @@ bbgdm.check <- function (object, plots.mfrow = c(2, 2),...)
   X <- object$starting_gdm$X
   y <- object$starting_gdm$y
   offset <- object$offset
-  coefs<-object$starting_gdm$coef
-  par(mfrow=plots.mfrow)
-  res <- rqr_function(X,y,coefs,offset)
-  qqnorm(res)
-  qqline(res, col = 'red')
-  hist(res, xlab = "Residuals", main = "Histogram of residuals",...)
-  lp<- X%*%coefs + offset
-  pi <- p$linkinv(lp)
-  plot(pi, res, xlab="Predicted Dissimilarity",ylab="Random Quantile Residuals",cex=.5,pch=16,...)
-  plot(pi,y[,1]/y[,2], xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",cex=.5,pch=16,...)
-  mtext("Original GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
+  # coefs<-object$starting_gdm$coef
+  # par(mfrow=plots.mfrow)
+  # res <- rqr_function(X,y,coefs,offset)
+  # qqnorm(res)
+  # qqline(res, col = 'red')
+  # hist(res, xlab = "Residuals", main = "Histogram of residuals",...)
+  # lp<- X%*%coefs + offset
+  # pi <- p$linkinv(lp)
+  # plot(pi, res, xlab="Predicted Dissimilarity",ylab="Random Quantile Residuals",cex=.5,pch=16,...)
+  # plot(pi,y[,1]/y[,2], xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",cex=.5,pch=16,...)
+  # mtext("Original GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
   ## Now for bayesian boot strap estimates
   par(mfrow=plots.mfrow)
   npreds <- object$nboots
