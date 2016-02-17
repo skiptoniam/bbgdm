@@ -1,78 +1,27 @@
-## ----loadlibraries, echo = FALSE, warning=FALSE, message=FALSE-----------
+## ------------------------------------------------------------------------
+# install.packages(c('devtools','vegan'))
+# devtools::install_github('skiptoniam/bbgdm')
+
+## ----loadlibraries, echo = TRUE, error=FALSE, warning=FALSE, message=FALSE----
 library(bbgdm)
+library(vegan)
 
-## ----simulate data, warning=FALSE, message=FALSE-------------------------
-mean1 <- c(1.5,1.5) #for intercepts and slopes # a hypothesis on the response of each parameter...
-mean2 <- c(-1.5,-1.5)
-means <- rbind(mean1,mean2)
-variances <- matrix(c(rep(.56,dim(means)[2]),rep(.56,dim(means)[2])),dim(means)[1],dim(means)[2],byrow=T)
-variances <- t(variances)
-covariances <- c(-.5,-.5) #apply(variances,1,function(x)1/(sqrt(mean(x))*sqrt(mean(x))))
-mix.prop <- 0.5
-nSp <- 200   #lots of species (to see pattern in distribution)
-nSites <-50
-dat <- data.frame(y=rep(1,nSites),x=seq(-2,2,length.out = nSites))
-
-species_theta_generation_mixed_proportions <- function(means,variances,covariances,
-                                                       nSp,dat,mix.prop,dist='negbin',
-                                                       phi=NULL,plot=TRUE){
-  nSigma <- dim(means)[1]
-  dimSigma <- dim(means)[2]
-  sigmas <- array(0L,c(dimSigma,dimSigma,nSigma))  
-  species_parameters <- array(0L,c(nSp,dimSigma,nSigma))
-  for(i in 1:nSigma){
-    tmp <-sigmas[,,i] 
-    tmp <- diag(variances[i,])
-    tmp[row(tmp)!=col(tmp)] <- covariances[i]
-    sigmas[,,i]<-tmp
-    species_parameters[,,i] <- mvtnorm::rmvnorm(nSp, means[i,], sigmas[,,i])
-  }
-  grp <- rbinom(nSp, c(nSigma)-1, mix.prop)
-  df <- data.frame(grp=grp,do.call(cbind,plyr::alply(species_parameters,3)))
-  theta <- matrix(0L,nSp,dimSigma)
-  for(i in 1:nSigma){
-    row_tmp <- which(grp == c(i-1))
-    theta[row_tmp,] <- as.matrix(subset(df, grp == c(i-1), select=c(c(i+1):c(i+nSigma))))
-  }
-  out <- matrix(0, dim(dat)[1], nSp)
-  X <- as.matrix(dat)
-  for (s in 1:nSp){
-    if (dist == "bernoulli") {
-      lgtp <- X %*% theta[s, ]
-      p <- exp(lgtp)/(1 + exp(lgtp))
-      out[, s] <- rbinom(dim(X)[1], 1, p)
-    }
-    if (dist == "negbin") {
-      if(is.null(phi))phi<-rep(1,nSp)
-      tmp <- rep(1e+05, dim(X)[1])
-      while (max(tmp, na.rm = T) > 50000 | sum(tmp) < 2) {
-        lpd_sp <- X %*% theta[s,]  
-        p <- exp(lpd_sp)
-        tmp<-rnbinom(dim(X)[1],mu=p,size=1/phi[s])
-      }
-      out[,s] <- tmp
-    }
-    if (dist == "poisson") {
-      tmp <- rep(1e+05, dim(X)[1])
-      while (max(tmp, na.rm = T) > 50000 | sum(tmp) < 2) {
-        lpd_sp <- X %*% theta[s,]  
-        p <- exp(lpd_sp)
-        tmp<-rpois(dim(X)[1],lambda =p)
-      }
-      out[,s] <- tmp
-    }
-  }
-  if(plot)for(i in 1:dim(theta)[2]-1)filled.contour(MASS::kde2d(theta[,1], theta[,i+1]), xlab="Intercepts", ylab=paste0("Slopes",i))
-  return(list(sp_data=out, thetas=theta, mu=means,sigma=sigmas))
-}
-
-set.seed(42)
-sim_data <- species_theta_generation_mixed_proportions(means,variances,covariances,nSp,dat,mix.prop,dist='bernoulli',plot=TRUE)
+## ----dune data, error=FALSE, warning=FALSE, message=FALSE----------------
+data(dune)
+data(dune.env)
+dune_pa <- ifelse(dune>0,1,0)
 
 ## ----fit model, results="hide", error=FALSE, warning=FALSE, message=FALSE----
-form <- ~1+x
-fm1_nlm <-bbgdm::gdm.bb(form,sim_data$sp_data,dat,nboot = 100,geo = FALSE,spline_type = "ispline",optim.meth = 'nlmnib', est.var = TRUE)
+form <- ~1+A1
+fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",dism_metric="number_shared",
+             nboot=100, scale_covar=F,geo=F,optim.meth='nlmnib')
 
-## ---- fig.show='hold' ,echo = FALSE, fig.height=6,fig.width=8------------
-plotResponse(fm1_nlm,plotdim = c(1,1))
+## ---- fig.show='hold' ,echo = TRUE, fig.height=6,fig.width=8-------------
+plotResponse(fm1,plotdim = c(1,1))
+
+## ---- fig.show='hold' ,echo = TRUE, fig.height=6,fig.width=8-------------
+bbgdm.check(fm1)
+
+## ------------------------------------------------------------------------
+bbgdm.wald.test(fm1)
 
