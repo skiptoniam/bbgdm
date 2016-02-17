@@ -1,7 +1,7 @@
 #' Function to perform GDM w/ Bayesian Bootstrap.
 #' 
 #' Runs a Generalised dissimilarity model with bayesian bootstrap.
-#' @param form formula for gdm.bb model 
+#' @param form formula for bbgdm model 
 #' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported. This can be a character string naming a family function, a family function or the result of a call to a family function.
 #' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_shared" currently avaliable.
 #' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.
@@ -9,16 +9,16 @@
 #' @param env.dat environmental or spatial covariates at each site.
 #' @param spline_type type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".
 #' @param optim.meth "optim", "nlmnib" or "admb" for different optimization approaches. 
-#' @return a gdm.bb model object
+#' @return a bbgdm model object
 #' @export
 #' @examples
 #' 
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.gdm.bb <- gdm.bb(form,sp.dat, env.dat,family="binomial",dism_metric="number_shared",nboot=10, scale_covar=F,geo=F,optim.meth='admb')
+#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_shared",nboot=10, scale_covar=F,geo=F,optim.meth='admb')
 
-gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_shared", nboot=100, 
+bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_shared", nboot=100, 
                    spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
                    geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                    lc_data=NULL,minr=0,maxr=NULL,
@@ -100,38 +100,38 @@ gdm.bb <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number
   quantiles.coefs.se <- apply(ldply(mods, function(x) c(x$coef)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
 #   vcov <- apply()
   
-  gdm.bb.results <- list()
-  gdm.bb.results$starting_gdm <- mod
-  gdm.bb.results$bb_gdms <- mods
-  gdm.bb.results$all.stats.ll.aic.bic.deviance <- all.stats.ll.aic.bic.deviance
-  gdm.bb.results$median.ll.aic.bic.deviance <- median.ll.aic.bic.deviance
-  gdm.bb.results$quantiles.ll.aic.bic.deviance <- quantiles.ll.aic.bic.deviance
-  gdm.bb.results$all.coefs.se <- all.coefs.se
-  gdm.bb.results$median.coefs.se <- median.coefs.se
-  gdm.bb.results$quantiles.coefs.se <- quantiles.coefs.se
-  gdm.bb.results$nboots <-nboot
-  gdm.bb.results$formula <- form
-  gdm.bb.results$dism_metric <- dism_metric
-  gdm.bb.results$sp.dat <- sp.dat
-  gdm.bb.results$env.dat <- env.dat
-  gdm.bb.results$X <- X
-  gdm.bb.results$y <- y
-  gdm.bb.results$offset <- offset
-  gdm.bb.results$dissim_dat <- dissim_dat_table
-  gdm.bb.results$dissim_dat_params <- dissim_dat_params
-  gdm.bb.results$family <- as.character(family)[1]
-  gdm.bb.results$geo <- geo
-  gdm.bb.results$scale_covar <- scale_covar
+  bbgdm.results <- list()
+  bbgdm.results$starting_gdm <- mod
+  bbgdm.results$bb_gdms <- mods
+  bbgdm.results$all.stats.ll.aic.bic.deviance <- all.stats.ll.aic.bic.deviance
+  bbgdm.results$median.ll.aic.bic.deviance <- median.ll.aic.bic.deviance
+  bbgdm.results$quantiles.ll.aic.bic.deviance <- quantiles.ll.aic.bic.deviance
+  bbgdm.results$all.coefs.se <- all.coefs.se
+  bbgdm.results$median.coefs.se <- median.coefs.se
+  bbgdm.results$quantiles.coefs.se <- quantiles.coefs.se
+  bbgdm.results$nboots <-nboot
+  bbgdm.results$formula <- form
+  bbgdm.results$dism_metric <- dism_metric
+  bbgdm.results$sp.dat <- sp.dat
+  bbgdm.results$env.dat <- env.dat
+  bbgdm.results$X <- X
+  bbgdm.results$y <- y
+  bbgdm.results$offset <- offset
+  bbgdm.results$dissim_dat <- dissim_dat_table
+  bbgdm.results$dissim_dat_params <- dissim_dat_params
+  bbgdm.results$family <- as.character(family)[1]
+  bbgdm.results$geo <- geo
+  bbgdm.results$scale_covar <- scale_covar
   if(scale_covar){
-    gdm.bb.results$mean.env.dat <- mean.env.dat
-    gdm.bb.results$sd.env.dat <- sd.env.dat
+    bbgdm.results$mean.env.dat <- mean.env.dat
+    bbgdm.results$sd.env.dat <- sd.env.dat
   }
   if(geo){
-    gdm.bb.results$geo.type <- geo.type
-    gdm.bb.results$lc_data=lc_data
-    gdm.bb.results$minr=minr
-    gdm.bb.results$maxr=maxr
+    bbgdm.results$geo.type <- geo.type
+    bbgdm.results$lc_data=lc_data
+    bbgdm.results$minr=minr
+    bbgdm.results$maxr=maxr
   }
-  class(gdm.bb.results) <- "gdm.bb"
-  return(gdm.bb.results)
+  class(bbgdm.results) <- "bbgdm"
+  return(bbgdm.results)
 }

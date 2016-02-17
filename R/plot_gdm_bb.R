@@ -1,19 +1,19 @@
 #' Function for plotting GDM w/ Bayesian Bootstrap.
 #'
 #' Plots a Generalised dissimilarity model with bayesian bootstrap.
-#' @param gdm.bb_object As derived from gdm.bb function
+#' @param bbgdm_object As derived from bbgdm function
 #' @param plot.layout par settings for plot. default is c(2,2) (four plots).
-#' @return a plots from gdm.bb
+#' @return a plots from bbgdm
 #' @export
 #' @examples
 #' x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 #' y <- simulate_covariates(x,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.gdm.bb <- gdm.bb(form,sp.dat=x, env.dat=y,family="binomial", dism_metric="number_shared",nboot=10, scale_covar=T)
-#' plot(test.gdm.bb)
+#' test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial", dism_metric="number_shared",nboot=10, scale_covar=T)
+#' plot(test.bbgdm)
 #' 
 ## plotting
-plot.gdm.bb <- function(object,plot.layout = c(2,2),plot.colour='black',plot.linewidth=2,line.col='red'){
+plot.bbgdm <- function(object,plot.layout = c(2,2),plot.colour='black',plot.linewidth=2,line.col='red'){
   if(nrow(object$X)>200) pred_sample <- 200
   else pred_sample <- nrow(object$X)
     par(mfrow=plot.layout)
@@ -88,52 +88,10 @@ plot.gdm.bb <- function(object,plot.layout = c(2,2),plot.colour='black',plot.lin
     yhat_q05 <- link.fun$linkinv(quantiles.bb.lp.05)
     yhat_q95 <- link.fun$linkinv(quantiles.bb.lp.95)
     
-    plot(-1,ylab='Predicted Compositional Dissimilarity',xlab='Observed Compositional Dissimilarity',ylim=range(Y[,1]),xlim=range(c(yhat_mean*Y[,2],yhat_q05*Y[,2],yhat_q95*Y[,2])),type = "n")
-    points(yhat_q05*Y[,2], Y[,1], pch=16, cex=.5,col='blue')
-    points(yhat_q95*Y[,2], Y[,1], pch=16, cex=.5,,col='red')
-    points(yhat_mean*Y[,2], Y[,1], pch=16, cex=.5,col = "orange")
-    legend("bottomright", c("5% quantile","mean","95% quantile"), pch = 16,col = c("blue", "orange", "red"))    
+#     plot(-1,ylab='Predicted Compositional Dissimilarity',xlab='Observed Compositional Dissimilarity',ylim=range(Y[,1]),xlim=range(c(yhat_mean*Y[,2],yhat_q05*Y[,2],yhat_q95*Y[,2])),type = "n")
+#     points(yhat_q05*Y[,2], Y[,1], pch=16, cex=.5,col='blue')
+#     points(yhat_q95*Y[,2], Y[,1], pch=16, cex=.5,,col='red')
+#     points(yhat_mean*Y[,2], Y[,1], pch=16, cex=.5,col = "orange")
+#     legend("bottomright", c("5% quantile","mean","95% quantile"), pch = 16,col = c("blue", "orange", "red"))    
 
-    
-# } else {
-#     if ((plot.layout[1]==1) && (plot.layout[2]==1))
-#       one_page_per_plot <- TRUE
-#     else
-#       par(mfrow=plot.layout)
-#     X <- object$x
-#     gdm_est <- plogis(c(X%*%object$starting_gdm$coefficients$mean)) #pnorm() for probit, plogis for logit
-#     plot(-1,ylab='dissimilarity',xlab='',ylim=c(0,1),xlim=c(0,PSAMPLE))
-#     y.est.runs <- matrix(NA,nrow(X),object$nboots)
-#     for(ii in 1:object$nboots){
-#       y_est.w <- plogis(c(X%*%object$bb_gdms[[ii]]$coefficients$mean))
-#       if(is.na(y_est.w)){ y.est.runs[,ii] <- NA
-#       } else {
-#         lines(sort(sample(y_est.w,PSAMPLE)),type='l',col='grey',lty=2)
-#         y.est.runs[,ii] <- sort(y_est.w)
-#       }
-#     }
-#     lines(sort(sample(gdm_est,PSAMPLE)),type='l',col='red',lty=2,lwd=2)
-#     median.coef.est <- plogis(c(X%*%object$stats.median[1:(length(coef(mod))-1)]))
-#     median.runs.est <- apply(y.est.runs,1,median)
-#     quantile.conf.est<-apply(y.est.runs,1,function(x) c(quantile(x,c(.025,.927))))
-#     lines(sort(sample(median.runs.est,PSAMPLE)),type='l',lwd=2,lty=1)
-#     lines(sort(sample(quantile.conf.est[1,],PSAMPLE)),type='l',lwd=1,lty=5)
-#     lines(sort(sample(quantile.conf.est[2,],PSAMPLE)),type='l',lwd=1,lty=5)
-#     thisplot <- thisplot + 1
-#     if (one_page_per_plot){
-#       x11()
-#       dev.next()
-#     }
-#     plot(median.runs.est, Y,
-#          xlab="Predicted Compositional Dissimilarity",
-#          ylab="Observed Compositional Dissimilarity", ylim=c(0,1), type="n" )
-#     points( median.runs.est, Y, pch=20, cex=0.25,col="blue")
-#     overlayX <- overlayY <- seq( from=min(median.runs.est), to=max(median.runs.est), length=PSAMPLE )
-#     lines( overlayX, overlayY, lwd=2)
-#     thisplot <- thisplot + 1
-#     if (one_page_per_plot) {
-#       dev.new()
-#       dev.next()
-#     }
-#   }
 }

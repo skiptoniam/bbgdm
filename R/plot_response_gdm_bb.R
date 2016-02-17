@@ -1,16 +1,16 @@
 #' Function for plotting bb.GDM response curves.
 #'
 #' Plots a Generalised dissimilarity model with bayesian bootstrap.
-#' @param gdm.bb_object As derived from gdm.bb function
+#' @param bbgdm_object As derived from bbgdm function
 #' @param plot.layout par settings for plot. default is c(2,2) (four plots).
-#' @return a plots from gdm.bb
+#' @return a plots from bbgdm
 #' @export
 #' @examples
 #' x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
 #' #' env.dat <- simulate_covariates(x,2)
 #' form <- y ~ covar_1 + covar_2
-#' test.gdm.bb <- gdm.bb(form,family="binomial", dism_metric="number_shared", nboot=100)
-#' plotResponse(test.gdm.bb)
+#' test.bbgdm <- bbgdm(form,family="binomial", dism_metric="number_shared", nboot=100)
+#' plotResponse(test.bbgdm)
 
 
 plotResponse <- function(object, plotdim = c(2, 2)){

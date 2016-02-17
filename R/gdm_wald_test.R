@@ -1,6 +1,6 @@
 #' Function to perform a non-parametric wald-test on bootstrap parameter estimates
 #' 
-#' @param object Returned model from \link[bbgdm]{gdm.bb}.
+#' @param object Returned model from \link[bbgdm]{bbgdm}.
 #' @param H0 A numeric value giving the null hypothesis for the test. Generally zero.
 #' @param gdm Logic if true calculates the Wald-test using variance-covariance matrix derived from the hessian matrix. Note: These estimates are probably wrong due to hessian matrix being calulated with respect to the likelihoods.
 #' @return A table of Wald-Test statistics

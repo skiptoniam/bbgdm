@@ -1,6 +1,6 @@
-#' Function that plots diagnostic plots from bb.gdm object
+#' Function that plots diagnostic plots from bbgdm object
 #' 
-#' @param object bb.gdm model output
+#' @param object bbgdm model output
 #' @param rl.col colour of lines
 #' @param family logical "binomial" or "beta_dist"
 #' @return distances Five column matrix of sites pairs (cols 1:4) and distance as col 5.
@@ -9,10 +9,10 @@
 #' x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 #' y <- simulate_covariates(x,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.gdm.bb <- gdm.bb(form,sp.dat=x, env.dat=y,family="binomial", dism_metric="number_shared",nboot=10, scale_covar=T)
-#' bb.gdm.check(test.gdm.bb)
+#' test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial", dism_metric="number_shared",nboot=10, scale_covar=T)
+#' bbgdm.check(test.bbgdm)
 
-bb.gdm.check <- function (object, plots.mfrow = c(2, 2),...) 
+bbgdm.check <- function (object, plots.mfrow = c(2, 2),...) 
 {
   p <- make.link(link = "logit")
   family <-object$family
