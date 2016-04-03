@@ -18,7 +18,7 @@
 #' form <- ~ 1 + covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, scale_covar=F,geo=F,optim.meth='optim')
 
-bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_non_shared", nboot=100, 
+bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_metric="number_non_shared", nboot=100, 
                    spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
                    geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                    lc_data=NULL,minr=0,maxr=NULL,
@@ -77,7 +77,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_
     stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
                   length(offset), NROW(y)), domain = NA)}
     X <- model.matrix(form, as.data.frame(dissim_dat_table))
-    mod  <- logit_glm_fit(X,y,offset=offset,optim.meth=optim.meth, est.var=TRUE, trace=trace,prior=prior,control=control)
+    mod  <- gdm_fit(X,y,offset=offset,optim.meth=optim.meth,link=link, est.var=TRUE, trace=trace,prior=prior,control=control)
     Nsite <- nrow(sp.dat)
     nreps <- nboot
     boot_print <- nboot/10
@@ -86,7 +86,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_
       w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
-      mods[[ii]] <- logit_glm_fit(X,y,wt=wij,offset=offset,optim.meth=optim.meth, est.var=est.var, trace=trace,prior=prior,control=control)
+      mods[[ii]] <- gdm_fit(X,y,wt=wij,offset=offset,optim.meth=optim.meth,link=link,est.var=est.var, trace=trace,prior=prior,control=control)
 #       cat(ii,"\n")
       if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
     }

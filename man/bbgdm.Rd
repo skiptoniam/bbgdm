@@ -4,7 +4,7 @@
 \alias{bbgdm}
 \title{Function to perform GDM w/ Bayesian Bootstrap.}
 \usage{
-bbgdm(form, sp.dat, env.dat, family = "binomial",
+bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
   dism_metric = "number_non_shared", nboot = 100, spline_type = "ispline",
   spline_df = 2, spline_knots = 1, scale_covar = FALSE, geo = TRUE,
   geo.type = "euclidean", coord.names = c("X", "Y"), lc_data = NULL,

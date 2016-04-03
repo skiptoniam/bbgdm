@@ -4,18 +4,20 @@
 #' @param y Model response, see \link[stats]{model.response}.
 #' @param wt weights for model.
 #' @param scale.covar logical If TRUE centre predictor variables.
-#' @param control control option from optim see \link[BayesbootGDM]{logit_glm_control} or \link[stats]{optim}
+#' @param control control option from optim see \link[BayesbootGDM]{gdm_fit_control} or \link[stats]{optim}
 #' @return fit fitted logistic binomial model as per optim methods
 #' @export
  
 
 
-logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE, control=logit_glm_control(...),...){
+gdm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
+                          link, control=gdm_fit_control(...),...){
+  
   my.fun <- function(x) {
-    -LogLikFun(x, X, y, wt, offset)
+    -LogLikFun(x, X, y, wt, offset,link=link)
   }
   my.grad <- function(x) {
-    -GradFun(x, X, y, wt, offset)
+    -GradFun(x, X, y, wt, offset,link=link)
   }
   if(is.null(wt)){
     if(!is.null(dim(y))) wt <- rep(1,nrow(y))
@@ -41,7 +43,7 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE,
   if (optim.meth=="nlmnib"){
     init.par <- control$start
     if(is.null(init.par)){
-      fm.b <- glm.fit(X,y,family=binomial("logit"))
+      fm.b <- glm.fit(X,y,family=binomial(link))
       init.par <- c(fm.b$coefficients)
       if(prior)init.par<-rbeta(length(init.par),2,2)
     }
@@ -78,6 +80,6 @@ logit_glm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE,
   out <- list(coef = fit$par, logl = fit$value, 
               counts=fit$counts, fitted = pi, var=var,
               X=X, y=y,control=control)
-  class(out) <- "logit_bin_GLM"
+  class(out) <- "gdm"
   return(out)
 }

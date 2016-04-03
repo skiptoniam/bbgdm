@@ -12,7 +12,7 @@
 #'@param ...	arguments passed to optim.
 #'@export
 
-logit_glm_control <- function (method = "BFGS", maxit = 1000, hessian = FALSE, 
+gdm_control <- function (method = "BFGS", maxit = 1000, hessian = FALSE, 
                                trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05, 
                                ...) 
 {
