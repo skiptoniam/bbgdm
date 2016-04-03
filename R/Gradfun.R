@@ -4,7 +4,7 @@ GradFun <- function(params,X,y,wt,offset,link){
     np<-length(params)
     ns<-nrow(X)
     deri<- matrix(NA,ns,np)
-    if(link!='negexp')p <- negexp()
+    if(link=='negexp')p <- negexp()
     else  p <- make.link(link = link) 
     for(i in 1:ns){
       mu <- y[i,2]*p$linkinv(lp[i])

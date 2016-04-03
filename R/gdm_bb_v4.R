@@ -2,7 +2,10 @@
 #' 
 #' Runs a Generalised dissimilarity model with bayesian bootstrap.
 #' @param form formula for bbgdm model 
-#' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported. This can be a character string naming a family function, a family function or the result of a call to a family function.
+#' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported. 
+#' This can be a character string naming a family function, a family function or the result of a call to a family function.
+#' @param link a character string that assigns the link function to apply within the binomial model. 
+#' Default is 'logit', but 'negexp' and other binomial link functions can be called.
 #' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared" currently avaliable.
 #' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
@@ -16,14 +19,15 @@
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, scale_covar=F,geo=F,optim.meth='optim')
+#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, 
+#' scale_covar=F,geo=F,optim.meth='optim')
 
 bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_metric="number_non_shared", nboot=100, 
                    spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
                    geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                    lc_data=NULL,minr=0,maxr=NULL,
                    optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,
-                   control=logit_glm_control()){
+                   control=gdm_control()){
   cat(family,"regression is on the way. \n")
     if (is.character(family)) 
       family <- get(family, mode = "function", envir = parent.frame())
@@ -77,7 +81,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
     stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
                   length(offset), NROW(y)), domain = NA)}
     X <- model.matrix(form, as.data.frame(dissim_dat_table))
-    mod  <- gdm_fit(X,y,offset=offset,optim.meth=optim.meth,link=link, est.var=TRUE, trace=trace,prior=prior,control=control)
+    mod  <- gdm_fit(X,y,offset=offset,link=link,optim.meth=optim.meth,est.var=TRUE, trace=trace,prior=prior,control=control)
     Nsite <- nrow(sp.dat)
     nreps <- nboot
     boot_print <- nboot/10
@@ -86,7 +90,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
       w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
-      mods[[ii]] <- gdm_fit(X,y,wt=wij,offset=offset,optim.meth=optim.meth,link=link,est.var=est.var, trace=trace,prior=prior,control=control)
+      mods[[ii]] <- gdm_fit(X,y,wt=wij,offset=offset, link=link,optim.meth=optim.meth,est.var=est.var, trace=trace,prior=prior,control=control)
 #       cat(ii,"\n")
       if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
     }
@@ -121,6 +125,8 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
   bbgdm.results$family <- as.character(family)[1]
   bbgdm.results$geo <- geo
   bbgdm.results$scale_covar <- scale_covar
+  bbgdm.results$link <- link
+
   if(scale_covar){
     bbgdm.results$mean.env.dat <- mean.env.dat
     bbgdm.results$sd.env.dat <- sd.env.dat

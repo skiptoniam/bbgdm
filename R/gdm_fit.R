@@ -10,14 +10,14 @@
  
 
 
-gdm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
-                          link, control=gdm_fit_control(...),...){
+gdm_fit <- function(X, y, wt=NULL,offset, link, optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
+                           control=gdm_fit_control(...),...){
   
   my.fun <- function(x) {
-    -LogLikFun(x, X, y, wt, offset,link=link)
+    -LogLikFun(x, X, y, wt, offset,link)
   }
   my.grad <- function(x) {
-    -GradFun(x, X, y, wt, offset,link=link)
+    -GradFun(x, X, y, wt, offset,link)
   }
   if(is.null(wt)){
     if(!is.null(dim(y))) wt <- rep(1,nrow(y))
@@ -32,7 +32,8 @@ gdm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE, trace
   fstol <- control$fstol
   control$method <- control$hessian <- control$start <- control$fsmaxit <- control$fstol <- NULL
   if(is.null(init.par)){ 
-    fm.b <- glm.fit(X,y,family=binomial("logit"))
+    if(link=='negexp')fm.b <- glm.fit(X,y,family=binomial(link=negexp()))
+    else fm.b <- glm.fit(X,y,family=binomial(link=link))
     init.par <- c(fm.b$coefficients)
     if(prior)init.par<-rbeta(length(init.par),2,2)
   }
@@ -43,7 +44,8 @@ gdm_fit <- function(X, y, wt=NULL,offset,optim.meth="optim", est.var=TRUE, trace
   if (optim.meth=="nlmnib"){
     init.par <- control$start
     if(is.null(init.par)){
-      fm.b <- glm.fit(X,y,family=binomial(link))
+      if(link=='negexp')fm.b <- glm.fit(X,y,family=binomial(link=negexp()))
+      else fm.b <- glm.fit(X,y,family=binomial(link=link))
       init.par <- c(fm.b$coefficients)
       if(prior)init.par<-rbeta(length(init.par),2,2)
     }

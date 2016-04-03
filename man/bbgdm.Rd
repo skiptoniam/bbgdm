@@ -9,7 +9,7 @@ bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
   spline_df = 2, spline_knots = 1, scale_covar = FALSE, geo = TRUE,
   geo.type = "euclidean", coord.names = c("X", "Y"), lc_data = NULL,
   minr = 0, maxr = NULL, optim.meth = "nlmnib", est.var = FALSE,
-  trace = FALSE, prior = FALSE, control = logit_glm_control())
+  trace = FALSE, prior = FALSE, control = gdm_control())
 }
 \arguments{
 \item{form}{formula for bbgdm model}
