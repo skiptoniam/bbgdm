@@ -3,7 +3,7 @@
 #' Runs a Generalised dissimilarity model with bayesian bootstrap.
 #' @param form formula for bbgdm model 
 #' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported. This can be a character string naming a family function, a family function or the result of a call to a family function.
-#' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_shared" currently avaliable.
+#' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared" currently avaliable.
 #' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
 #' @param env.dat environmental or spatial covariates at each site.
@@ -16,9 +16,9 @@
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_shared",nboot=10, scale_covar=F,geo=F,optim.meth='admb')
+#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, scale_covar=F,geo=F,optim.meth='optim')
 
-bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_shared", nboot=100, 
+bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_non_shared", nboot=100, 
                    spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
                    geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                    lc_data=NULL,minr=0,maxr=NULL,
@@ -33,9 +33,9 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_
       print(family)
       stop("'family' not recognized")
     }
-  if(dism_metric=="number_shared") left <- "cbind(SharedSpp_ij,MaxSpp_ij)"
-  if(dism_metric=="bray_curtis") left <- "dissimilarity"
-  if(dism_metric=="simpsons") left <- "dissimilarity"
+  if(dism_metric=="number_non_shared") left <- "cbind(nonsharedspp_ij,sumspp_ij)"
+  if(dism_metric=="bray_curtis") left <- "cbind(dissimilarity,100)"
+#   if(dism_metric=="simpsons") left <- "dissimilarity"
   if(geo) { form <- update.formula(form, ~ X + Y + .)
             if(!all(coord.names %in% colnames(env.dat)))
             {
@@ -60,7 +60,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_
                              geo=geo,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
   dissim_dat_table <- as.data.frame(dissim_dat$diff_table)
   dissim_dat_params <- dissim_dat$diff_table_params
-  if(dism_metric=="number_shared") preds <- colnames(dissim_dat_table[,3:ncol(dissim_dat_table)])
+  if(dism_metric=="number_non_shared") preds <- colnames(dissim_dat_table[,3:ncol(dissim_dat_table)])
   else preds <- colnames(dissim_dat_table[,2:ncol(dissim_dat_table)])
   if(!is.null(offset)){ form <- update.formula(form, paste0(left," ~ ",paste(preds, collapse=" + "),"+ offset(offset_ij)"))
                         offset_ij <- diff_table_cpp(as.matrix(offset))
@@ -91,10 +91,9 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_
       if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
     }
   #summary stats
-  library(plyr)
-  all.stats.ll.aic.bic.deviance <- ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
-  median.ll.aic.bic.deviance <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,median,na.rm=T)
-  quantiles.ll.aic.bic.deviance <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
+  all.stats.ll <- ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
+  median.ll <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,median,na.rm=T)
+  quantiles.ll <- apply( ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
   all.coefs.se <-  ldply(mods, function(x) c(x$coef))
   median.coefs.se <- apply(ldply(mods, function(x) c(x$coef)),2,median,na.rm=T)
   quantiles.coefs.se <- apply(ldply(mods, function(x) c(x$coef)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
@@ -103,9 +102,9 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial", dism_metric="number_
   bbgdm.results <- list()
   bbgdm.results$starting_gdm <- mod
   bbgdm.results$bb_gdms <- mods
-  bbgdm.results$all.stats.ll.aic.bic.deviance <- all.stats.ll.aic.bic.deviance
-  bbgdm.results$median.ll.aic.bic.deviance <- median.ll.aic.bic.deviance
-  bbgdm.results$quantiles.ll.aic.bic.deviance <- quantiles.ll.aic.bic.deviance
+  bbgdm.results$all.stats.ll <- all.stats.ll
+  bbgdm.results$median.ll <- median.ll
+  bbgdm.results$quantiles.ll <- quantiles.ll
   bbgdm.results$all.coefs.se <- all.coefs.se
   bbgdm.results$median.coefs.se <- median.coefs.se
   bbgdm.results$quantiles.coefs.se <- quantiles.coefs.se

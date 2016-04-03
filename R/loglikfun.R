@@ -11,7 +11,6 @@ LogLikFun <- function(params,X,y,wt,offset){
     lprob <- dbinom(0, 1, mu, log=TRUE)
     lprob <- wt *ifelse(y,log(mu),log(1-mu))
     ll.contr <- sum(lprob)
-#     ll.contr <- sum(wt*ifelse(y,log(mu),log(1-mu)))
     }
   return(ll.contr)
 }  

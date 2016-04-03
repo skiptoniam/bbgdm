@@ -2,12 +2,12 @@
 #' 
 #' Creates a vector of dissimilarities from presence absence matrix.
 #' @param x Presence Absence Matrix.
-#' @param dissim If "bray_curtis" calculates Bray-Curtis dissimilarity, if "number_shared " returns number of shared species at site_ij which can be used in a binomial model for GDM.
+#' @param dism_metric If "bray_curtis" calculates Bray-Curtis dissimilarity, if "number_non_shared " returns number of shared species at site_ij which can be used in a binomial model for GDM.
 #' @return dism a vector of dissimilarities or count of shared species calcualted for the upper-triangle of a dissimilarity matrix.
 #' @export
 
-pam2dissim <- function(x,dissim="bray_curtis"){
-  if(dissim=="bray_curtis"){
+pam2dissim <- function(x,dism_metric="number_non_shared"){
+  if(dism_metric=="bray_curtis"){
 #     if(!Abund){
     cat("Calculating Bray-Curtis Dissimilarity.\n")
     x <- as.matrix(x)
@@ -34,32 +34,18 @@ pam2dissim <- function(x,dissim="bray_curtis"){
         dissimilarity.data[i_site,j_site]<-(1 - ((2 * sharedspecies)/(richness_i_site + richness_j_site)))
       } ## end for j_site
     } ## end for i_site
-# #     } else {
-# #       x <- as.matrix(x)
-#       result <- matrix(nrow = nrow(x), ncol = nrow(x))
-#       rownames(result) <- rownames(x)
-#       colnames(result) <- rownames(x)
-#       for (i in 1:nrow(x)) {
-#         for (j in i:nrow(x)) {
-#           A <- sum(pmin(x[i, ], x[j, ]))
-#           B <- sum(x[i, ]) - sum(pmin(x[i, ], x[j, ]))
-#           C <- sum(x[j, ]) - sum(pmin(x[i, ], x[j, ]))
-#           result[i, j] <- min(B, C)/(A + min(B, C))
-#           result[j, i] <- (B + C)/(2 * A + B + C)
-#         }
-#       }
-      dism <- dissimilarity.data
+      dism <- round(dissimilarity.data*100)
   } 
-  if(dissim=="simpsons"){
-    cat("Calculating Simpsons Dissimilarity.\n")
-    x <- as.matrix(x)
-    shared <- x %*% t(x)
-    not.shared <- abs(sweep(shared, 2, diag(shared))) ## end for i_site
-    min.not.shared <- pmin(not.shared, t(not.shared))
-    beta.sim <- min.not.shared/(min.not.shared + shared)
-    dism <- beta.sim
-   }
-  if(dissim=="number_shared") {
+#   if(dissim=="simpsons"){
+#     cat("Calculating Simpsons Dissimilarity.\n")
+#     x <- as.matrix(x)
+#     shared <- x %*% t(x)
+#     not.shared <- abs(sweep(shared, 2, diag(shared))) ## end for i_site
+#     min.not.shared <- pmin(not.shared, t(not.shared))
+#     beta.sim <- min.not.shared/(min.not.shared + shared)
+#     dism <- beta.sim
+#    }
+  if(dism_metric=="number_non_shared") {
     cat("Calculating Number of Shared Species for Binomial Model.\n")
     x <- as.matrix(x)
     no_share <- matrix(NA,nrow(x),nrow(x))
@@ -74,7 +60,7 @@ pam2dissim <- function(x,dissim="bray_curtis"){
       }
     }
   }
-  if(dissim=="number_shared") {
+  if(dism_metric=="number_non_shared") {
     dism <- list(no_share=no_share,sum_share=sum_share)#,max_sp=max_sp)
     return(dism)
   }else{
