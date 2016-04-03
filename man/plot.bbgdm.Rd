@@ -4,7 +4,7 @@
 \alias{plot.bbgdm}
 \title{Function for plotting GDM w/ Bayesian Bootstrap.}
 \usage{
-\method{plot}{bbgdm}(object, plot.layout = c(2, 2), plot.colour = "black",
+\method{plot}{bbgdm}(object, plot.layout = c(1, 2), plot.colour = "black",
   plot.linewidth = 2, line.col = "red")
 }
 \arguments{
@@ -22,7 +22,7 @@ Plots a Generalised dissimilarity model with bayesian bootstrap.
 x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 y <- simulate_covariates(x,2)
 form <- ~ 1 + covar_1 + covar_2
-test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial", dism_metric="number_shared",nboot=10, scale_covar=T)
+test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial", dism_metric="bray_curtis",geo=FALSE,nboot=10, scale_covar=T)
 plot(test.bbgdm)
 
 }
