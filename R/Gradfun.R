@@ -1,5 +1,4 @@
 GradFun <- function(params,X,y,wt,offset,link){
-  #   if(!is.null(dim(y))){
   eta <- X %*% c(params[1],exp(params[-1])) + offset
   np<-length(params)
   ns<-nrow(X)
