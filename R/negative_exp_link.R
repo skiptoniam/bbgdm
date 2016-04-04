@@ -1,3 +1,6 @@
+#' Negative exponentional link function.
+#' @export
+
 negexp<- function() 
 { 
   linkfun <- function(mu) -log(1-mu) 
