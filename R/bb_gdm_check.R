@@ -14,7 +14,9 @@
 
 bbgdm.check <- function (object, plots.mfrow = c(2, 2),...) 
 {
-  p <- make.link(link = "logit")
+  link <-object$link
+  if(link=='negexp')link.fun <- bbgdm::negexp()
+  else link.fun <- make.link(link=link)
   family <-object$family
   X <- object$starting_gdm$X
   y <- object$starting_gdm$y

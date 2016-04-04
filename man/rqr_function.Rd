@@ -5,7 +5,7 @@
 \title{Randomised quantile residual function
 Computes randomised quantile resiudeals for bbgdm}
 \usage{
-rqr_function(X, y, coefs, offset)
+rqr_function(X, y, coefs, offset, link)
 }
 \arguments{
 \item{X}{model matrix}

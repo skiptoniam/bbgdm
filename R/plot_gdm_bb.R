@@ -17,7 +17,9 @@ plot.bbgdm <- function(object,plot.layout = c(1,2),plot.colour='black',plot.line
   if(nrow(object$X)>200) pred_sample <- 200
   else pred_sample <- nrow(object$X)
     par(mfrow=plot.layout)
-    link.fun <- make.link("logit")
+    link <-object$link
+    if(link=='negexp')link.fun <- bbgdm::negexp()
+    else link.fun <- make.link(link=link)
     X <- object$X
     Y <- object$starting_gdm$y
     offset <- object$offset
@@ -27,7 +29,7 @@ plot.bbgdm <- function(object,plot.layout = c(1,2),plot.colour='black',plot.line
     bb.pred <- link.fun$linkinv(bb.lp) 
     
     plot(bb.lp,Y[,1]/Y[,2],main='', xlab = "Linear Predictor", 
-         ylab = "Observed Compositional Dissimilarity", type = "n",ylim=c(0,1))
+         ylab = paste0("Predicted ",object$dism_metric,""), type = "n",ylim=c(0,1))
     points(bb.lp,Y[,1]/Y[,2], pch = 20, cex = 0.25, 
            col = plot.colour)
     y.pred <- Y[sample(pred_sample),]
@@ -38,7 +40,7 @@ plot.bbgdm <- function(object,plot.layout = c(1,2),plot.colour='black',plot.line
     lines(overlayX.bb, overlayY.bb,lwd = plot.linewidth,col=line.col)
 
     plot(bb.lp,Y[,1],xlab = "Linear Predictor",ylim=c(0,max(Y[,1])),#xlim=c(-5,5), 
-           ylab = "Predicted non_shared species", type = "n")
+           ylab = paste0("Predicted ",object$dism_metric,""), type = "n")
     points(bb.lp,Y[,1], pch = 20, cex = 0.25, 
              col = plot.colour)
     y.pred <- Y[sample(pred_sample),]

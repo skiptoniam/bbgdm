@@ -6,9 +6,10 @@
 #'@return res randomised quantile residuals
 
 
-rqr_function <- function(X,y,coefs,offset){ 
+rqr_function <- function(X,y,coefs,offset,link){ 
   lp <- (X %*% coefs + offset)
-  p <- make.link(link = "logit")
+  if(link=='negexp')link.fun <- bbgdm::negexp()
+  else link.fun <- make.link(link=link)
   if(!is.null(dim(y))){
     n <- rep(1, length(y[,1]))
     y[,1] <- n * y[,1]
