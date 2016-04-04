@@ -7,9 +7,9 @@
 #' @export
 
 pam2dissim <- function(x,dism_metric="number_non_shared"){
-  if(dism_metric=="bray_curtis"){
+    cat(paste0("Calculating ",dism_metric," dissimilarity\n"))  
+    if(dism_metric=="bray_curtis"){
 #     if(!Abund){
-    cat("Calculating Bray-Curtis Dissimilarity.\n")
     x <- as.matrix(x)
     dissimilarity.data<-matrix(NA,nrow(x),nrow(x))
     for(i_site in 1:nrow(x))
@@ -46,7 +46,7 @@ pam2dissim <- function(x,dism_metric="number_non_shared"){
 #     dism <- beta.sim
 #    }
   if(dism_metric=="number_non_shared") {
-    cat("Calculating Number of Shared Species for Binomial Model.\n")
+    # cat("Calculating Number of Shared Species for Binomial Model.\n")
     x <- as.matrix(x)
     no_share <- matrix(NA,nrow(x),nrow(x))
     sum_share <- matrix(NA,nrow(x),nrow(x))
