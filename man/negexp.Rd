@@ -2,8 +2,7 @@
 % Please edit documentation in R/negative_exp_link.R
 \name{negexp}
 \alias{negexp}
-\title{Negative exponentional link function.
-A object of class \link[stats]{link-glm}, a list with components}
+\title{Negative exponential link function.}
 \usage{
 negexp()
 }
@@ -19,7 +18,6 @@ negexp()
 \item{name}{a name to be used for the link}
 }
 \description{
-Negative exponentional link function.
 A object of class \link[stats]{link-glm}, a list with components
 }
 

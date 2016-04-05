@@ -1,4 +1,5 @@
-#' Negative exponentional link function.
+#' Negative exponential link function.
+#' 
 #' A object of class \link[stats]{link-glm}, a list with components
 #' @param linkfun	Link function function(mu)
 #' @param linkinv	Inverse link function function(eta)
