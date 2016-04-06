@@ -60,6 +60,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
     offset_name <- colnames(env.dat)[length(colnames(env.dat))]
     env.dat <- env.dat[colnames(env.dat)[1:(length(colnames(env.dat))-1)]]
   }
+  if(!(identical(as.vector(sp.dat),as.numeric(as.logical(sp.dat))))){stop("Species data must be presence-absence!")}
   dissim_dat <- dissim_table(sp.dat,env.dat,dism_metric=dism_metric,spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots,
                              geo=geo,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
   dissim_dat_table <- as.data.frame(dissim_dat$diff_table)
