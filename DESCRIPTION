@@ -14,5 +14,6 @@ RoxygenNote: 5.0.1
 Depends: TMB, Rcpp, RcppEigen, numDeriv
 LinkingTo: TMB, Rcpp
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
