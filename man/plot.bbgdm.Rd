@@ -4,7 +4,7 @@
 \alias{plot.bbgdm}
 \title{Function for plotting GDM w/ Bayesian Bootstrap.}
 \usage{
-\method{plot}{bbgdm}(object, plot.layout = c(1, 2), plot.colour = "black",
+\method{plot}{bbgdm}(object, plot.layout = c(1, 1), plot.colour = "black",
   plot.linewidth = 2, line.col = "red")
 }
 \arguments{

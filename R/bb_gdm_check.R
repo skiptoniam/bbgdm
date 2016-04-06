@@ -15,8 +15,9 @@
 bbgdm.check <- function (object, plots.mfrow = c(2, 2),...) 
 {
   link <-object$link
-  if(link=='negexp')link.fun <- bbgdm::negexp()
-  else link.fun <- make.link(link=link)
+  if(link=='negexp'){link.fun <- bbgdm::negexp()
+  }else{ link.fun <- make.link(link=link)
+  }
   family <-object$family
   X <- object$starting_gdm$X
   y <- object$starting_gdm$y
@@ -24,7 +25,7 @@ bbgdm.check <- function (object, plots.mfrow = c(2, 2),...)
   par(mfrow=plots.mfrow)
   npreds <- object$nboots
    preds<- matrix(0L,npreds,nrow(y))
-    for(i in 1:npreds)preds[i,] <- p$linkinv(X%*%t(as.matrix(object$all.coefs.se[i,])))
+    for(i in 1:npreds)preds[i,] <- link.fun$linkinv(X%*%t(as.matrix(object$all.coefs.se[i,])))
     pi<-apply(preds,2,mean)
     a <- pbinom(y[,1]-1, y[,2], pi)#-1
     b <- pbinom(y[,1], y[,2], pi)
