@@ -6,22 +6,16 @@
 #' @param horizontal logical. Whether or not you would like the lines to be
 #' horizontal
 
-bbgdm_caterpillar_plot <- function(object, pars=NULL, pars_labels = NULL,
+plot.bbgdm.caterpillar <- function(object, pars=NULL, pars_labels = NULL,
                               horizontal = TRUE, 
                               zero_line=TRUE,
-                              xlims = c(-1,1)){
-  # Load packages
-  library(tidyr)
-  library(dplyr)
-  library(ggplot2)
-  library(ggthemes)
-  
+                              xlims = NULL){
   # Extract all simulations
   sims <- as.data.frame(object$all.coefs.se)
   
   # Extract only desired parameters
   par_names <- names(sims)
-  if(!is.null(pars)){
+  if(is.null(pars)){
     sims_subset <- sims
     cat('plotting all spline bases \n')
   } else {
@@ -31,7 +25,7 @@ bbgdm_caterpillar_plot <- function(object, pars=NULL, pars_labels = NULL,
     stop("No parameters selected. \n", call. = FALSE)
   }
   # Gather for plotting
-  gathered <- gather(sims_subset, variable, value)
+  gathered <- tidyr::gather(sims_subset, variable, value)
   
   # Add labels
   if (!is.null(pars_labels)) {
@@ -46,38 +40,39 @@ bbgdm_caterpillar_plot <- function(object, pars=NULL, pars_labels = NULL,
   }
   
   # Find central interval
-    gathered <- group_by(gathered, variable)
-    lower95 <- summarise(gathered, quantile(value, 0.025))
-    lower90 <- summarise(gathered, quantile(value, 0.05))
-    upper90 <- summarise(gathered, quantile(value, 0.95))
-    upper95 <- summarise(gathered, quantile(value, 0.975))
+    gathered <- dplyr::group_by(gathered, variable)
+    lower95 <- dplyr::summarise(gathered, quantile(value, 0.025))
+    lower90 <- dplyr::summarise(gathered, quantile(value, 0.05))
+    upper90 <- dplyr::summarise(gathered, quantile(value, 0.95))
+    upper95 <- dplyr::summarise(gathered, quantile(value, 0.975))
   
   # Find medians
-  medians <- summarise(gathered, median(value))
+  medians <- dplyr::summarise(gathered, median(value))
   
   # Merge
-  comb <- suppressMessages(inner_join(lower95, lower90))
-  comb <- suppressMessages(inner_join(comb, medians))
-  comb <- suppressMessages(inner_join(comb, upper90))
-  comb <- suppressMessages(inner_join(comb, upper95))
+  comb <- suppressMessages(dplyr::inner_join(lower95, lower90))
+  comb <- suppressMessages(dplyr::inner_join(comb, medians))
+  comb <- suppressMessages(dplyr::inner_join(comb, upper90))
+  comb <- suppressMessages(dplyr::inner_join(comb, upper95))
   names(comb) <- c('pars', 'lower95', 'lower90', 'medians', 'upper90',
                    'upper95')
   
   # Plot
-  pp <- ggplot(comb, aes(x = medians, y = pars,
+  pp <- ggplot2::ggplot(comb, ggplot2::aes(x = medians, y = pars,
                            xmin = lower95,
                            xmax = upper95)) +
-      geom_point(size = 3) +
-      geom_segment(aes(x = lower95, xend = upper95, yend = pars),
-                   size = 0.5) +
-      geom_segment(aes(x = lower90, xend = upper90,
-                       yend = pars), size = 1.5) +
-      xlab('') + ylab('') +
-      xlim(xlims)+
-      theme_few()+
-      theme(plot.margin=unit(c(5,5,5,5),"mm"))
+        ggplot2::geom_point(size = 3) +
+        ggplot2::geom_segment(ggplot2::aes(x = lower95, xend = upper95, yend = pars),
+                     size = 0.5) +
+        ggplot2::geom_segment(ggplot2::aes(x = lower90, xend = upper90,
+                         yend = pars), size = 1.5) +
+        ggplot2::xlab('parameter quantiles of bayesian bootstrap samples')+
+        ggplot2::ylab('') +
+        if(!is.null(xlims))ggplot2::xlim(xlims)+
+        ggthemes::theme_few()+
+        ggplot2::theme(plot.margin=unit(c(5,5,5,5),"mm"))
   
-  if (isTRUE(zero_line)) pp <- pp + geom_vline(xintercept = 0)
-  if (!isTRUE(horizontal)) pp <- pp + coord_flip()
+  if (isTRUE(zero_line)) pp <- pp + ggplot2::geom_vline(xintercept = 0)
+  if (!isTRUE(horizontal)) pp <- pp + ggplot2::coord_flip()
   return(pp)
 }
