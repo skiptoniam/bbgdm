@@ -66,7 +66,7 @@ plot.bbgdm.caterpillar <- function(object, pars=NULL, pars_labels = NULL,
                      size = 0.5) +
         ggplot2::geom_segment(ggplot2::aes(x = lower90, xend = upper90,
                          yend = pars), size = 1.5) +
-        ggplot2::xlab('parameter quantiles of bayesian bootstrap samples')+
+        ggplot2::xlab('parameter quantiles from bayesian bootstrap samples')+
         ggplot2::ylab('') +
         if(!is.null(xlims))ggplot2::xlim(xlims)+
         ggthemes::theme_few()+
