@@ -7,7 +7,7 @@
 language: c
 
 # use containers
-sudo: false
+sudo: required
 
 before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
