@@ -20,7 +20,7 @@
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, 
-#' scale_covar=F,geo=F,optim.meth='optim')
+#' scale_covar=FALSE,geo=FALSE,optim.meth='nlmnib')
 
 bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_metric="number_non_shared", nboot=100, 
                    spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
