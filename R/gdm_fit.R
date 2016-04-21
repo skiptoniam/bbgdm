@@ -1,6 +1,6 @@
 #' Function to perform postive binomial logistic regression.
-#' 
-#' @param X Model matirx of predictors, see \link[stats]{model.matrix}. 
+#'
+#' @param X Model matirx of predictors, see \link[stats]{model.matrix}.
 #' @param y Model response, see \link[stats]{model.response}.
 #' @param wt weights for model.
 #' @param offset offset values
@@ -8,16 +8,17 @@
 #' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
 #' @param est.var logical if true estimated parameter variance using optimiser.
 #' @param trace trace options looks at \link[stats]{optim} and \link[stats]{nlmnib} for details.
-#' @param prior numeric vector of starting values for intercept and splines 
+#' @param prior numeric vector of starting values for intercept and splines
 #' @param control control option from optim see \link[bbgdm]{gdm_control} or \link[stats]{optim}
+#' @param ... other arguments
 #' @return fit fitted logistic binomial model as per optim methods
 #' @export
- 
+
 
 
 gdm_fit <- function(X, y, wt=NULL,offset, link, optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
-                           control=gdm_fit_control(...),...){
-  
+                           control=bbgdm::gdm_control(...),...){
+
   my.fun <- function(x) {
     -LogLikFun(x, X, y, wt, offset,link)
   }
@@ -36,14 +37,14 @@ gdm_fit <- function(X, y, wt=NULL,offset, link, optim.meth="optim", est.var=TRUE
   fsmaxit <- control$fsmaxit
   fstol <- control$fstol
   control$method <- control$hessian <- control$start <- control$fsmaxit <- control$fstol <- NULL
-  if(is.null(init.par)){ 
+  if(is.null(init.par)){
     if(link=='negexp')fm.b <- glm.fit(X,y,family=binomial(link=negexp()))
     else fm.b <- glm.fit(X,y,family=binomial(link=link))
     init.par <- c(fm.b$coefficients)
     if(prior)init.par<-rbeta(length(init.par),2,2)
   }
   if(est.var)hessian <- TRUE
-  fit <- optim(par = init.par, fn = my.fun, gr =my.grad,  
+  fit <- optim(par = init.par, fn = my.fun, gr =my.grad,
                  method = method, hessian = hessian, control = control)
   }
   if (optim.meth=="nlmnib"){
@@ -64,9 +65,9 @@ gdm_fit <- function(X, y, wt=NULL,offset, link, optim.meth="optim", est.var=TRUE
       init.par <- rep(0,ncol(X))
       if(prior)init.par<-rbeta(length(init.par),2,2)
     }
-    dyn.load(dynlib("logit_reg"))
-    obj <- MakeADFun(
-      data = list(x = X[,-1], y = y, w = wt,offset=offset), 
+    base::dyn.load(TMB::dynlib("logit_reg"))
+    obj <- TMB::MakeADFun(
+      data = list(x = X[,-1], y = y, w = wt,offset=offset),
       parameters = list(a =init.par[1], b = init.par[-1]),
       DLL = "logit_reg",hessian=TRUE,silent=TRUE)
       fit <- suppressWarnings(nlminb(obj$par,obj$fn,obj$gr,control =list(trace=trace)))
@@ -84,7 +85,7 @@ gdm_fit <- function(X, y, wt=NULL,offset, link, optim.meth="optim", est.var=TRUE
     if(optim.meth=='admb') var <- solve(numDeriv::hessian(obj$fn,obj$par))
     colnames(var) <- rownames(var) <- names(fit$par)
   }
-  out <- list(coef = fit$par, logl = fit$value, 
+  out <- list(coef = fit$par, logl = fit$value,
               counts=fit$counts, fitted = pi, var=var,
               X=X, y=y,control=control)
   class(out) <- "gdm"

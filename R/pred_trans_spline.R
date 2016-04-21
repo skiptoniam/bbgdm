@@ -3,15 +3,15 @@
 #' @param x list of predictor values
 #' @param attrib Spline parameters from model.
 #' @param values NULL
-#' @param standardization NULL 
+#' @param standardization NULL
 #' @param splineInterval NULL
 #' @param splineDegree NULL
 #' @return I-Spline predictions
 #' @export
 
 
-spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardization = NULL, 
-          splineInterval = NULL, splineDegree = NULL) 
+spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardization = NULL,
+          splineInterval = NULL, splineDegree = NULL)
 {
   if(!is.null(attrib$class)){#[1]=='bs'){
     if (is.list(attrib)) {
@@ -21,10 +21,10 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
       splineDegree = attrib$degree
       Bound.knots = attrib$Boundary.knots
     }
-    if (!is.null(splineInterval)) 
-      return(bs(x, knots = splineInterval, degree = splineDegree,Boundary.knots=Bound.knots))
+    if (!is.null(splineInterval))
+      return(splines::bs(x, knots = splineInterval, degree = splineDegree,Boundary.knots=Bound.knots))
     else if (!is.null(standardization)) {
-      I <- normalize(x, standardize = standardization)
+      I <- gdistance::normalize(x, standardize = standardization)
       attr(I, "dim") <- c(length(x), 1)
       return(I)
     }
@@ -39,7 +39,7 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
       attr(I, "dim") <- c(length(x), 1)
       return(I)
     }
-    
+
   } else{
   if (is.list(attrib)) {
     values = attrib$values
@@ -47,10 +47,10 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
     splineInterval = attrib$splineInterval
     splineDegree = attrib$splineDegree
   }
-  if (!is.null(splineInterval)) 
+  if (!is.null(splineInterval))
     return(ispline(x, knots = splineInterval, spline.degree = splineDegree))
   else if (!is.null(standardization)) {
-    I <- normalize(x, standardize = standardization)
+    I <- gdistance::normalize(x, standardize = standardization)
     attr(I, "dim") <- c(length(x), 1)
     return(I)
   }

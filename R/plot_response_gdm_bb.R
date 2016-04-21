@@ -1,7 +1,7 @@
 #' Function for plotting bb.GDM response curves.
 #'
 #' Plots a Generalised dissimilarity model with bayesian bootstrap.
-#' @param bbgdm_object As derived from bbgdm function
+#' @param object As derived from bbgdm function
 #' @param plot.layout par settings for plot. default is c(2,2) (four plots).
 #' @return a plots from bbgdm
 #' @export
@@ -24,7 +24,7 @@ plotResponse <- function(object, plotdim = c(2, 2)){
                   lc_data<-object$lc_data
                   minr<-object$minr
                   maxr<-object$maxr
-                  geos <- calc_geo_dist(coords,geo.type=object$geo.type,lc_data=lc_data,minr=minr,maxr=maxr) 
+                  geos <- calc_geo_dist(coords,geo.type=object$geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
                   env.dat <- object$env.dat[,-c(1:2),drop=FALSE]
                   nr_df<-((nrow(object$sp.dat)^2)-nrow(object$sp.dat))/2
                   nc_dt<-ncol(env.dat)
@@ -34,7 +34,7 @@ plotResponse <- function(object, plotdim = c(2, 2)){
                   colnames(diff_table) <-c('geo',colnames(env.dat))
                   sd.env.dat <- object$sd.env.dat[-c(1,2)]
                   mean.env.dat <- object$mean.env.dat[-c(1,2)]
-  } else { 
+  } else {
     k <- ncol(object$env.dat)
     env.dat <- object$env.dat
     nr_df<-((nrow(object$sp.dat)^2)-nrow(object$sp.dat))/2
@@ -59,7 +59,7 @@ plotResponse <- function(object, plotdim = c(2, 2)){
       if(object$geo)min_env <- c(min(grid[,1]),min_env);max_env <- c(max(grid[,1]),max_env);
       grid_real <- grid
       for(i in 1:ncol(grid)) grid_real[,i] <-  scales::rescale(grid[,i],to=c(min_env[i],max_env[i]))
-      X <- mapply(spline_trans_for_pred, grid, attrib = object$dissim_dat_params, 
+      X <- mapply(spline_trans_for_pred, grid, attrib = object$dissim_dat_params,
                   SIMPLIFY = FALSE)
       l <- sapply(object$dissim_dat_params, `[[`, "dim")[2, ]
       at <- unlist(mapply(rep, 1:k, l))
@@ -73,7 +73,7 @@ plotResponse <- function(object, plotdim = c(2, 2)){
         noi <- maxi - mini + 1
         plotlayout <- rep(0, nplot)
         plotlayout[1:noi] <- 1:noi
-        plotlayout <- rbind(matrix(plotlayout, byrow = TRUE, 
+        plotlayout <- rbind(matrix(plotlayout, byrow = TRUE,
                                    nrow = plotdim[1], ncol = plotdim[2]), noi + 1)
         layout(plotlayout, heights = c(rep(1, plotdim[1]), 0.2))
         par(ask = j > 1, mar = c(2.1, 4.1, 3.1, 2.1), mgp = c(2,1, 0))
@@ -90,7 +90,7 @@ plotResponse <- function(object, plotdim = c(2, 2)){
                    ylim = range(c(Splinessum[,i],Splines.05[,i],Splines.95[,i])), main = colnames(diff_table)[i],xlab = "")#,Splines.pred.05[,i],Splines.pred.95[,i]))
               lines(grid_real[, i], Splines.05[,i], col = "black",type = "l", lty = 3)
               lines(grid_real[, i], Splines.95[,i], col = "black",type = "l", lty = 3)
-                } 
+                }
               par(mar = c(0, 0, 0, 0))
               plot(0, 0, type = "n", axes = FALSE, bty = "n", pty = "m",xlab = "", ylab = "")
               legend("center", c("BB quantiles estimates","BB mean estimates"), horiz = TRUE, lty = c(3,1), col = c("black","black"), bg = "white", bty = "o", xpd = T)

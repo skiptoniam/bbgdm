@@ -6,24 +6,24 @@
 #' @param horizontal logical. Whether or not you would like the lines to be
 #' @param xlims custom xlims
 #' @param ... other arguments
-#' 
+#'
 #' @importFrom ggplot2 ggplot
-#' @examples 
+#' @examples
 #' #' x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
 #' #' env.dat <- simulate_covariates(x,2)
 #' form <- y ~ covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form,family="binomial", dism_metric="number_non_shared", nboot=100)
 #' ggplot.bbgdm(test.bbgdm)
-#' 
+#'
 #' @export
 
 ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
-                              horizontal = TRUE, 
+                              horizontal = TRUE,
                               zero_line=TRUE,
                               xlims = NULL){
   # Extract all simulations
   sims <- as.data.frame(object$all.coefs.se)
-  
+
   # Extract only desired parameters
   par_names <- names(sims)
   if(is.null(pars)){
@@ -37,7 +37,7 @@ ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
   }
   # Gather for plotting
   gathered <- tidyr::gather(sims_subset, variable, value)
-  
+
   # Add labels
   if (!is.null(pars_labels)) {
     message("\nEnsure that your parameter labels are in the same order as the parameters.\n")
@@ -49,17 +49,17 @@ ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
     gathered$variable <- factor(gathered$variable,
                                 labels = pars_labels)
   }
-  
+
   # Find central interval
     gathered <- dplyr::group_by(gathered, variable)
     lower95 <- dplyr::summarise(gathered, quantile(value, 0.025))
     lower90 <- dplyr::summarise(gathered, quantile(value, 0.05))
     upper90 <- dplyr::summarise(gathered, quantile(value, 0.95))
     upper95 <- dplyr::summarise(gathered, quantile(value, 0.975))
-  
+
   # Find medians
   medians <- dplyr::summarise(gathered, median(value))
-  
+
   # Merge
   comb <- suppressMessages(dplyr::inner_join(lower95, lower90))
   comb <- suppressMessages(dplyr::inner_join(comb, medians))
@@ -67,7 +67,7 @@ ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
   comb <- suppressMessages(dplyr::inner_join(comb, upper95))
   names(comb) <- c('pars', 'lower95', 'lower90', 'medians', 'upper90',
                    'upper95')
-  
+
   # Plot
   pp <- ggplot2::ggplot(comb, ggplot2::aes(x = medians, y = pars,
                            xmin = lower95,
@@ -82,8 +82,10 @@ ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
         if(!is.null(xlims))ggplot2::xlim(xlims)+
         ggthemes::theme_few()+
         ggplot2::theme(plot.margin=unit(c(5,5,5,5),"mm"))
-  
+
   if (isTRUE(zero_line)) pp <- pp + ggplot2::geom_vline(xintercept = 0)
   if (!isTRUE(horizontal)) pp <- pp + ggplot2::coord_flip()
   return(pp)
 }
+
+utils::globalVariables(base::c("variable", "value"))

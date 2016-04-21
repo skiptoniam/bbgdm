@@ -7,7 +7,7 @@
 diff_table_cpp(env_dat)
 }
 \arguments{
-\item{numeric}{matrix of site covariates}
+\item{env_dat}{matrix  numeric matrix of site covariates}
 }
 \value{
 diff_table absolute differences in site-pair covariates.
