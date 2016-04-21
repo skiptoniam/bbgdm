@@ -1,5 +1,13 @@
+#' log-likelihood function
+#' 
+#' @param params initial values see start \link[stats]{optim}
+#' @param X model matrix
+#' @param y response variable
+#' @param wt weights
+#' @param offset offset vector (currently not used)
+#' @param link link function
+
 LogLikFun <- function(params,X,y,wt,offset,link){
-#   if(!is.null(dim(y))){
     lp <- X %*% c(params[1],exp(params[-1])) + offset
     if(link=='negexp') p <- bbgdm::negexp()
     else  p <- make.link(link = link) 

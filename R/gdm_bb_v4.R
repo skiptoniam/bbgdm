@@ -2,16 +2,28 @@
 #' 
 #' Runs a Generalised dissimilarity model with bayesian bootstrap.
 #' @param form formula for bbgdm model 
+#' @param sp.dat presence absence matrix, sp as columns sites as rows.
+#' @param env.dat environmental or spatial covariates at each site.
 #' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported. 
 #' This can be a character string naming a family function, a family function or the result of a call to a family function.
 #' @param link a character string that assigns the link function to apply within the binomial model. 
 #' Default is 'logit', but 'negexp' and other binomial link functions can be called.
 #' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared" currently avaliable.
 #' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.
-#' @param sp.dat presence absence matrix, sp as columns sites as rows.
-#' @param env.dat environmental or spatial covariates at each site.
 #' @param spline_type type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".
-#' @param optim.meth "optim", "nlmnib" or "admb" for different optimization approaches. 
+#' @param spline_df Number of spline degrees of freedom. 
+#' @param spline_knots Number of spline knots.
+#' @param geo logical If true geographic distance is calculated if 
+#' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
+#' @param coord.names character.vector names of coordinates, default is c("X","Y")
+#' @param lc_data NULL lc_cost data layer, in the form of a raster.  
+#' @param minr NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.
+#' @param maxr NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.
+#' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
+#' @param est.var logical if true estimated parameter variance using optimiser.
+#' @param trace logical print extra optimisation outputs
+#' @param prior numeric vector of starting values for intercept and splines 
+#' @param control control options for gdm calls \link[bbgdm]{gdm_control} as default.
 #' @return a bbgdm model object
 #' @export
 #' @examples
@@ -20,14 +32,14 @@
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, 
-#' scale_covar=FALSE,geo=FALSE,optim.meth='nlmnib')
+#'                     geo=FALSE,optim.meth='nlmnib')
 
-bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_metric="number_non_shared", nboot=100, 
-                   spline_type="ispline",spline_df=2,spline_knots=1,scale_covar=FALSE,
-                   geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
-                   lc_data=NULL,minr=0,maxr=NULL,
-                   optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,
-                   control=gdm_control()){
+bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', 
+                  dism_metric="number_non_shared", nboot=100,
+                  spline_type="ispline",spline_df=2,spline_knots=1,
+                  geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),lc_data=NULL,minr=0,maxr=NULL,
+                  optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=gdm_control()){
+  
   cat(family,"regression is on the way. \n")
     if (is.character(family)) 
       family <- get(family, mode = "function", envir = parent.frame())
@@ -39,7 +51,6 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
     }
   if(dism_metric=="number_non_shared") left <- "cbind(nonsharedspp_ij,sumspp_ij)"
   if(dism_metric=="bray_curtis") left <- "cbind(dissimilarity,100)"
-#   if(dism_metric=="simpsons") left <- "dissimilarity"
   if(geo) { form <- update.formula(form, ~ X + Y + .)
             if(!all(coord.names %in% colnames(env.dat)))
             {
@@ -48,19 +59,12 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
   }          
   env.dat <- model.frame(form, as.data.frame(env.dat))
   mean.env.dat <- sd.env.dat <- NA
-  if (scale_covar) {
-    X.t <- env.dat
-    mean.env.dat <- apply(X.t, 2, mean)
-    sd.env.dat <- apply(X.t, 2, sd)
-    env.dat <- scale(X.t)        
-  }
   env.dat <- model.frame(as.data.frame(env.dat))
   offset <- model.offset(env.dat)
   if(!is.null(offset)) {
     offset_name <- colnames(env.dat)[length(colnames(env.dat))]
     env.dat <- env.dat[colnames(env.dat)[1:(length(colnames(env.dat))-1)]]
   }
-  # if(!(identical(as.vector(sp.dat),as.numeric(as.logical(sp.dat))))){stop("Species data must be presence-absence!")}
   dissim_dat <- dissim_table(sp.dat,env.dat,dism_metric=dism_metric,spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots,
                              geo=geo,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
   dissim_dat_table <- as.data.frame(dissim_dat$diff_table)
@@ -92,19 +96,17 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
       mods[[ii]] <- gdm_fit(X,y,wt=wij,offset=offset, link=link,optim.meth=optim.meth,est.var=est.var, trace=trace,prior=prior,control=control)
-#       cat(ii,"\n")
       if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
     }
-  #summary stats
 
+  #summary stats
   all.stats.ll <- plyr::ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
   median.ll <- apply( plyr::ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,median,na.rm=T)
   quantiles.ll <- apply( plyr::ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
   all.coefs.se <-  plyr::ldply(mods, function(x) c(x$coef))
   median.coefs.se <- apply(plyr::ldply(mods, function(x) c(x$coef)),2,median,na.rm=T)
   quantiles.coefs.se <- apply(plyr::ldply(mods, function(x) c(x$coef)),2,function(x)quantile(x,c(.05,.95),na.rm=T))
-#   vcov <- apply()
-  
+
   bbgdm.results <- list()
   bbgdm.results$starting_gdm <- mod
   bbgdm.results$bb_gdms <- mods
@@ -126,13 +128,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', dism_me
   bbgdm.results$dissim_dat_params <- dissim_dat_params
   bbgdm.results$family <- as.character(family)[1]
   bbgdm.results$geo <- geo
-  bbgdm.results$scale_covar <- scale_covar
   bbgdm.results$link <- link
-
-  if(scale_covar){
-    bbgdm.results$mean.env.dat <- mean.env.dat
-    bbgdm.results$sd.env.dat <- sd.env.dat
-  }
   if(geo){
     bbgdm.results$geo.type <- geo.type
     bbgdm.results$lc_data=lc_data

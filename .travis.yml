@@ -9,17 +9,52 @@ language: c
 # use containers
 sudo: required
 
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
+# only run for pushes to master branch
+branches:
+  only:
+   - master
+
+# install R: use r-packages-precise (https://cran.r-project.org/bin/linux/ubuntu/precise/)
+# as source which is white listed (https://github.com/travis-ci/apt-source-whitelist/)
+addons:
+  apt:
+    sources:
+    - r-packages-precise
+    packages:
+    - r-base-dev
+    - r-recommended
+    - pandoc
+    - libgdal-dev
+    - libproj-dev
+
+# cache local R libraries directory:
+cache:
+  directories:
+    - ~/Rlib
+
+# install the package and dependencies:
+# - create directory for R libraries (if not already exists)
+# - create .Renviron with location of R libraries
+# - define R repository in .Rprofile
+# - add .travis.yml to .Rbuildignore
+# - install devtools if not already installed
+# - update all installed packages
+# - install package with dependencies
 install:
-  - ./travis-tool.sh install_deps
-script: ./travis-tool.sh run_tests
+  - mkdir -p ~/Rlib
+  - echo 'R_LIBS=~/Rlib' > .Renviron
+  - echo 'options(repos = "http://cran.rstudio.com")' > .Rprofile
+  - Rscript -e 'if(!"devtools" %in% rownames(installed.packages())) { install.packages("devtools", dependencies = TRUE) }'
+  - Rscript -e 'update.packages(ask = FALSE, instlib = "~/Rlib")'
+  - Rscript -e 'devtools::install_deps(pkg = ".", dependencies = TRUE)'
 
-after_failure:
-  - ./travis-tool.sh dump_logs
+# Build and check package
+script:
+  - R CMD build .  --no-manual
+  - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
+  - R CMD check "${PKG_FILE_NAME}"  --no-build-vignettes --no-manual --as-cran
 
+ # send e-mails if stuff changes
 notifications:
   email:
     on_success: change

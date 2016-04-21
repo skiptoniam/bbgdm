@@ -2,7 +2,11 @@
 #' Transform spline data based on parameters
 #' @param x list of predictor values
 #' @param attrib Spline parameters from model.
-#' @return I Spline predictions
+#' @param values NULL
+#' @param standardization NULL 
+#' @param splineInterval NULL
+#' @param splineDegree NULL
+#' @return I-Spline predictions
 #' @export
 
 

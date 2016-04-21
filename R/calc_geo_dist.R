@@ -1,15 +1,17 @@
 #' Function that calculates geographic distances.
 #' 
 #' Functions for estimating geographic distances.
-#' @param x Is a set of lats and lons for sites
+#' @param coords A set of lats and lons for sites
 #' @param geo.type geo.type of geographic distance to estimate, 'euclidean', 'greater circle' and 'least cost pathway'. 
 #' @param lc_data is a matrix of lons as rows and lats as cols, with a values of gradient as z values (eg,depth,elevation) or a raster of depth, elevation ect.
-#' @param minr,maxr Are the minimum and maximum range to set least cost pathway, defaul is 0 to max of range.
+#' @param minr The minimum range to set least cost pathway, defaul is 0 to max of range.
+#' @param maxr The maximum range to set least cost pathway, defaul is NULL to max of range.
 #' @return distances Five column matrix of sites pairs (cols 1:4) and distance as col 5.
 #' @export
 
 
-calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle','least_cost'),lc_data=NULL,minr=0,maxr=NULL){
+calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle','least_cost'),
+                          lc_data=NULL,minr=0,maxr=NULL){
         
   geo.type <- match.arg(geo.type,c('euclidean','greater_circle','least_cost'))
       if(geo.type=="euclidean"){

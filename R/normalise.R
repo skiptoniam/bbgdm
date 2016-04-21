@@ -1,4 +1,9 @@
 #' Function to normalise isplines. 
+#' prediction spline transform
+#' Transform spline data based on parameters
+#' @param x spline data
+#' @param standardize 'zscore' 
+
 normalise <- function (x, standardize = "zscore") 
 {
   if (is.list(standardize)) {

@@ -1,3 +1,13 @@
+#' Predict splines transformations
+#' @param x list of predictor values
+#' @param attrib Spline parameters from model.
+#' @param values NULL
+#' @param standardization NULL 
+#' @param splineInterval NULL
+#' @param splineDegree NULL
+#' @return I Spline predictions
+#' @export
+
 predict.spline.trans <- function (x, attrib = NULL, values = NULL, standardization = NULL, 
           splineInterval = NULL, splineDegree = NULL) 
 {

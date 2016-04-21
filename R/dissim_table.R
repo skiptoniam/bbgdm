@@ -9,6 +9,14 @@
 #' @param spline_type If "bspline" calculates bs spline from spline package. If "ispline" calculates ispline.
 #' @param spline_df degrees of freedom; one can specify df rather than knots. Default = 3.
 #' @param spline_knots The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.
+#' @param coord.names character of coordinate names in env.dat
+#' @param geo logical If true geographic distance is calculated if 
+#' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
+#' @param coord.names character.vector names of coordinates, default is c("X","Y")
+#' @param lc_data NULL lc_cost data layer, in the form of a raster.  
+#' @param minr NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.
+#' @param maxr NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.
+
 #' @return diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
 #'  If select dissim="number_non_shared", will return "nonsharedspp_ij","sumspp_ij", 
 #'  which can be used as response variables in a binomial bbGDM.

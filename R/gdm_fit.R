@@ -3,8 +3,13 @@
 #' @param X Model matirx of predictors, see \link[stats]{model.matrix}. 
 #' @param y Model response, see \link[stats]{model.response}.
 #' @param wt weights for model.
-#' @param scale.covar logical If TRUE centre predictor variables.
-#' @param control control option from optim see \link[BayesbootGDM]{gdm_fit_control} or \link[stats]{optim}
+#' @param offset offset values
+#' @param link character link functions. default is 'logit', can call 'negexp'
+#' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
+#' @param est.var logical if true estimated parameter variance using optimiser.
+#' @param trace trace options looks at \link[stats]{optim} and \link[stats]{nlmnib} for details.
+#' @param prior numeric vector of starting values for intercept and splines 
+#' @param control control option from optim see \link[bbgdm]{gdm_control} or \link[stats]{optim}
 #' @return fit fitted logistic binomial model as per optim methods
 #' @export
  

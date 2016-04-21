@@ -9,7 +9,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 Here we present a basic vignette that runs through taking a species by sites matrix and performs a Bayesian Bootstrap Generalised Dissimilarity Model. Our vignette will run through the following steps:
 
 - Fit a bbgdm model to a community dataset.
@@ -41,8 +40,9 @@ dune_pa <- ifelse(dune>0,1,0)
 Now we have a species by sites matrix of simulated data and a set data for a one dimensional gradient.
 ```{r fit model, results="hide", error=FALSE, warning=FALSE, message=FALSE}
 form <- ~1+A1
-fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",dism_metric="number_shared",
-             nboot=100, scale_covar=F,geo=F,optim.meth='nlmnib')
+fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
+             dism_metric="number_non_shared",spline_type = 'ispline',
+             nboot=100, geo=FALSE,optim.meth='nlmnib')
 ```
 
 ### Plot response curves

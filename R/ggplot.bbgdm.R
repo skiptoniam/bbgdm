@@ -1,12 +1,23 @@
-#' bbgdm catepillar plots function
+#' bbgdm catepillar plots function using ggplot
 #' @param object a \code{bbgdm} object
 #' @param pars name of parameters to plot.
 #' @param pars_labels vector of parameter labels.
 #' @param zero_line logical. Whether or not to the zero #' medians.
 #' @param horizontal logical. Whether or not you would like the lines to be
-#' horizontal
+#' @param xlims custom xlims
+#' @param ... other arguments
+#' 
+#' @importFrom ggplot2 ggplot
+#' @examples 
+#' #' x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
+#' #' env.dat <- simulate_covariates(x,2)
+#' form <- y ~ covar_1 + covar_2
+#' test.bbgdm <- bbgdm(form,family="binomial", dism_metric="number_non_shared", nboot=100)
+#' ggplot.bbgdm(test.bbgdm)
+#' 
+#' @export
 
-plot.bbgdm.caterpillar <- function(object, pars=NULL, pars_labels = NULL,
+ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
                               horizontal = TRUE, 
                               zero_line=TRUE,
                               xlims = NULL){
@@ -60,7 +71,7 @@ plot.bbgdm.caterpillar <- function(object, pars=NULL, pars_labels = NULL,
   # Plot
   pp <- ggplot2::ggplot(comb, ggplot2::aes(x = medians, y = pars,
                            xmin = lower95,
-                           xmax = upper95)) +
+                           xmax = upper95),...) +
         ggplot2::geom_point(size = 3) +
         ggplot2::geom_segment(ggplot2::aes(x = lower95, xend = upper95, yend = pars),
                      size = 0.5) +

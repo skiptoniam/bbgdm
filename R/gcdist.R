@@ -4,7 +4,10 @@
 #' @description
 #' Takes in any numeric value and squares itFunction for calculating greater circle dist
 #' 
-#'@param lon1, lon2, lat1, lat2 coordinates between of two sites
+#'@param x1 first longitude
+#'@param x2 second longitude
+#'@param y1 first latitude
+#'@param y2 second latitude
 #'@return greater circle distance. 
 #'@export
 

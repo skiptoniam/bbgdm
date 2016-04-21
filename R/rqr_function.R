@@ -1,8 +1,10 @@
 #'Randomised quantile residual function
 #'Computes randomised quantile resiudeals for bbgdm
-#'@param X model matrix
-#'@param y observed values
-#'@param coefs parameter estimates
+#' @param X model matrix
+#' @param y response variable
+#' @param wt weights
+#' @param offset offset vector (currently not used)
+#' @param link link function
 #'@return res randomised quantile residuals
 
 

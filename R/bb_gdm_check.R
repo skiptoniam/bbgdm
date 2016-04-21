@@ -1,9 +1,9 @@
 #' Function that plots diagnostic plots from bbgdm object
 #' 
 #' @param object bbgdm model output
-#' @param rl.col colour of lines
-#' @param family logical "binomial" or "beta_dist"
-#' @return distances Five column matrix of sites pairs (cols 1:4) and distance as col 5.
+#' @param plots.mfrow colour of lines
+#' @param ... other S3 class plot calls
+#' @return diagnostic.plots for bbgdm
 #' @export
 #' @examples
 #' x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
