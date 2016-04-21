@@ -10,7 +10,7 @@ License: GPL (>= 2)
 Imports:
     Rcpp (>= 0.11.4)
 RoxygenNote: 5.0.1
-Depends: TMB, Rcpp, RcppEigen, numDeriv, ggplot2, ggthemes, plyr, dplyr, tidyr, vegan
+Depends: TMB, Rcpp, RcppEigen, numDeriv, ggplot2, ggthemes, plyr, dplyr, tidyr, vegan, gtools
 LinkingTo: TMB, Rcpp
 Suggests: knitr,
     rmarkdown,
