@@ -6,12 +6,12 @@
 \usage{
 gdm_fit(X, y, wt = NULL, offset, link, optim.meth = "optim",
   est.var = TRUE, trace = FALSE, prior = FALSE,
-  control = gdm_fit_control(...), ...)
+  control = gdm_control(...), ...)
 }
 \arguments{
-\item{X}{Model matirx of predictors, see \link[stats]{model.matrix}.}
+\item{X}{Model matirx of predictors, see \code{\link[stats]{model.matrix}}.}
 
-\item{y}{Model response, see \link[stats]{model.response}.}
+\item{y}{Model response, see \code{\link[stats]{model.response}}.}
 
 \item{wt}{weights for model.}
 
@@ -23,11 +23,13 @@ gdm_fit(X, y, wt = NULL, offset, link, optim.meth = "optim",
 
 \item{est.var}{logical if true estimated parameter variance using optimiser.}
 
-\item{trace}{trace options looks at \link[stats]{optim} and \link[stats]{nlmnib} for details.}
+\item{trace}{trace options looks at \code{\link[stats]{optim}} for details.}
 
 \item{prior}{numeric vector of starting values for intercept and splines}
 
-\item{control}{control option from optim see \link[bbgdm]{gdm_control} or \link[stats]{optim}}
+\item{control}{control option from optim see \code{\link[bbgdm]{gdm_control}} or \code{\link[stats]{optim}}}
+
+\item{...}{other arguments}
 }
 \value{
 fit fitted logistic binomial model as per optim methods

@@ -6,18 +6,10 @@
 \usage{
 negexp()
 }
-\arguments{
-\item{linkfun}{Link function function(mu)}
-
-\item{linkinv}{Inverse link function function(eta)}
-
-\item{mu.eta}{Derivative function(eta) dmu/deta}
-
-\item{valideta}{function(eta){ TRUE if eta is in the domain of linkinv }.}
-
-\item{name}{a name to be used for the link}
+\value{
+negexp() link function
 }
 \description{
-A object of class \link[stats]{link-glm}, a list with components
+A object of class \code{\link[stats]{glm}}, a list with components
 }
 

@@ -1,6 +1,6 @@
 #' Negative exponential link function.
 #'
-#' A object of class \link[stats]{link-glm}, a list with components
+#' A object of class \code{\link[stats]{glm}}, a list with components
 #' @return negexp() link function
 #' @export
 

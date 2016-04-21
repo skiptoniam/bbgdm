@@ -2,14 +2,15 @@
 #'
 #' Plots a Generalised dissimilarity model with bayesian bootstrap.
 #' @param object As derived from bbgdm function
-#' @param plot.layout par settings for plot. default is c(2,2) (four plots).
+#' @param plotdim par settings for plot. default is c(2,2) (four plots).
 #' @return a plots from bbgdm
 #' @export
 #' @examples
-#' x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
-#' #' env.dat <- simulate_covariates(x,2)
-#' form <- y ~ covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form,family="binomial", dism_metric="number_non_shared", nboot=100)
+#' x <-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
+#' y <- simulate_covariates(x,2)
+#' form <- ~ 1 + covar_1 + covar_2
+#' test.bbgdm <- bbgdm(form, sp.dat=x, env.dat=y,family="binomial",
+#'                    geo=FALSE,dism_metric="number_non_shared", nboot=10)
 #' plotResponse(test.bbgdm)
 
 

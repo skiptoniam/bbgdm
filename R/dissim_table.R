@@ -9,10 +9,9 @@
 #' @param spline_type If "bspline" calculates bs spline from spline package. If "ispline" calculates ispline.
 #' @param spline_df degrees of freedom; one can specify df rather than knots. Default = 3.
 #' @param spline_knots The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.
-#' @param coord.names character of coordinate names in env.dat
 #' @param geo logical If true geographic distance is calculated if
 #' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
-#' @param coord.names c("X","Y") character.vector names of coordinates, default is c("X","Y")
+#' @param coord.names c("X","Y") character.vector names of coordinates.
 #' @param lc_data NULL lc_cost data layer, in the form of a raster.
 #' @param minr NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.
 #' @param maxr NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.
@@ -22,7 +21,7 @@
 #'  which can be used as response variables in a binomial bbGDM.
 #' @export
 #' @examples
-#' x <- matrix(sample(0:1,100, replace=T),10,10) #toy presence absence matrix
+#' x <- matrix(rbinom(100,1,.5),10,10) #toy presence absence matrix
 #' y <- simulate_covariates(x,4)
 #' diff_table <- dissim_table(x,y,dism_metric="number_non_shared")
 

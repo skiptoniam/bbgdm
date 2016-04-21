@@ -24,7 +24,7 @@ if "number_non_shared" returns number of shared species at site_ij which can be 
 
 \item{spline_knots}{The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.}
 
-\item{coord.names}{character of coordinate names in env.dat}
+\item{coord.names}{c("X","Y") character.vector names of coordinates.}
 
 \item{geo}{logical If true geographic distance is calculated if}
 
@@ -35,8 +35,6 @@ if "number_non_shared" returns number of shared species at site_ij which can be 
 \item{minr}{NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.}
 
 \item{maxr}{NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.}
-
-\item{coord.names}{character.vector names of coordinates, default is c("X","Y")}
 }
 \value{
 diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
@@ -47,7 +45,7 @@ diff_table dissimilarity table; creates a table of dissimilarities, and differen
 Calculates dissimilarity table for bbGMD from presences absence matrix (pam).
 }
 \examples{
-x <- matrix(sample(0:1,100, replace=T),10,10) #toy presence absence matrix
+x <- matrix(rbinom(100,1,.5),10,10) #toy presence absence matrix
 y <- simulate_covariates(x,4)
 diff_table <- dissim_table(x,y,dism_metric="number_non_shared")
 }

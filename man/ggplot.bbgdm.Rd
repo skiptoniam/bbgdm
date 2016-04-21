@@ -5,7 +5,7 @@
 \title{bbgdm catepillar plots function using ggplot}
 \usage{
 \method{ggplot}{bbgdm}(object, pars = NULL, pars_labels = NULL,
-  horizontal = TRUE, zero_line = TRUE, xlims = NULL)
+  horizontal = TRUE, zero_line = TRUE, xlims = NULL, ...)
 }
 \arguments{
 \item{object}{a \code{bbgdm} object}
@@ -26,10 +26,12 @@
 bbgdm catepillar plots function using ggplot
 }
 \examples{
-#' x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
-#' env.dat <- simulate_covariates(x,2)
-form <- y ~ covar_1 + covar_2
-test.bbgdm <- bbgdm(form,family="binomial", dism_metric="number_non_shared", nboot=100)
-ggplot.bbgdm(test.bbgdm)
+x <-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
+y <- simulate_covariates(x,2)
+form <- ~ 1 + covar_1 + covar_2
+test.bbgdm <- bbgdm(form, sp.dat=x, env.dat=y,family="binomial",
+                   geo=FALSE,dism_metric="number_non_shared", nboot=10)
+library(ggplot2)
+ggplot(test.bbgdm)
 }
 

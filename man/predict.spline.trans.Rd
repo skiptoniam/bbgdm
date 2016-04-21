@@ -4,7 +4,7 @@
 \alias{predict.spline.trans}
 \title{Predict splines transformations}
 \usage{
-\method{predict}{spline.trans}(x, attrib = NULL, values = NULL,
+predict.spline.trans(x, attrib = NULL, values = NULL,
   standardization = NULL, splineInterval = NULL, splineDegree = NULL)
 }
 \arguments{

@@ -9,7 +9,9 @@ trans_rast_fun(data,min.range=0,max.range=NULL)
 \arguments{
 \item{data}{A matrix of lons as rows, lats as cols and value as gradient (eg depth or elevation), or a raster}
 
-\item{min.range,}{max.range    Numeric. The range of depth between which the path will be possible. The default (min.depth=0 and max.depth=NULL) indicates that the transition between cells of the grid is possible between 0 meters depth and the maximum range.}
+\item{min.range}{Numeric. The range of depth between which the path will be possible. The default (min.depth=0 and max.depth=NULL) indicates that the transition between cells of the grid is possible between 0 meters depth and the maximum range.}
+
+\item{max.range}{Numeric. The range of depth between which the path will be possible. The default (min.depth=0 and max.depth=NULL) indicates that the transition between cells of the grid is possible between 0 meters depth and the maximum range.}
 }
 \value{
 A transition raster for least_cost_dist function.

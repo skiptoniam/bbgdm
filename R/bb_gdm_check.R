@@ -1,5 +1,5 @@
 #' Function that plots diagnostic plots from bbgdm object
-#' 
+#'
 #' @param object bbgdm model output
 #' @param plots.mfrow colour of lines
 #' @param ... other S3 class plot calls
@@ -9,11 +9,11 @@
 #' x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 #' y <- simulate_covariates(x,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial", 
-#'                     dism_metric="number_non_shared",nboot=10,geo=FALSE, scale_covar=FALSE)
+#' test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial",
+#'                     dism_metric="number_non_shared",nboot=10,geo=FALSE)
 #' bbgdm.check(test.bbgdm)
 
-bbgdm.check <- function (object, plots.mfrow = c(2, 2),...) 
+bbgdm.check <- function (object, plots.mfrow = c(2, 2),...)
 {
   link <-object$link
   if(link=='negexp'){link.fun <- bbgdm::negexp()
@@ -41,4 +41,4 @@ bbgdm.check <- function (object, plots.mfrow = c(2, 2),...)
     plot(pi,y[,1]/y[,2],cex=.5,pch=16, xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",...)
     mtext("Bayesian Bootstrap GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
 }
- 
+

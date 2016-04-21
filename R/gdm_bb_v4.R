@@ -1,49 +1,52 @@
+#' @useDynLib bbgdm
+#' @importFrom Rcpp sourceCpp
+NULL
+
 #' Function to perform GDM w/ Bayesian Bootstrap.
-#' 
+#'
 #' Runs a Generalised dissimilarity model with bayesian bootstrap.
-#' @param form formula for bbgdm model 
+#' @param form formula for bbgdm model
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
 #' @param env.dat environmental or spatial covariates at each site.
-#' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported. 
+#' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported.
 #' This can be a character string naming a family function, a family function or the result of a call to a family function.
-#' @param link a character string that assigns the link function to apply within the binomial model. 
+#' @param link a character string that assigns the link function to apply within the binomial model.
 #' Default is 'logit', but 'negexp' and other binomial link functions can be called.
 #' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared" currently avaliable.
 #' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.
 #' @param spline_type type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".
-#' @param spline_df Number of spline degrees of freedom. 
+#' @param spline_df Number of spline degrees of freedom.
 #' @param spline_knots Number of spline knots.
-#' @param geo logical If true geographic distance is calculated if 
+#' @param geo logical If true geographic distance is calculated if
 #' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
 #' @param coord.names character.vector names of coordinates, default is c("X","Y")
-#' @param lc_data NULL lc_cost data layer, in the form of a raster.  
+#' @param lc_data NULL lc_cost data layer, in the form of a raster.
 #' @param minr NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.
 #' @param maxr NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.
 #' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
 #' @param est.var logical if true estimated parameter variance using optimiser.
 #' @param trace logical print extra optimisation outputs
-#' @param prior numeric vector of starting values for intercept and splines 
+#' @param prior numeric vector of starting values for intercept and splines
 #' @param control control options for gdm calls \link[bbgdm]{gdm_control} as default.
 #' @return a bbgdm model object
 #' @export
 #' @examples
-#' 
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10, 
+#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10,
 #'                     geo=FALSE,optim.meth='nlmnib')
 
-bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit', 
+bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   dism_metric="number_non_shared", nboot=100,
                   spline_type="ispline",spline_df=2,spline_knots=1,
                   geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),lc_data=NULL,minr=0,maxr=NULL,
                   optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=gdm_control()){
-  
+
   cat(family,"regression is on the way. \n")
-    if (is.character(family)) 
+    if (is.character(family))
       family <- get(family, mode = "function", envir = parent.frame())
-    if (is.function(family)) 
+    if (is.function(family))
       family <- family()
     if (is.null(family$family)) {
       print(family)
@@ -56,7 +59,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
             {
               stop(cat("Coordinates are missing, add coordinate data as columns called 'X' & 'Y'\n"))
             }
-  }          
+  }
   env.dat <- model.frame(form, as.data.frame(env.dat))
   mean.env.dat <- sd.env.dat <- NA
   env.dat <- model.frame(as.data.frame(env.dat))
@@ -80,10 +83,10 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   temp <- model.frame(form, as.data.frame(dissim_dat_table))
   y <- model.response(temp)
   offset <- model.offset(temp)
-  if (is.null(offset)) 
+  if (is.null(offset))
     offset <- rep(0, nrow(temp))
   if (!is.null(offset) && length(offset) != NROW(y)) {
-    stop(gettextf("number of offsets is %d should equal %d (number of observations)", 
+    stop(gettextf("number of offsets is %d should equal %d (number of observations)",
                   length(offset), NROW(y)), domain = NA)}
     X <- model.matrix(form, as.data.frame(dissim_dat_table))
     mod  <- gdm_fit(X,y,offset=offset,link=link,optim.meth=optim.meth,est.var=TRUE, trace=trace,prior=prior,control=control)

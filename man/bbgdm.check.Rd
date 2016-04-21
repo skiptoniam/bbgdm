@@ -24,7 +24,7 @@ x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 y <- simulate_covariates(x,2)
 form <- ~ 1 + covar_1 + covar_2
 test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial",
-                    dism_metric="number_non_shared",nboot=10,geo=FALSE, scale_covar=FALSE)
+                    dism_metric="number_non_shared",nboot=10,geo=FALSE)
 bbgdm.check(test.bbgdm)
 }
 

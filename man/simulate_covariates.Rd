@@ -18,7 +18,7 @@ beta N covariates for number of sites of x.
 Creates N covarites for testing bbGDM.
 }
 \examples{
-x <- matrix(sample(0:1,16, replace=T),4,4) #toy presence absence matrix
+x <- matrix(rbinom(16,1,.6),4,4) #toy presence absence matrix
 covr <- simulate_covariates(x,6)
 }
 

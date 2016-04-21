@@ -12,11 +12,11 @@ rqr_function(X, y, coefs, offset, link)
 
 \item{y}{response variable}
 
+\item{coefs}{coefficents from bbgdm model}
+
 \item{offset}{offset vector (currently not used)}
 
 \item{link}{link function}
-
-\item{wt}{weights}
 }
 \value{
 res randomised quantile residuals

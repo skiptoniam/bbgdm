@@ -1,15 +1,15 @@
 #' Function to perform postive binomial logistic regression.
 #'
-#' @param X Model matirx of predictors, see \link[stats]{model.matrix}.
-#' @param y Model response, see \link[stats]{model.response}.
+#' @param X Model matirx of predictors, see \code{\link[stats]{model.matrix}}.
+#' @param y Model response, see \code{\link[stats]{model.response}}.
 #' @param wt weights for model.
 #' @param offset offset values
 #' @param link character link functions. default is 'logit', can call 'negexp'
 #' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
 #' @param est.var logical if true estimated parameter variance using optimiser.
-#' @param trace trace options looks at \link[stats]{optim} and \link[stats]{nlmnib} for details.
+#' @param trace trace options looks at \code{\link[stats]{optim}} for details.
 #' @param prior numeric vector of starting values for intercept and splines
-#' @param control control option from optim see \link[bbgdm]{gdm_control} or \link[stats]{optim}
+#' @param control control option from optim see \code{\link[bbgdm]{gdm_control}} or \code{\link[stats]{optim}}
 #' @param ... other arguments
 #' @return fit fitted logistic binomial model as per optim methods
 #' @export
@@ -17,7 +17,7 @@
 
 
 gdm_fit <- function(X, y, wt=NULL,offset, link, optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
-                           control=bbgdm::gdm_control(...),...){
+                           control=gdm_control(...),...){
 
   my.fun <- function(x) {
     -LogLikFun(x, X, y, wt, offset,link)

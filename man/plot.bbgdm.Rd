@@ -4,10 +4,12 @@
 \alias{plot.bbgdm}
 \title{Function for plotting GDM w/ Bayesian Bootstrap.}
 \usage{
-\method{plot}{bbgdm}(object, plot.layout = c(1, 1), plot.colour = "black",
+plot.bbgdm(object, plot.layout = c(1, 1), plot.colour = "black",
   plot.linewidth = 2, line.col = "red", ...)
 }
 \arguments{
+\item{object}{As derived from bbgdm function}
+
 \item{plot.layout}{par settings for plot. default is c(2,2) (four plots).}
 
 \item{plot.colour}{colour of plot points}
@@ -17,8 +19,6 @@
 \item{line.col}{line colour}
 
 \item{...}{other plot arguments}
-
-\item{bbgdm_object}{As derived from bbgdm function}
 }
 \value{
 a plots from bbgdm

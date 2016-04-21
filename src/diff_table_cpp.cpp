@@ -1,10 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' difference table cpp format
-//'
-//' @param env_dat matrix  numeric matrix of site covariates
-//' @return diff_table absolute differences in site-pair covariates.
 //[[Rcpp::export]]
 
 NumericMatrix diff_table_cpp(NumericMatrix env_dat){

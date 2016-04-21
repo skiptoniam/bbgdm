@@ -21,7 +21,7 @@ gdm_control(method = "BFGS", maxit = 1000, hessian = FALSE,
 
 \item{fsmaxit}{integer specifying maximal number of additional (quasi) Fisher scoring iterations. For details see below.}
 
-\item{fstol}{numeric tolerance for convergence in (quasi) Fisher scoring. For details see \link[stats]{optim}.}
+\item{fstol}{numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.}
 
 \item{...}{arguments passed to optim.}
 }

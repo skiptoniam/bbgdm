@@ -4,7 +4,7 @@
 \alias{least.cost.dist}
 \title{Function that calculates least cost pathway.}
 \usage{
-least.cost.dist(trans.mat,sites)
+least.cost.dist(trans.rast,sites)
 }
 \arguments{
 \item{trans.rast}{transition object as computed by trans.mat}

@@ -7,9 +7,9 @@
 plotResponse(object, plotdim = c(2, 2))
 }
 \arguments{
-\item{bbgdm_object}{As derived from bbgdm function}
+\item{object}{As derived from bbgdm function}
 
-\item{plot.layout}{par settings for plot. default is c(2,2) (four plots).}
+\item{plotdim}{par settings for plot. default is c(2,2) (four plots).}
 }
 \value{
 a plots from bbgdm
@@ -18,10 +18,11 @@ a plots from bbgdm
 Plots a Generalised dissimilarity model with bayesian bootstrap.
 }
 \examples{
-x<-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
-#' env.dat <- simulate_covariates(x,2)
-form <- y ~ covar_1 + covar_2
-test.bbgdm <- bbgdm(form,family="binomial", dism_metric="number_non_shared", nboot=100)
+x <-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
+y <- simulate_covariates(x,2)
+form <- ~ 1 + covar_1 + covar_2
+test.bbgdm <- bbgdm(form, sp.dat=x, env.dat=y,family="binomial",
+                   geo=FALSE,dism_metric="number_non_shared", nboot=10)
 plotResponse(test.bbgdm)
 }
 
