@@ -7,10 +7,10 @@ Author: Skipton Woolley
 Maintainer: Skipton Woolley <swoolley@museum.vic.gov.au>
 Description: Bayesian Bootstrap implementation of Generalised Dissimilarity Modelling using Generalised Linear Models.
 License: GPL (>= 2)
-Imports: 
+Imports:
     Rcpp (>= 0.11.4)
 RoxygenNote: 5.0.1
-Depends: TMB, Rcpp, RcppEigen, numDeriv, ggplot2, ggthemes, plyr, dplyr, tidyr
+Depends: TMB, Rcpp, RcppEigen, numDeriv, ggplot2, ggthemes, plyr, dplyr, tidyr, vegan
 LinkingTo: TMB, Rcpp
 Suggests: knitr,
     rmarkdown,
