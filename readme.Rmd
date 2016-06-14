@@ -13,11 +13,6 @@ install.packages(c('devtools'))
 devtools::install_github('skiptoniam/bbgdm')
 ```
 
-```{r,echo=FALSE}
-library(knitr)
-knit_hooks$set(set_xpd = function (before, options, envir) par(xpd = NA))
-```
-
 ### Load the required libaries, we need vegan for the dune dataset.
 ```{r,error=FALSE,message=FALSE,warning=FALSE}
 library(bbgdm)
@@ -46,7 +41,7 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
 plotResponse(fm1,plotdim = c(1,1))
 ```
 ### Plot diagnostics
-```{r,fig.width = 6, fig.height = 6, dpi = 300, set_xpd = TRUE}
+```{r,fig.width = 8, fig.height = 8, dpi = 300, set_xpd = TRUE}
 bbgdm.check(fm1)
 ```
 ### Run 'Wald-like' test on parameters
