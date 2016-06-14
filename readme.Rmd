@@ -47,5 +47,6 @@ bbgdm.check(fm1)
 ```{r,results='asis'}
 library(xtable)
 wt <- bbgdm.wald.test(fm1)
-xtable(wt, type = "html")
+tab <- xtable(wt)
+print(tab, type = "html")
 ```
