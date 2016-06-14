@@ -40,11 +40,11 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
 plotResponse(fm1,plotdim = c(1,1))
 ```
 ### Plot diagnostics
-```{r,fig.width = 4, fig.height = 4, dpi = 300, set_xpd = TRUE}
+```{r,fig.width = 6, fig.height = 6, dpi = 300, set_xpd = TRUE}
 bbgdm.check(fm1)
 ```
 ### Run 'Wald-like' test on parameters
-```{r}
+```{r,results='asis'}
 library(xtable)
 wt <- bbgdm.wald.test(fm1)
 xtable(wt, type = "html")

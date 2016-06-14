@@ -77,16 +77,15 @@ wt <- bbgdm.wald.test(fm1)
 xtable(wt, type = "html")
 ```
 
-    ## % latex table generated in R 3.2.2 by xtable 1.8-2 package
-    ## % Tue Jun 14 11:06:06 2016
-    ## \begin{table}[ht]
-    ## \centering
-    ## \begin{tabular}{rrrr}
-    ##   \hline
-    ##  & bbgdm\_W & bbgdm\_df & bbgdm\_p-value \\ 
-    ##   \hline
-    ## intercept & 11.30 & 1.00 & 0.00 \\ 
-    ##   A1 & 2.37 & 3.00 & 0.50 \\ 
-    ##    \hline
-    ## \end{tabular}
-    ## \end{table}
+% latex table generated in R 3.2.2 by xtable 1.8-2 package % Tue Jun 14 11:10:12 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & bbgdm\_W & bbgdm\_df & bbgdm\_p-value \\ 
+  \hline
+intercept & 10.96 & 1.00 & 0.00 \\ 
+  A1 & 1.32 & 3.00 & 0.73 \\ 
+   \hline
+\end{tabular}
+\end{table}
