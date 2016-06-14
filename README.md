@@ -10,6 +10,8 @@ install.packages(c('devtools'))
 devtools::install_github('skiptoniam/bbgdm')
 ```
 
+    ## Warning: package 'knitr' was built under R version 3.2.5
+
 ### Load the required libaries, we need vegan for the dune dataset.
 
 ``` r
@@ -58,13 +60,13 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
 plotResponse(fm1,plotdim = c(1,1))
 ```
 
-![](readme_files/figure-markdown_github/unnamed-chunk-5-1.png) \#\#\# Plot diagnostics
+![](readme_files/figure-markdown_github/unnamed-chunk-6-1.png) \#\#\# Plot diagnostics
 
 ``` r
 bbgdm.check(fm1)
 ```
 
-![](readme_files/figure-markdown_github/unnamed-chunk-6-1.png) \#\#\# Run 'Wald-like' test on parameters
+![](readme_files/figure-markdown_github/unnamed-chunk-7-1.png) \#\#\# Run 'Wald-like' test on parameters
 
 ``` r
 library(xtable)
@@ -79,7 +81,7 @@ print(tab, type = "html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Tue Jun 14 11:12:31 2016 -->
+<!-- Tue Jun 14 12:14:17 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -99,7 +101,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-9.54
+9.95
 </td>
 <td align="right">
 1.00
@@ -113,13 +115,13 @@ intercept
 A1
 </td>
 <td align="right">
-1.39
+1.06
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.71
+0.79
 </td>
 </tr>
 </table>
