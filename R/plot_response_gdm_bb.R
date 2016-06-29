@@ -49,15 +49,12 @@ plotResponse <- function(object, plotdim = c(2, 2)){
       grid <- matrix(rep(seq(0, 1, length.out = 100), k), ncol = k)
       grid <- t(t(grid) * as.vector(diff(apply(diff_table, 2, range))) + apply(diff_table, 2, min))
       grid <- data.frame(grid)
-      # if(object$scale_covar){
-      #   start_vals <-mapply("+",as.data.frame((as.matrix(env.dat) %*% diag(sd.env.dat))),mean.env.dat)
-      #   min_env <- apply(start_vals,2,min)
-      #   max_env <- apply(start_vals,2,max)
-      # } else {
-        min_env <- apply(env.dat,2,min)
-        max_env <- apply(env.dat,2,max)
-      # }
-      if(object$geo)min_env <- c(min(grid[,1]),min_env);max_env <- c(max(grid[,1]),max_env);
+      min_env <- apply(env.dat,2,function(x)min(abs(x)))
+      max_env <- apply(env.dat,2,function(x)max(abs(x)))
+      if(object$geo){
+         min_env <- c(min(grid[,1]),min_env)
+         max_env <- c(max(grid[,1]),max_env)
+      }
       grid_real <- grid
       for(i in 1:ncol(grid)) grid_real[,i] <-  scales::rescale(grid[,i],to=c(min_env[i],max_env[i]))
       X <- mapply(spline_trans_for_pred, grid, attrib = object$dissim_dat_params,
