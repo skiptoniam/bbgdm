@@ -1,5 +1,5 @@
 #' Function to perform a non-parametric wald-test on bootstrap parameter estimates
-#' 
+#'
 #' @param object Returned model from \link[bbgdm]{bbgdm}.
 #' @param H0 A numeric value giving the null hypothesis for the test. Generally zero.
 #' @param gdm Logic if true calculates the Wald-test using variance-covariance matrix derived from the hessian matrix. Note: These estimates are probably wrong due to hessian matrix being calulated with respect to the likelihoods.
@@ -11,7 +11,7 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
   # IM: Identiy Matrix
   # beta: parameter estimates from model
   # vcov: Variance-covariance matrix estimated from BB
-  
+
   #for gdm
   if(gdm){
     vcov <-object$starting_gdm$var
@@ -20,7 +20,7 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
     intercept_IM <- matrix(c(1,rep(0,length(beta)-1)),nrow=1)
     wd_inter <- t(intercept_IM%*%beta-H0) %*% solve(intercept_IM%*%vcov%*%t(intercept_IM))%*%(intercept_IM%*%beta-H0)
     pval_i = 1-pchisq(wd_inter,1)
-    
+
     #Splines
     splineLength <- sapply(object$dissim_dat_params, `[[`, "dim")[2,]
     val1 <- seq(2,length(beta),splineLength[1])
@@ -32,7 +32,13 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
       L <- matrix(rep(0, length(beta) * w), ncol = length(beta))
       Terms <- seq(val1[i],val2[i],1)
       for (ii in 1:w) L[ii, Terms[ii]] <- 1
-      wd <- t(L %*% beta - H0) %*% solve(L %*% vcov %*% t(L)) %*% (L %*% beta - H0)
+      vcov1 <- try(solve(L %*% vcov %*% t(L)),silent = TRUE)
+      if ((class(vcov1)=="try-error")||(class(vcov1)=="try-error"))
+      {
+        wd <- 0
+      }else{
+        wd <- t(L %*% beta - H0) %*% vcov1 %*% (L %*% beta - H0)
+      }
       pv <- 1 - pchisq(wd, df = w)
       wd_vals_gdm[1+i,]<- c(wd,w,pv)
     }
@@ -40,18 +46,18 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
     if(object$geo){ rownames(wd_vals_gdm)<-c('intercept','geo',names(object$env.dat)[-c(1:2)])
     } else { rownames(wd_vals_gdm)<-c('intercept',names(object$env.dat))
     }
-    
+
   }
-    
+
   A <- object$all.coefs.se #matrix of B bootstrap coeficient estimates.
   esti.var <- var(A) #make sure this is a matrix
   beta <- object$median.coefs.se #medians of coef estimates
-  
+
   #Intercept
   intercept_IM <- matrix(c(1,rep(0,length(beta)-1)),nrow=1)
   wd_inter <- t(intercept_IM%*%beta-H0) %*% solve(intercept_IM%*%esti.var%*%t(intercept_IM))%*%(intercept_IM%*%beta-H0)
   pval_i = 1-pchisq(wd_inter,1)
-  
+
   #Splines
   splineLength <- sapply(object$dissim_dat_params, `[[`, "dim")[2,]
   val1 <- seq(2,length(beta),splineLength[1])
@@ -62,11 +68,17 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
     w <- splineLength[1]
     L <- matrix(rep(0, length(beta) * w), ncol = length(beta))
     Terms <- seq(val1[i],val2[i],1)
-      for (ii in 1:w) L[ii, Terms[ii]] <- 1
-      wd <- t(L %*% beta - H0) %*% solve(L %*% esti.var %*% t(L)) %*% (L %*% beta - H0)
-      pv <- 1 - pchisq(wd, df = w)
-      wd_vals[1+i,]<- c(wd,w,pv)
+    for (ii in 1:w) L[ii, Terms[ii]] <- 1
+    vcov2 <- try(solve(L %*% esti.var %*% t(L)),silent = TRUE)
+    if ((class(vcov2)=="try-error")||(class(vcov2)=="try-error"))
+    {
+      wd <- 0
+    }else{
+      wd <- t(L %*% beta - H0) %*% vcov2 %*% (L %*% beta - H0)
     }
+    pv <- 1 - pchisq(wd, df = w)
+    wd_vals[1+i,]<- c(wd,w,pv)
+   }
   colnames(wd_vals) <- c("bbgdm_W","bbgdm_df","bbgdm_p-value")
   if(object$geo){ rownames(wd_vals)<-c('intercept','geo',names(object$env.dat)[-c(1:2)])
   } else { rownames(wd_vals)<-c('intercept',names(object$env.dat))
@@ -74,4 +86,4 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
   if(gdm) return(cbind(wd_vals_gdm,wd_vals))
   else return(wd_vals)
 }
-  
+
