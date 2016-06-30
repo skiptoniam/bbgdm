@@ -15,7 +15,7 @@ NumericMatrix diff_table_cpp(NumericMatrix env_dat){
         for(int i_site = 0; i_site<(nr-1); i_site++){
             for(int j_site = i_site+1; j_site<nr; j_site++){
                 for(int var = 0; var<nc_dt; var++){
-                    diff_var = env_dat(i_site,var)-env_dat(j_site,var);
+                    diff_var = std::abs(env_dat(i_site,var))-std::abs(env_dat(j_site,var));
                     diff_table(pair,var) = std::abs(diff_var);
                     }
                     pair++;
