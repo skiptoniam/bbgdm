@@ -5,3 +5,13 @@ diff_table_cpp <- function(env_dat) {
     .Call('bbgdm_diff_table_cpp', PACKAGE = 'bbgdm', env_dat)
 }
 
+#' predict bbgdm cpp function
+#' @param raster_stack raster stack of i-spline transformed environmental layers.
+#' @param output_raster binary raster one for cells to predict to and NA for areas not to predict too.
+#' @param neighbourhood numeric matrix which creates the neighbourhood average.
+#' @param bbgdm_coef I-spline coefficents from bbgdm model fit.
+#' @export
+pred_bbgdm_cpp <- function(raster_stack, output_raster, neighbourhood, bbgdm_coef) {
+    .Call('bbgdm_pred_bbgdm_cpp', PACKAGE = 'bbgdm', raster_stack, output_raster, neighbourhood, bbgdm_coef)
+}
+
