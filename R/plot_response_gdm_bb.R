@@ -1,4 +1,4 @@
-#' Function for plotting bb.GDM response curves.
+#' Function for plotting bbgdm response curves.
 #'
 #' Plots a Generalised dissimilarity model with bayesian bootstrap.
 #' @param object As derived from bbgdm function
@@ -14,7 +14,7 @@
 #' plotResponse(test.bbgdm)
 
 
-plotResponse <- function(object, plotdim = c(2, 2)){
+plotResponse <- function(object, plotdim = c(2, 2),...){
   nplot <- prod(plotdim)
   Xold <- data.matrix(object$dissim_dat)
   splineLength <- sapply(object$dissim_dat_params, `[[`, "dim")[2,]
@@ -85,9 +85,10 @@ plotResponse <- function(object, plotdim = c(2, 2)){
          }
          for (i in mini:maxi) {
               plot(grid_real[,i], Splinessum[,i], col = "black",type = "l", ylab = paste0("f(",colnames(diff_table)[i],")"),
-                   ylim = range(c(Splinessum[,i],Splines.05[,i],Splines.95[,i])), main = colnames(diff_table)[i],xlab = "")#,Splines.pred.05[,i],Splines.pred.95[,i]))
+                   ylim = range(c(Splinessum,Splines.05,Splines.95)), xlab = "",...)#,Splines.pred.05[,i],Splines.pred.95[,i]))
               lines(grid_real[, i], Splines.05[,i], col = "black",type = "l", lty = 3)
               lines(grid_real[, i], Splines.95[,i], col = "black",type = "l", lty = 3)
+              mtext(paste0("(",letters[i],")"),adj = 0)
                 }
               par(mar = c(0, 0, 0, 0))
               plot(0, 0, type = "n", axes = FALSE, bty = "n", pty = "m",xlab = "", ylab = "")

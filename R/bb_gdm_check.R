@@ -39,6 +39,6 @@ bbgdm.check <- function (object, plots.mfrow = c(2, 2),...)
     hist(res, xlab = "Random Quantile Residuals",main = "",...)
     plot(pi,res,cex=.5,pch=16, xlab="Predicted Dissimilarity",ylab="Random Quantile Residuals",...)
     plot(pi,y[,1]/y[,2],cex=.5,pch=16, xlab="Predicted Dissimilarity",ylab="Observed Dissimilarity",...)
-    mtext("Bayesian Bootstrap GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
+    # mtext("Bayesian Bootstrap GDM diagnostics",outer = TRUE, cex=1.1,col="black",font=2,line=-1)
 }
 
