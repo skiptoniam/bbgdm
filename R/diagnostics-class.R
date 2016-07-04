@@ -61,6 +61,7 @@ plot.diagnostics<- function(object,...){
 #' @examples
 #' #wald test on bbdgm
 #' bbgdm.wald.test(test.bbgdm)
+#'
 
 bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
   # H0: Hypothesis test = 0
@@ -145,22 +146,14 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
 
 #' @rdname diagnostics
 #' @name ggplot.bbgdm
-#' @param object a \code{bbgdm} object
 #' @param pars name of parameters to plot.
 #' @param pars_labels vector of parameter labels.
 #' @param zero_line logical. Whether or not to the zero #' medians.
 #' @param horizontal logical. Whether or not you would like the lines to be
 #' @param xlims custom xlims
-#' @description plots a catepillar plot of splines bases as crediable intervals.
-#' @param ... other arguments
-#'
 #' @importFrom ggplot2 ggplot
 #' @examples
-#' x <-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
-#' y <- simulate_covariates(x,2)
-#' form <- ~ 1 + covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form, sp.dat=x, env.dat=y,family="binomial",
-#'                    geo=FALSE,dism_metric="number_non_shared", nboot=10)
+#' #plot covariate catepillar plot
 #' library(ggplot2)
 #' ggplot(test.bbgdm)
 #'
