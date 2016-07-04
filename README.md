@@ -52,34 +52,37 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
     ## Bayesian bootstrap  90  iterations
     ## Bayesian bootstrap  100  iterations
 
+### Plot diagnostics
+
+``` r
+resids <- diagnostics(fm1)
+par(mfrow=c(2,2))
+plot(resids)
+```
+
+![](readme_files/figure-markdown_github/unnamed-chunk-5-1.png)<!-- -->
+
 ### Plot response curves
 
 ``` r
-plotResponse(fm1,plotdim = c(1,1))
+response <- as.response(fm1)
+par(mfrow=c(1,1))
+plot(response)
 ```
 
-![](readme_files/figure-markdown_github/unnamed-chunk-5-1.png) \#\#\# Plot diagnostics
+![](readme_files/figure-markdown_github/unnamed-chunk-6-1.png)<!-- -->
 
-``` r
-bbgdm.check(fm1)
-```
-
-![](readme_files/figure-markdown_github/unnamed-chunk-6-1.png) \#\#\# Run 'Wald-like' test on parameters
+### Run 'Wald-like' test on parameters
 
 ``` r
 library(xtable)
-```
-
-    ## Warning: package 'xtable' was built under R version 3.2.5
-
-``` r
 wt <- bbgdm.wald.test(fm1)
 tab <- xtable(wt)
 print(tab, type = "html")
 ```
 
-<!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Tue Jun 14 12:16:45 2016 -->
+<!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
+<!-- Tue Jul 05 01:58:39 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -99,7 +102,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-12.45
+13.03
 </td>
 <td align="right">
 1.00
@@ -113,13 +116,13 @@ intercept
 A1
 </td>
 <td align="right">
-2.14
+2.02
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.54
+0.57
 </td>
 </tr>
 </table>

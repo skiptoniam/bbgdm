@@ -36,14 +36,22 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              dism_metric="number_non_shared",spline_type = 'ispline',
              nboot=100, geo=FALSE,optim.meth='nlmnib')
 ```
-### Plot response curves
-```{r,fig.width = 4, fig.height = 4, dpi = 300, set_xpd = TRUE}
-plotResponse(fm1,plotdim = c(1,1))
-```
+
 ### Plot diagnostics
-```{r,fig.width = 8, fig.height = 8, dpi = 300, set_xpd = TRUE}
-bbgdm.check(fm1)
+```{r,fig.width = 4, fig.height = 4}
+resids <- diagnostics(fm1)
+par(mfrow=c(2,2))
+plot(resids)
 ```
+
+
+### Plot response curves
+```{r,fig.width = 4, fig.height = 4}
+response <- as.response(fm1)
+par(mfrow=c(1,1))
+plot(response)
+```
+
 ### Run 'Wald-like' test on parameters
 ```{r,results='asis'}
 library(xtable)
