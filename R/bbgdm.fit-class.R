@@ -4,19 +4,18 @@
 #' @param X Model matirx of predictors, see \code{\link[stats]{model.matrix}}.
 #' @param y Model response, see \code{\link[stats]{model.response}}.
 #' @param wt weights for model.
-#' @param link character link functions. default is 'logit', can call \code{\link[bbgdm]{negexp}
+#' @param link character link functions. default is 'logit', can call \code{\link[bbgdm]{negexp}}
 #' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
 #' @param est.var logical if true estimated parameter variance using optimiser.
 #' @param trace trace options looks at \code{\link[stats]{optim}} for details.
 #' @param prior numeric vector of starting values for intercept and splines
 #' @param control control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}
-#' @param ... other arguments
 #' @return fit fitted logistic binomial model as per optim methods
 #' @export
 #' @author Skipton Woolley
 
 bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
-                    control=bbgdm.control(...),...){
+                    control=bbgdm.control(...)){
 
   loglike <- function(x) {
     -loglikelihood(x, X, y, wt, link)
@@ -118,14 +117,6 @@ bbgdm.control <- function (method = "BFGS", maxit = 1000, hessian = FALSE,
   rval
 }
 
-#' @rdname bbgdm.fit
-#' @name loglikelihood
-#' @param params initial values see start \link[stats]{optim}
-#' @param X model matrix
-#' @param y response variable
-#' @param wt weights
-#' @param link link function
-
 loglikelihood <- function(params,X,y,wt,link){
   lp <- X %*% c(params[1],exp(params[-1]))
   if(link=='negexp') p <- bbgdm::negexp()
@@ -134,14 +125,6 @@ loglikelihood <- function(params,X,y,wt,link){
   ll.contr<-sum(lb)
   return(ll.contr)
 }
-
-#' @rdname bbgdm.fit
-#' @name gradient
-#' @param params initial values see start \link[stats]{optim}
-#' @param X model matrix
-#' @param y response variable
-#' @param wt weights
-#' @param link link function
 
 gradient <- function(params,X,y,wt,link){
   eta <- X %*% c(params[1],exp(params[-1]))
@@ -161,10 +144,6 @@ gradient <- function(params,X,y,wt,link){
   sum_deri <- apply(deri,2,sum)
   return(sum_deri)
 }
-
-#' @rdname bbgdm.fit
-#' @name negexp
-#' @return negexp() A object of class \code{\link[stats]{glm}}, a list with componentslink function
 
 negexp<- function()
 {
