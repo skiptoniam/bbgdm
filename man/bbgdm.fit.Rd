@@ -3,22 +3,13 @@
 \name{bbgdm.fit}
 \alias{bbgdm.control}
 \alias{bbgdm.fit}
-\alias{gradient}
-\alias{loglikelihood}
-\alias{negexp}
 \title{bbgdm.fit objects}
 \usage{
 bbgdm.fit(X, y, wt = NULL, link, optim.meth = "optim", est.var = TRUE,
-  trace = FALSE, prior = FALSE, control = bbgdm.control(...), ...)
+  trace = FALSE, prior = FALSE, control = bbgdm.control(...))
 
 bbgdm.control(method = "BFGS", maxit = 1000, hessian = FALSE,
   trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05, ...)
-
-loglikelihood(params, X, y, wt, link)
-
-gradient(params, X, y, wt, link)
-
-negexp()
 }
 \arguments{
 \item{X}{Model matirx of predictors, see \code{\link[stats]{model.matrix}}.}
@@ -27,7 +18,7 @@ negexp()
 
 \item{wt}{weights for model.}
 
-\item{link}{link function}
+\item{link}{character link functions. default is 'logit', can call \code{\link[bbgdm]{negexp}}}
 
 \item{optim.meth}{optimisation method options avaliable are 'optim' and 'nlmnib'}
 
@@ -38,8 +29,6 @@ negexp()
 \item{prior}{numeric vector of starting values for intercept and splines}
 
 \item{control}{control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}}
-
-\item{...}{other arguments}
 
 \item{method}{characters string specifying the method argument passed to optim.}
 
@@ -53,32 +42,12 @@ negexp()
 
 \item{fstol}{numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.}
 
-\item{params}{initial values see start \link[stats]{optim}}
-
-\item{trace}{logical or integer controlling whether tracing information on the progress of the optimization should be produced (passed to optim).}
-
 \item{...}{arguments passed to optim.}
 
-\item{X}{model matrix}
-
-\item{y}{response variable}
-
-\item{wt}{weights}
-
-\item{params}{initial values see start \link[stats]{optim}}
-
-\item{X}{model matrix}
-
-\item{y}{response variable}
-
-\item{wt}{weights}
-
-\item{link}{link function}
+\item{trace}{logical or integer controlling whether tracing information on the progress of the optimization should be produced (passed to optim).}
 }
 \value{
 fit fitted logistic binomial model as per optim methods
-
-negexp() A object of class \code{\link[stats]{glm}}, a list with componentslink function
 }
 \author{
 Skipton Woolley

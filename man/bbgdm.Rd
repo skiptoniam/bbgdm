@@ -2,6 +2,8 @@
 % Please edit documentation in R/bbgdm-class.R
 \name{bbgdm}
 \alias{bbgdm}
+\alias{plot.bbgdm}
+\alias{predict.bbgdm}
 \title{bbgdm objects}
 \usage{
 bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
@@ -10,6 +12,11 @@ bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
   coord.names = c("X", "Y"), lc_data = NULL, minr = 0, maxr = NULL,
   optim.meth = "nlmnib", est.var = FALSE, trace = FALSE, prior = FALSE,
   control = bbgdm.control())
+
+plot.bbgdm(object, ...)
+
+predict.bbgdm(object, data, neighbourhood = NULL, outer = FALSE,
+  uncertainty = TRUE, ...)
 }
 \arguments{
 \item{form}{formula for bbgdm model}
@@ -55,9 +62,23 @@ Default is 'logit', but 'negexp' and other binomial link functions can be called
 \item{prior}{numeric vector of starting values for intercept and splines}
 
 \item{control}{control options for gdm calls \link[bbgdm]{gdm_control} as default.}
+
+\item{object}{As derived from bbgdm function}
+
+\item{data}{raster stack of the same covariates used to fit model object for the region you wish to predict too.}
+
+\item{outer}{logical default is FALSE, if TRUE only calculates the outer edge of neighbourhoods area.}
+
+\item{uncertainty}{logical if TRUE predict will return a list with two rasters the mean estimate and the uncertainty (defined as the coefficent of variation)}
+
+\item{object}{As derived from bbgdm function}
+
+\item{neigbourhood}{int default is three, number of neighbouring cells to estimate mean dissimilarity.}
 }
 \value{
 a bbgdm model object
+
+raster of mean turnover estimated based on neighbourhood distance.
 }
 \examples{
 sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
@@ -65,5 +86,8 @@ env.dat <- simulate_covariates(sp.dat,2)
 form <- ~ 1 + covar_1 + covar_2
 test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10,
                     geo=FALSE,optim.meth='nlmnib')
+#plot bbgdm fit
+plot(test.bbgdm)
+
 }
 
