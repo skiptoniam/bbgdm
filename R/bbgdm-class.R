@@ -41,7 +41,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   dism_metric="number_non_shared", nboot=100,
                   spline_type="ispline",spline_df=2,spline_knots=1,
                   geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),lc_data=NULL,minr=0,maxr=NULL,
-                  optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=gdm_control()){
+                  optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=bbgdm.control()){
 
   cat(family,"regression is on the way. \n")
     if (is.character(family))
@@ -63,42 +63,26 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   env.dat <- model.frame(form, as.data.frame(env.dat))
   mean.env.dat <- sd.env.dat <- NA
   env.dat <- model.frame(as.data.frame(env.dat))
-  offset <- model.offset(env.dat)
-  if(!is.null(offset)) {
-    offset_name <- colnames(env.dat)[length(colnames(env.dat))]
-    env.dat <- env.dat[colnames(env.dat)[1:(length(colnames(env.dat))-1)]]
-  }
   dissim_dat <- dissim_table(sp.dat,env.dat,dism_metric=dism_metric,spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots,
                              geo=geo,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
   dissim_dat_table <- as.data.frame(dissim_dat$diff_table)
   dissim_dat_params <- dissim_dat$diff_table_params
   if(dism_metric=="number_non_shared") preds <- colnames(dissim_dat_table[,3:ncol(dissim_dat_table)])
   else preds <- colnames(dissim_dat_table[,2:ncol(dissim_dat_table)])
-  if(!is.null(offset)){ form <- update.formula(form, paste0(left," ~ ",paste(preds, collapse=" + "),"+ offset(offset_ij)"))
-                        offset_ij <- diff_table_cpp(as.matrix(offset))
-                        dissim_dat_table <- as.data.frame(cbind(dissim_dat_table,offset_ij))
-                        colnames(dissim_dat_table)[length(colnames(dissim_dat_table))] <- "offset_ij"
-  } else { form <- update.formula(form, paste0(left," ~ ",paste(preds, collapse=" + ")))
-  }
+  form <- update.formula(form, paste0(left," ~ ",paste(preds, collapse=" + ")))
   temp <- model.frame(form, as.data.frame(dissim_dat_table))
   y <- model.response(temp)
-  offset <- model.offset(temp)
-  if (is.null(offset))
-    offset <- rep(0, nrow(temp))
-  if (!is.null(offset) && length(offset) != NROW(y)) {
-    stop(gettextf("number of offsets is %d should equal %d (number of observations)",
-                  length(offset), NROW(y)), domain = NA)}
-    X <- model.matrix(form, as.data.frame(dissim_dat_table))
-    mod  <- gdm_fit(X,y,offset=offset,link=link,optim.meth=optim.meth,est.var=TRUE, trace=trace,prior=prior,control=control)
-    Nsite <- nrow(sp.dat)
-    nreps <- nboot
-    boot_print <- nboot/10
-    mods <- list()
+  X <- model.matrix(form, as.data.frame(dissim_dat_table))
+  mod  <- bbgdm.fit(X,y,link=link,optim.meth=optim.meth,est.var=TRUE,trace=trace,prior=prior,control=control)
+  Nsite <- nrow(sp.dat)
+  nreps <- nboot
+  boot_print <- nboot/10
+  mods <- list()
     for (ii in 1:nreps){
       w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
-      mods[[ii]] <- gdm_fit(X,y,wt=wij,offset=offset, link=link,optim.meth=optim.meth,est.var=est.var, trace=trace,prior=prior,control=control)
+      mods[[ii]] <- bbgdm.fit(X,y,wt=wij,link=link,optim.meth=optim.meth,est.var=est.var,trace=trace,prior=prior,control=control)
       if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
     }
 
@@ -126,7 +110,6 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   bbgdm.results$env.dat <- env.dat
   bbgdm.results$X <- X
   bbgdm.results$y <- y
-  bbgdm.results$offset <- offset
   bbgdm.results$dissim_dat <- dissim_dat_table
   bbgdm.results$dissim_dat_params <- dissim_dat_params
   bbgdm.results$family <- as.character(family)[1]
