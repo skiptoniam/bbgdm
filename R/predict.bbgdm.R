@@ -2,10 +2,12 @@
 #' @param object As derived from bbgdm function
 #' @param data raster stack of the same covariates used to fit model object for the region you wish to predict too.
 #' @param neigbourhood int default is three, number of neighbouring cells to estimate mean dissimilarity.
+#' @param outer logical default is FALSE, if TRUE only calculates the outer edge of neighbourhoods area.
+#' @param uncertainty logical if TRUE predict will return a list with two rasters the mean estimate and the uncertainty (defined as the coefficent of variation)
 #' @return raster of mean turnover estimated based on neighbourhood distance.
 #' @export
 
-predict.bbgdm <- function (object, data, neighbourhood=NULL, ...)
+predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncertainty=TRUE,...)
 {
   options(warn.FPU = FALSE)
     if (class(data) != "RasterStack" & class(data) != "RasterLayer" &
@@ -22,10 +24,11 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, ...)
     }
   if(is.null(neighbourhood)){
     cat('using default three cell neighbourhood to estimate dissimilarity')
-    neighbourhood <- 2
+    neighbourhood <- 3
   }
   #create neighbour matrix
   rel<-expand.grid(seq(-neighbourhood,neighbourhood,1),seq(-neighbourhood,neighbourhood,1))
+  if (outer) rel <-rel[(rel[,1]==-neighbourhood | rel[,1]==neighbourhood | rel[,2]==-neighbourhood | rel[,2]==neighbourhood),]
   rel<-as.matrix(rel[,c(2,1)])
   max.dist<-max(rel)
   rel<-cbind(rel,(1-((sqrt((rel[,1]^2)+(rel[,2]^2))/max.dist))))
@@ -47,5 +50,17 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, ...)
   raster_data <- raster::as.array(rs)
   beta_mat <- raster::as.matrix(beta.r)
   beta.r[] <- bbgdm::pred_bbgdm_cpp(raster_data,beta_mat,rel,bbgdm_coef)
-  return(beta.r)
+  if(uncertainty){
+  beta.r.lw <- data[[1]]
+  beta.r.up <- data[[1]]
+  beta.r.lw[cells]<-1
+  beta.r.up[cells]<-1
+  bbgdm_coef.lw <- as.vector(object$quantiles.coefs.se[1,])
+  bbgdm_coef.up <- as.vector(object$quantiles.coefs.se[2,])
+  beta.r.lw[] <- bbgdm::pred_bbgdm_cpp(raster_data,beta_mat,rel,bbgdm_coef.lw)
+  beta.r.up[] <- bbgdm::pred_bbgdm_cpp(raster_data,beta_mat,rel,bbgdm_coef.up)
+  pred.se <- abs(beta.r.up-beta.r.lw)/beta.r
+  }
+  if(uncertainty) return(list(mean.beta=beta.r,se.beta=pred.se))
+  else return(beta.r)
 }
