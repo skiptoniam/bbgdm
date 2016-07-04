@@ -2,9 +2,9 @@
 #' @importFrom Rcpp sourceCpp
 NULL
 
-#' Function to perform GDM w/ Bayesian Bootstrap.
-#'
-#' Runs a Generalised dissimilarity model with bayesian bootstrap.
+#' @title bbgdm objects
+#' @rdname bbgdm
+#' @name bbgdm
 #' @param form formula for bbgdm model
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
 #' @param env.dat environmental or spatial covariates at each site.
