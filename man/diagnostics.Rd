@@ -35,11 +35,6 @@ bbgdm.wald.test(object, H0 = 0, gdm = FALSE)
 
 \item{object}{Returned model from \link[bbgdm]{bbgdm}.}
 }
-\value{
-random quantile residuals for bbgdm
-
-A table of Wald-Test statistics
-}
 \examples{
 x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 y <- simulate_covariates(x,2)
@@ -47,9 +42,11 @@ form <- ~ 1 + covar_1 + covar_2
 test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial",
                     dism_metric="number_non_shared",nboot=10,geo=FALSE)
 resids <- diagnostics(test.bbgdm)
+
 #plot residuals
 par(mfrow=c(2,2))
 plot(resids)
+
 #wald test on bbdgm
 bbgdm.wald.test(test.bbgdm)
 

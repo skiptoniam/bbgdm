@@ -2,7 +2,6 @@
 #' @rdname diagnostics
 #' @name diagnostics
 #' @param object bbgdm model output
-#' @return random quantile residuals for bbgdm
 #' @export
 #' @examples
 #' x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
@@ -11,6 +10,7 @@
 #' test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial",
 #'                     dism_metric="number_non_shared",nboot=10,geo=FALSE)
 #' resids <- diagnostics(test.bbgdm)
+#'
 
 diagnostics <- function (object)
 {
@@ -42,6 +42,7 @@ diagnostics <- function (object)
 #' #plot residuals
 #' par(mfrow=c(2,2))
 #' plot(resids)
+#'
 
 plot.diagnostics<- function(object,...){
   qqnorm(object$res,ylab='Random Quantile Residuals',main = "")
@@ -56,7 +57,6 @@ plot.diagnostics<- function(object,...){
 #' @param object Returned model from \link[bbgdm]{bbgdm}.
 #' @param H0 A numeric value giving the null hypothesis for the test. Generally zero.
 #' @param gdm Logic if true calculates the Wald-test using variance-covariance matrix derived from the hessian matrix. Note: These estimates are probably wrong due to hessian matrix being calulated with respect to the likelihoods.
-#' @return A table of Wald-Test statistics
 #' @export
 #' @examples
 #' #wald test on bbdgm
