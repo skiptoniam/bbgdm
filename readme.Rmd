@@ -4,7 +4,7 @@ output:
     variant: markdown_github
 ---
 
-#BBGDM
+###BBGDM
 [![Travis-CI Build Status](https://travis-ci.org/skiptoniam/bbgdm.svg?branch=master)](https://travis-ci.org/skiptoniam/bbgdm)
 
 BBGDM is a R package for running Generalized Dissimilarity Models with Bayesian Bootstrap for parameter estimation. To install package run the following command in your R terminal
@@ -13,13 +13,13 @@ install.packages(c('devtools'))
 devtools::install_github('skiptoniam/bbgdm')
 ```
 
-### Load the required libaries, we need vegan for the dune dataset.
+##### Load the required libaries, we need vegan for the dune dataset.
 ```{r,error=FALSE,message=FALSE,warning=FALSE}
 library(bbgdm)
 library(vegan)
 ```
 
-### Run bbgdm on the famous dune meadow data
+##### Run bbgdm on the famous dune meadow data
 The dune meadow vegetation data, dune, has cover class values of 30 species on 20 sites.
 Make the abundance data presence/absence.
 ```{r}
@@ -28,7 +28,7 @@ data(dune.env)
 dune_pa <- ifelse(dune>0,1,0)
 ```
 
-### Fit a bbgdm
+##### Fit a bbgdm
 Now we have a species by sites matrix of simulated data and a set data for a one dimensional gradient.
 ```{r,message=FALSE,warning=FALSE,error=FALSE,results='hide'}
 form <- ~1+A1
@@ -37,22 +37,22 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              nboot=100, geo=FALSE,optim.meth='nlmnib')
 ```
 
-### Plot diagnostics
+##### Plot diagnostics
 ```{r,fig.width = 6, fig.height = 6,fig.align='center'}
 resids <- diagnostics(fm1)
 par(mfrow=c(2,2))
 plot(resids)
 ```
 
-### Plot response curves
+##### Plot response curves
 ```{r,fig.width = 4, fig.height = 4,fig.align='center'}
 response <- as.response(fm1)
 par(mfrow=c(1,1))
 plot(response)
 ```
 
-### Run 'Wald-like' test on parameters
-```{r,results='asis'}
+##### Run 'Wald-like' test on parameters
+```{r,results='asis',message=FALSE,warning=FALSE,error=FALSE}
 library(xtable)
 wt <- bbgdm.wald.test(fm1)
 tab <- xtable(wt)
