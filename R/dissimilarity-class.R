@@ -1,12 +1,13 @@
 #' @title dissimilarity objects
 #' @rdname dissimilarity
 #' @name dissim_table
+#' @description creates a \code{dissim_table} data object which is required for \code{bbgdm}
 #' @param sp.dat Presence absence matrix.
 #' @param env.dat Matrix of covariates for bbgdm; if using own data as covariates make sure to set sim_covar=FALSE,
 #' otherwise simulated covariates will be caluclated instead.
 #' @param dism_metric Dissimilarity to caluclate; If "bray_curtis" calculates Bray-Curtis dissimilarity,
 #' if "number_non_shared" returns number of shared species at site_ij which can be used in a binomial model for GDM.
-#' @param spline_type If "bspline" calculates bs spline from spline package. If "ispline" calculates ispline.
+#' @param spline_type If "ispline" calculates ispline. If "bspline" calculates bc from spline package.
 #' @param spline_df degrees of freedom; one can specify df rather than knots. Default = 3.
 #' @param spline_knots The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.
 #' @param geo logical If true geographic distance is calculated if
@@ -21,7 +22,7 @@
 #' y <- simulate_covariates(x,4)
 #' diff_table <- dissim_table(x,y,dism_metric="number_non_shared")
 
-dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_type="bspline",spline_df=1,
+dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_type="ispline",spline_df=1,
                          spline_knots=2, coord.names=c("X","Y"),
                          geo=FALSE,geo.type="euclidean"){
   if(!is.matrix(env.dat)) env.dat <- as.matrix(env.dat)
@@ -105,7 +106,17 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
       diff_table_params <- tmp$spline.attr
     }
   }
-  return(list(diff_table=diff_table_final,diff_table_params=diff_table_params))
+  structure(list(diff_table=diff_table_final,diff_table_params=diff_table_params),class='dissim_table')
+}
+
+#' @rdname dissimilarity
+#' @export
+is.dissim_table <- function (x) {
+  # test whether x is a dissim_table object
+  ans <- inherits(x, "dissim_table")
+  # return the answer
+  return (ans)
+
 }
 
 gcdist <- function(x1, y1, x2, y2) {

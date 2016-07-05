@@ -30,7 +30,7 @@ dune_pa <- ifelse(dune>0,1,0)
 
 ### Fit a bbgdm
 Now we have a species by sites matrix of simulated data and a set data for a one dimensional gradient.
-```{r,message=FALSE,warning=FALSE,error=FALSE}
+```{r,message=FALSE,warning=FALSE,error=FALSE,results='hide'}
 form <- ~1+A1
 fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              dism_metric="number_non_shared",spline_type = 'ispline',

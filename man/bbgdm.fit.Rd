@@ -18,17 +18,19 @@ bbgdm.control(method = "BFGS", maxit = 1000, hessian = FALSE,
 
 \item{wt}{weights for model.}
 
-\item{link}{character link functions. default is 'logit', can call \code{\link[bbgdm]{negexp}}}
+\item{link}{character link functions. default is 'logit', can call other
+link functions \code{\link[stats]{make.link}} or a 'negexp' custom link function (e.g., Ferrier etal., 2007).}
 
-\item{optim.meth}{optimisation method options avaliable are 'optim' and 'nlmnib'}
+\item{optim.meth}{optimisation method options avaliable are 'optim' and 'nlmnib',
+calls either method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}}.}
 
 \item{est.var}{logical if true estimated parameter variance using optimiser.}
 
 \item{trace}{trace options looks at \code{\link[stats]{optim}} for details.}
 
-\item{prior}{numeric vector of starting values for intercept and splines}
+\item{prior}{numeric vector of starting values for intercept and splines.}
 
-\item{control}{control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}}
+\item{control}{control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}.}
 
 \item{method}{characters string specifying the method argument passed to optim.}
 
@@ -42,12 +44,18 @@ bbgdm.control(method = "BFGS", maxit = 1000, hessian = FALSE,
 
 \item{fstol}{numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.}
 
-\item{...}{arguments passed to optim.}
+\item{\dots}{for \code{bbgdm.fit()} or more \code{bbgdm.control()}.}
 
 \item{trace}{logical or integer controlling whether tracing information on the progress of the optimization should be produced (passed to optim).}
 }
 \value{
-fit fitted logistic binomial model as per optim methods
+fit single gdm
+}
+\description{
+function for fitting a \code{bbgdm} model. This is essential a single gdm
+and builds the core of \code{bbgdm}. Like \code{\link[stats]{glm.fit}} a number of options
+can be defined. Like: optimisation method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}},
+link function \code{\link[stats]{make.link}}.
 }
 \author{
 Skipton Woolley

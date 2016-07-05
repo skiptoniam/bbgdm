@@ -1,16 +1,23 @@
 #' @title bbgdm.fit objects
 #' @rdname bbgdm.fit
 #' @name bbgdm.fit
+#' @description function for fitting a \code{bbgdm} model. This is essential a single gdm
+#' and builds the core of \code{bbgdm}. Like \code{\link[stats]{glm.fit}} a number of options
+#' can be defined. Like: optimisation method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}},
+#' link function \code{\link[stats]{make.link}}.
+#' @param \dots for \code{bbgdm.fit()} or more \code{bbgdm.control()}.
 #' @param X Model matirx of predictors, see \code{\link[stats]{model.matrix}}.
 #' @param y Model response, see \code{\link[stats]{model.response}}.
 #' @param wt weights for model.
-#' @param link character link functions. default is 'logit', can call \code{\link[bbgdm]{negexp}}
-#' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
+#' @param link character link functions. default is 'logit', can call other
+#' link functions \code{\link[stats]{make.link}} or a 'negexp' custom link function (e.g., Ferrier etal., 2007).
+#' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib',
+#' calls either method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}}.
 #' @param est.var logical if true estimated parameter variance using optimiser.
 #' @param trace trace options looks at \code{\link[stats]{optim}} for details.
-#' @param prior numeric vector of starting values for intercept and splines
-#' @param control control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}
-#' @return fit fitted logistic binomial model as per optim methods
+#' @param prior numeric vector of starting values for intercept and splines.
+#' @param control control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}.
+#' @return fit single gdm
 #' @export
 #' @author Skipton Woolley
 
@@ -82,7 +89,6 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
 #'@param start	an optional vector with starting values for all parameters.
 #'@param fsmaxit	integer specifying maximal number of additional (quasi) Fisher scoring iterations. For details see below.
 #'@param fstol	numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.
-#'@param ...	arguments passed to optim.
 #'@export
 
 bbgdm.control <- function (method = "BFGS", maxit = 1000, hessian = FALSE,

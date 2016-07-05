@@ -2,11 +2,14 @@
 % Please edit documentation in R/dissimilarity-class.R
 \name{dissim_table}
 \alias{dissim_table}
+\alias{is.dissim_table}
 \title{dissimilarity objects}
 \usage{
 dissim_table(sp.dat, env.dat, dism_metric = "number_non_shared",
-  spline_type = "bspline", spline_df = 1, spline_knots = 2,
+  spline_type = "ispline", spline_df = 1, spline_knots = 2,
   coord.names = c("X", "Y"), geo = FALSE, geo.type = "euclidean")
+
+is.dissim_table(x)
 }
 \arguments{
 \item{sp.dat}{Presence absence matrix.}
@@ -17,7 +20,7 @@ otherwise simulated covariates will be caluclated instead.}
 \item{dism_metric}{Dissimilarity to caluclate; If "bray_curtis" calculates Bray-Curtis dissimilarity,
 if "number_non_shared" returns number of shared species at site_ij which can be used in a binomial model for GDM.}
 
-\item{spline_type}{If "bspline" calculates bs spline from spline package. If "ispline" calculates ispline.}
+\item{spline_type}{If "ispline" calculates ispline. If "bspline" calculates bc from spline package.}
 
 \item{spline_df}{degrees of freedom; one can specify df rather than knots. Default = 3.}
 
@@ -33,6 +36,9 @@ if "number_non_shared" returns number of shared species at site_ij which can be 
 diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
  If select dissim="number_non_shared", will return "nonsharedspp_ij","sumspp_ij",
  which can be used as response variables in a binomial bbgdm.
+}
+\description{
+creates a \code{dissim_table} data object which is required for \code{bbgdm}
 }
 \examples{
 x <- matrix(rbinom(100,1,.5),10,10) #toy presence absence matrix

@@ -50,7 +50,6 @@ table2pam <- function (x, site.id = "site.id", sp.id = "sp.id", abund = FALSE, a
 pam2dissim <- function(x,dism_metric="number_non_shared"){
   cat(paste0("Calculating ",dism_metric," dissimilarity\n"))
   if(dism_metric=="bray_curtis"){
-    #     if(!Abund){
     x <- as.matrix(x)
     dissimilarity.data<-matrix(NA,nrow(x),nrow(x))
     for(i_site in 1:nrow(x))
@@ -78,22 +77,18 @@ pam2dissim <- function(x,dism_metric="number_non_shared"){
     dism <- round(dissimilarity.data*100)
   }
   if(dism_metric=="number_non_shared") {
-    # cat("Calculating Number of Shared Species for Binomial Model.\n")
     x <- as.matrix(x)
     no_share <- matrix(NA,nrow(x),nrow(x))
     sum_share <- matrix(NA,nrow(x),nrow(x))
-    #     max_sp <- matrix(NA,nrow(x),nrow(x))
-    for(i_site in 1:(nrow(x)-1)){
+     for(i_site in 1:(nrow(x)-1)){
       for(j_site in c(i_site+1):c(nrow(x))){
-        #         no_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)==2)
-        no_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)==1)#orig
+         no_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)==1)
         sum_share[i_site,j_site] <- sum(apply(x[c(i_site,j_site),],2,sum)!=0)
-        #         max_sp[i_site,j_site] <- max(apply(x[c(i_site,j_site),],1,sum))
-      }
+       }
     }
   }
   if(dism_metric=="number_non_shared") {
-    dism <- list(no_share=no_share,sum_share=sum_share)#,max_sp=max_sp)
+    dism <- list(no_share=no_share,sum_share=sum_share)
     return(dism)
   }else{
     return(dism)

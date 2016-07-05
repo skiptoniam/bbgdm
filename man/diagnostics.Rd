@@ -35,7 +35,12 @@ bbgdm.wald.test(object, H0 = 0, gdm = FALSE)
 
 \item{object}{Returned model from \link[bbgdm]{bbgdm}.}
 }
+\description{
+extracts diagnostics from \code{bbgdm} object, like random quantile residuals and plots them.
+diagnostics can also call the 'Wald-like' test on a \code{bbgdm} object and returns a table of values.
+}
 \examples{
+# fit bbgdm and extract residuals.
 x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 y <- simulate_covariates(x,2)
 form <- ~ 1 + covar_1 + covar_2
@@ -43,14 +48,14 @@ test.bbgdm <- bbgdm(form,sp.dat=x, env.dat=y,family="binomial",
                     dism_metric="number_non_shared",nboot=10,geo=FALSE)
 resids <- diagnostics(test.bbgdm)
 
-#plot residuals
+# plot residuals
 par(mfrow=c(2,2))
 plot(resids)
 
-#wald test on bbdgm
+# Undertake a wald test on bbdgm object
 bbgdm.wald.test(test.bbgdm)
 
-#plot covariate catepillar plot
+# plot covariate catepillar plot
 library(ggplot2)
 ggplot(test.bbgdm)
 

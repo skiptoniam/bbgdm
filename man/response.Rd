@@ -2,27 +2,40 @@
 % Please edit documentation in R/response-class.R
 \name{as.response}
 \alias{as.response}
+\alias{is.response}
 \alias{plot.response}
 \title{response objects}
 \usage{
-as.response(object, ...)
+as.response(object)
+
+is.response(object)
 
 plot.response(object, ...)
 }
 \arguments{
-\item{object}{As derived from bbgdm function}
+\item{object}{As derived from bbgdm function.}
+
+\item{\dots}{pass further arguments to \code{plot()}.}
 }
 \value{
-values for plotting i-spline responses from bbgdm
+values for plotting i-spline responses from bbgdm.
+}
+\description{
+extracts spline reponses from \code{bbgdm} object and plots them.
 }
 \examples{
+# fit bbgdm and extract spline responses.
 x <-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
 y <- simulate_covariates(x,2)
 form <- ~ 1 + covar_1 + covar_2
 test.bbgdm <- bbgdm(form, sp.dat=x, env.dat=y,family="binomial",
                    geo=FALSE,dism_metric="number_non_shared", nboot=10)
 responses <- as.response(test.bbgdm)
-#plot responses
+
+# Did as.response work?
+is.response(responses)
+
+# plot responses
 par(mfrow=c(1,2))
 plot(responses)
 }

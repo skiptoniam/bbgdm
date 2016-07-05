@@ -1,9 +1,12 @@
 #' @title diagnostics objects
 #' @rdname diagnostics
 #' @name diagnostics
+#' @description extracts diagnostics from \code{bbgdm} object, like random quantile residuals and plots them.
+#' diagnostics can also call the 'Wald-like' test on a \code{bbgdm} object and returns a table of values.
 #' @param object bbgdm model output
 #' @export
 #' @examples
+#' # fit bbgdm and extract residuals.
 #' x <- matrix(rbinom(20*10,1,.6),20,10)# presence absence matrix
 #' y <- simulate_covariates(x,2)
 #' form <- ~ 1 + covar_1 + covar_2
@@ -39,7 +42,7 @@ diagnostics <- function (object)
 #' @name plot.diagnostics
 #' @export
 #' @examples
-#' #plot residuals
+#' # plot residuals
 #' par(mfrow=c(2,2))
 #' plot(resids)
 #'
@@ -59,7 +62,7 @@ plot.diagnostics<- function(object,...){
 #' @param gdm Logic if true calculates the Wald-test using variance-covariance matrix derived from the hessian matrix. Note: These estimates are probably wrong due to hessian matrix being calulated with respect to the likelihoods.
 #' @export
 #' @examples
-#' #wald test on bbdgm
+#' # Undertake a wald test on bbdgm object
 #' bbgdm.wald.test(test.bbgdm)
 #'
 
@@ -153,7 +156,7 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
 #' @param xlims custom xlims
 #' @importFrom ggplot2 ggplot
 #' @examples
-#' #plot covariate catepillar plot
+#' # plot covariate catepillar plot
 #' library(ggplot2)
 #' ggplot(test.bbgdm)
 #'

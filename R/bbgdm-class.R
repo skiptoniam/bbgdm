@@ -90,7 +90,6 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
       mods[[ii]] <- bbgdm.fit(X,y,wt=wij,link=link,optim.meth=optim.meth,est.var=est.var,trace=trace,prior=prior,control=control)
-      # if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
       setTxtProgressBar(pb, ii)
     }
 

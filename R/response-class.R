@@ -1,19 +1,23 @@
 #' @title response objects
 #' @rdname response
 #' @name as.response
-#' @param object As derived from bbgdm function
-#' @return values for plotting i-spline responses from bbgdm
+#' @description extracts spline reponses from \code{bbgdm} object and plots them.
+#' @param object As derived from bbgdm function.
+#' @param \dots pass further arguments to \code{plot()}.
+#' @return values for plotting i-spline responses from bbgdm.
 #' @export
 #' @examples
+#' # fit bbgdm and extract spline responses.
 #' x <-matrix(rbinom(1:100,1,.6),10,10)# presence absence matrix
 #' y <- simulate_covariates(x,2)
 #' form <- ~ 1 + covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form, sp.dat=x, env.dat=y,family="binomial",
 #'                    geo=FALSE,dism_metric="number_non_shared", nboot=10)
 #' responses <- as.response(test.bbgdm)
+#'
 
 
-as.response <- function(object, ...){
+as.response <- function(object){
   Xold <- data.matrix(object$dissim_dat)
   splineLength <- sapply(object$dissim_dat_params, `[[`, "dim")[2,]
   betas <- object$median.coefs.se[2:length(object$median.coefs.se)]
@@ -62,10 +66,24 @@ as.response <- function(object, ...){
       }
 
 #' @rdname response
+#' @export
+#' @examples
+#' # Did as.response work?
+#' is.response(responses)
+#'
+is.response <- function (object) {
+  # test whether object is a response object
+  ans <- inherits(object, "response")
+  # return the answer
+  return (ans)
+
+}
+
+#' @rdname response
 #' @name plot.response
 #' @export
 #' @examples
-#' #plot responses
+#' # plot responses
 #' par(mfrow=c(1,2))
 #' plot(responses)
 
@@ -79,8 +97,6 @@ plot.response <- function(object,...){
                    xlab = colnames(object$diff_table)[i],ylim = range(c(Splinessum,Splines.05,Splines.95)),...)
               polygon(c(object$grid_real[, i],rev(object$grid_real[,i])),c(Splines.05[,i],rev(Splines.95[,i])),col="grey70",border=NA)
               lines(object$grid_real[,i], Splinessum[,i], col = "black",type = "l", lwd=2)
-              # lines(object$grid_real[, i], Splines.05[,i], col = "black",type = "l", lty = 3)
-              # lines(object$grid_real[, i], Splines.95[,i], col = "black",type = "l", lty = 3)
               mtext(paste0("(",letters[i],")"),adj = 0)
          }
 }
