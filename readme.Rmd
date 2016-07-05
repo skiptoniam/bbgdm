@@ -13,7 +13,7 @@ install.packages(c('devtools'))
 devtools::install_github('skiptoniam/bbgdm')
 ```
 
-##### Load the required libaries, we need vegan for the dune dataset.
+##### Load the required libraries, we need vegan for the dune dataset.
 ```{r,error=FALSE,message=FALSE,warning=FALSE}
 library(bbgdm)
 library(vegan)
@@ -57,4 +57,32 @@ library(xtable)
 wt <- bbgdm.wald.test(fm1)
 tab <- xtable(wt)
 print(tab, type = "html")
+```
+
+##### Predict BBGDM model
+```{r,fig.width = 8, fig.height = 4,fig.align='center'}
+#generate some random spatial autocorrelated data.
+library(raster)
+set.seed(123)
+xy <- expand.grid(x=seq(145, 150, 0.1), y=seq(-40, -35, 0.1))
+d <- as.matrix(dist(xy))
+w <- exp(-1/nrow(xy) * d)
+ww <- chol(w)
+xy$z <- t(ww) %*% rnorm(nrow(xy), 0, 0.1)
+xy$z <- scales::rescale(xy$z,range(dune.env$A1))
+coordinates(xy) <- ~x+y
+r <- rasterize(xy, raster(points2grid(xy)), 'z')
+#give it the same name as variable in bbgdm model.
+names(r)<- 'A1'
+
+#use this layer to predict turnover.
+pred.dune.sim.dat <- predict.bbgdm(fm1,r,uncertainty = TRUE)
+
+#plot the data and the turnover predictions, and error.
+colram <- colorRampPalette(c("darkblue","yellow","red"))
+colram.se <- colorRampPalette(c('antiquewhite','pink','red'))
+par(mfrow=c(1,3),mar=c(3,2,2,6))
+plot(r,main='Simulated A1')
+plot(pred.dune.sim.dat[[1]],col=colram(100),main='BBGDM turnover')
+plot(pred.dune.sim.dat[[2]],col=colram.se(100),main='BBGDM CV of turnover')
 ```

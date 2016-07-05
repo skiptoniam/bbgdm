@@ -23,34 +23,30 @@ as.response <- function(object){
   betas <- object$median.coefs.se[2:length(object$median.coefs.se)]
   betas.quantiles <- object$quantiles.coefs.se[,2:length(object$starting_gdm$coef),drop=FALSE]
   if(object$geo){ k <- ncol(object$env.dat)-1
-                  coords <- as.matrix(object$env.dat[,1:2])
-                  lc_data<-object$lc_data
-                  minr<-object$minr
-                  maxr<-object$maxr
+                  coords <- as.matrix(object$env.dat[,c("X","Y")])
                   geos <- calc_geo_dist(coords,geo.type=object$geo.type)
                   nr_df<-((nrow(object$sp.dat)^2)-nrow(object$sp.dat))/2
-                  nc_dt<-ncol(env.dat)
-                  ne<-ncol(env.dat)
-                  diff_table <- diff_table_cpp(as.matrix(env.dat))
-                  diff_table <- cbind(geos[,5],diff_table)
-                  colnames(diff_table) <-c('geo',colnames(env.dat))
+                  nc_dt<-ncol(object$env.dat)
+                  ne<-ncol(object$env.dat)
+                  diff_table <- diff_table_cpp(as.matrix( object$env.dat[-which(names(object$env.dat) %in% c("X","Y"))]))
+                  diff_table <- as.data.frame(cbind(geos[,5],diff_table))
+                  colnames(diff_table) <-c('geo',colnames(object$env.dat[-which(names(object$env.dat) %in% c("X","Y"))]))
   } else {
     k <- ncol(object$env.dat)
-    env.dat <- object$env.dat
     nr_df<-((nrow(object$sp.dat)^2)-nrow(object$sp.dat))/2
-    nc_dt<-ncol(env.dat)
-    ne<-ncol(env.dat)
-    diff_table <- diff_table_cpp(as.matrix(env.dat))
-    colnames(diff_table) <-c(colnames(env.dat))
-    }
+    nc_dt<-ncol(object$env.dat)
+    ne<-ncol(object$env.dat)
+    diff_table <- diff_table_cpp(as.matrix(object$env.dat))
+    colnames(diff_table) <-c(colnames(object$env.dat))
+  }
       grid <- matrix(rep(seq(0, 1, length.out = 100), k), ncol = k)
       grid <- t(t(grid) * as.vector(diff(apply(diff_table, 2, range))) + apply(diff_table, 2, min))
       grid <- data.frame(grid)
-      min_env <- apply(env.dat,2,function(x)min(abs(x)))
-      max_env <- apply(env.dat,2,function(x)max(abs(x)))
+      min_env <- apply(object$env.dat,2,function(x)min(abs(x)))
+      max_env <- apply(object$env.dat,2,function(x)max(abs(x)))
       if(object$geo){
-         min_env <- c(min(grid[,1]),min_env)
-         max_env <- c(max(grid[,1]),max_env)
+         min_env <- c(min(grid[,1]),min_env[-1:-2])
+         max_env <- c(max(grid[,1]),max_env[-1:-2])
       }
       grid_real <- grid
       for(i in 1:ncol(grid)) grid_real[,i] <-  scales::rescale(grid[,i],to=c(min_env[i],max_env[i]))
@@ -95,7 +91,7 @@ plot.response <- function(object,...){
          for (i in 1:ncol(Splinessum)) {
               plot(object$grid_real[,i], Splinessum[,i],type='l', ylab = paste0("f(",colnames(object$diff_table)[i],")"),
                    xlab = colnames(object$diff_table)[i],ylim = range(c(Splinessum,Splines.05,Splines.95)),...)
-              polygon(c(object$grid_real[, i],rev(object$grid_real[,i])),c(Splines.05[,i],rev(Splines.95[,i])),col="grey70",border=NA)
+              polygon(c(object$grid_real[, i],rev(object$grid_real[,i])),c(Splines.05[,i],rev(Splines.95[,i])),col="grey80",border=NA)
               lines(object$grid_real[,i], Splinessum[,i], col = "black",type = "l", lwd=2)
               mtext(paste0("(",letters[i],")"),adj = 0)
          }

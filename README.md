@@ -9,7 +9,7 @@ install.packages(c('devtools'))
 devtools::install_github('skiptoniam/bbgdm')
 ```
 
-##### Load the required libaries, we need vegan for the dune dataset.
+##### Load the required libraries, we need vegan for the dune dataset.
 
 ``` r
 library(bbgdm)
@@ -67,7 +67,7 @@ print(tab, type = "html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Tue Jul 05 14:32:29 2016 -->
+<!-- Tue Jul 05 17:39:33 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -87,7 +87,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-8.78
+12.28
 </td>
 <td align="right">
 1.00
@@ -101,13 +101,47 @@ intercept
 A1
 </td>
 <td align="right">
-1.19
+1.63
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.76
+0.65
 </td>
 </tr>
 </table>
+##### Predict BBGDM model
+
+``` r
+#generate some random spatial autocorrelated data.
+library(raster)
+set.seed(123)
+xy <- expand.grid(x=seq(145, 150, 0.1), y=seq(-40, -35, 0.1))
+d <- as.matrix(dist(xy))
+w <- exp(-1/nrow(xy) * d)
+ww <- chol(w)
+xy$z <- t(ww) %*% rnorm(nrow(xy), 0, 0.1)
+xy$z <- scales::rescale(xy$z,range(dune.env$A1))
+coordinates(xy) <- ~x+y
+r <- rasterize(xy, raster(points2grid(xy)), 'z')
+#give it the same name as variable in bbgdm model.
+names(r)<- 'A1'
+
+#use this layer to predict turnover.
+pred.dune.sim.dat <- predict.bbgdm(fm1,r,uncertainty = TRUE)
+```
+
+    ## using default three cell neighbourhood to estimate dissimilarity
+
+``` r
+#plot the data and the turnover predictions, and error.
+colram <- colorRampPalette(c("darkblue","yellow","red"))
+colram.se <- colorRampPalette(c('antiquewhite','pink','red'))
+par(mfrow=c(1,3),mar=c(3,2,2,6))
+plot(r,main='Simulated A1')
+plot(pred.dune.sim.dat[[1]],col=colram(100),main='BBGDM turnover')
+plot(pred.dune.sim.dat[[2]],col=colram.se(100),main='BBGDM CV of turnover')
+```
+
+<img src="readme_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />

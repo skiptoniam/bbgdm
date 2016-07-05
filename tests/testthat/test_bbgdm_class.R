@@ -45,14 +45,14 @@ test_that('bbgdm model fitting options work', {
                          nboot=10,geo=FALSE,optim.meth='optim',
                          spline_type = "ispline",spline_df = 3, spline_knots = 2)
 
-  #b-splines expect error - not working yet.
-  testthat::expect_error(fm_bsp_df3_k1 <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+  #b-splines now working.
+  fm_bsp_df3_k1 <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
                          nboot=10,geo=FALSE,optim.meth='optim',
-                         spline_type = "bspline",spline_df = 2, spline_knots = 1))
+                         spline_type = "bspline",spline_df = 2, spline_knots = 1)
 
-  testthat::expect_error(fm_bsp_df3_k3 <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
-                         nboot=10,geo=FALSEALSE,optim.meth='optim',
-                         spline_type = "bspline",spline_df = 3, spline_knots = 2))
+  fm_bsp_df3_k3 <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+                         nboot=10,geo=FALSE,optim.meth='optim',
+                         spline_type = "bspline",spline_df = 3, spline_knots = 2)
 
   #check models when including geographic distance
   testthat::expect_error(fm_e <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",

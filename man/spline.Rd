@@ -8,10 +8,10 @@
 \usage{
 ispline(x, spline.knots = 2, knots = NULL, spline.degree = 3)
 
+spline.trans(x, spline_type = "ispline", spline_df = 2, spline_knots = 1)
+
 spline_trans_for_pred(x, attrib = NULL, values = NULL,
   standardization = NULL, splineInterval = NULL, splineDegree = NULL)
-
-spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 1)
 }
 \arguments{
 \item{x}{data.frame of covariates to use as predictors in bbgdm.}
@@ -22,6 +22,12 @@ spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 1)
 
 \item{spline.degree}{degrees of freedom for ispline.}
 
+\item{spline_type}{If "ispline" calculates bs spline from spline package. If "bspline" calculates ispline.}
+
+\item{spline_df}{degrees of freedom; one can specify df rather than knots. Default = 3.}
+
+\item{spline_knots}{The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.}
+
 \item{attrib}{Spline parameters from model.}
 
 \item{values}{NULL}
@@ -31,19 +37,13 @@ spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 1)
 \item{splineInterval}{NULL}
 
 \item{splineDegree}{NULL}
-
-\item{spline_type}{If "bspline" calculates bs spline from spline package. If "ispline" calculates ispline.}
-
-\item{spline_df}{degrees of freedom; one can specify df rather than knots. Default = 3.}
-
-\item{spline_knots}{The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.}
 }
 \value{
 A matrix of dimension c(length(x), df), where df was supplied.
 
-I-Spline predictions
-
 A matrix of dimension c(length(x), df), where df was supplied.
+
+I-Spline predictions
 }
 \description{
 create and transform covariates to isplines or bsplines from use in \code{bbgdm}.

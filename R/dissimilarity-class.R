@@ -1,7 +1,7 @@
 #' @title dissimilarity objects
 #' @rdname dissimilarity
 #' @name dissim_table
-#' @description creates a \code{dissim_table} data object which is required for \code{bbgdm}
+#' @description creates a \code{dissim_table} which is required by \code{bbgdm}
 #' @param sp.dat Presence absence matrix.
 #' @param env.dat Matrix of covariates for bbgdm; if using own data as covariates make sure to set sim_covar=FALSE,
 #' otherwise simulated covariates will be caluclated instead.
@@ -110,7 +110,7 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
 }
 
 #' @rdname dissimilarity
-#' @param object dissim_table class object
+#' @param object dissim_table class
 #' @export
 is.dissim_table <- function (object) {
   # test whether object is a dissim_table object
@@ -138,7 +138,6 @@ gcdist <- function(x1, y1, x2, y2) {
   c <- 2 * atan2( sqrt(a), sqrt(1-a) )
   return(6370 * c)
 }
-
 
 calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle')){
   geo.type <- match.arg(geo.type,c('euclidean','greater_circle'))

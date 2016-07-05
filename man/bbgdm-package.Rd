@@ -1,6 +1,5 @@
 \name{bbgdm-package}
 \alias{bbgdm-package}
-\alias{bbgdm}
 \docType{package}
 \title{
 Bayesian Bootstrap Generalised Dissimilarity Models.

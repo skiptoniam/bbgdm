@@ -55,6 +55,57 @@ ispline <- function (x, spline.knots = 2, knots = NULL, spline.degree = 3)
   }
 }
 
+#' @title spline objects
+#' @rdname spline
+#' @name spline.trans
+#' @param spline_type If "ispline" calculates bs spline from spline package. If "bspline" calculates ispline.
+#' @param spline_df degrees of freedom; one can specify df rather than knots. Default = 3.
+#' @param spline_knots The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.
+#' @return A matrix of dimension c(length(x), df), where df was supplied.
+#' @export
+
+spline.trans <- function(x,spline_type ="ispline",spline_df=2,spline_knots=1){
+  if(!is.data.frame(x)) x <- as.data.frame(x)
+  index <- 1
+  spline.attr <- list()
+  if(spline_type=="bspline"){
+    spline_knots <- t(apply(x,2,function(x)quantile(x,c(seq(0,1,1/(1+spline_knots))[-c(1,length(seq(0,1,1/(1+spline_knots))))]))))
+    tmp <- splines::bs(x[,1],degree=spline_df,knots=spline_knots[1])
+    n_spl <- dim(tmp)[2]
+    spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
+    for(ii in 1:ncol(x)){
+      tmp.st <- splines::bs(x[,ii],degree=spline_df,knots=spline_knots[ii])
+      spline.attr[[ii]] <- attributes(tmp.st)
+      spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
+      index <- index + spline.attr[[ii]]$dim[2]
+    }
+  }
+  if(spline_type=="ispline") {
+    if(is.null(spline_knots)) spline_knots <- 1#t(apply(x,2,function(x)quantile(x,c(0,0.25,.5,.75,1))))
+    tmp <- ispline(x[,1],spline.knots=spline_knots,spline.degree = spline_df)
+    n_spl <- dim(tmp)[2]
+    spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
+    for(ii in 1:ncol(x)){
+      tmp.st <- ispline(x[,ii],spline.knots=spline_knots,spline.degree = spline_df)
+      spline.attr[[ii]] <- attributes(tmp.st)
+      spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
+      index <- index + spline.attr[[ii]]$dim[2]
+    }
+  }
+  colnames(spline) <- do.call(paste, c(as.list(rev(expand.grid(1:n_spl, colnames(x)))), sep='_'))
+  structure(list(spline=spline,spline.attr=spline.attr),class='spline')
+}
+
+#' @rdname dissimilarity
+#' @param object spline class object
+#' @export
+is.spline <- function (object) {
+  # test whether object is a dissim_table object
+  ans <- inherits(object, "spline")
+  # return the answer
+  return (ans)
+
+}
 
 #' @rdname spline
 #' @name spline_trans_for_pred
@@ -80,7 +131,7 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
     if (!is.null(splineInterval))
       return(splines::bs(x, knots = splineInterval, degree = splineDegree,Boundary.knots=Bound.knots))
     else if (!is.null(standardization)) {
-      I <- gdistance::normalize(x, standardize = standardization)
+      I <- normalise(x, standardize = standardization)
       attr(I, "dim") <- c(length(x), 1)
       return(I)
     }
@@ -122,48 +173,6 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
       return(I)
     }
   }
-}
-
-#' @title spline objects
-#' @rdname spline
-#' @name spline.trans
-#' @param spline_type If "bspline" calculates bs spline from spline package. If "ispline" calculates ispline.
-#' @param spline_df degrees of freedom; one can specify df rather than knots. Default = 3.
-#' @param spline_knots The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.
-#' @return A matrix of dimension c(length(x), df), where df was supplied.
-#' @export
-
-
-spline.trans <- function(x,spline_type ="bspline",spline_df=2,spline_knots=1){
-  if(!is.data.frame(x)) x <- as.data.frame(x)
-  index <- 1
-  spline.attr <- list()
-  if(spline_type=="bspline"){
-    if(is.null(spline_knots)) spline_knots <- t(apply(x,2,function(x)quantile(x,c(.5))))
-    tmp <- splines::bs(x[,1],degree=spline_df,knots=spline_knots[1])
-    n_spl <- dim(tmp)[2]
-    spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
-    for(ii in 1:ncol(x)){
-      tmp.st <- splines::bs(x[,ii],degree=spline_df,knots=spline_knots[ii])
-      spline.attr[[ii]] <- attributes(tmp.st)
-      spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
-      index <- index + spline.attr[[ii]]$dim[2]
-    }
-  }
-  if(spline_type=="ispline") {
-    if(is.null(spline_knots)) spline_knots <- 1#t(apply(x,2,function(x)quantile(x,c(0,0.25,.5,.75,1))))
-    tmp <- ispline(x[,1],spline.knots=spline_knots,spline.degree = spline_df)
-    n_spl <- dim(tmp)[2]
-    spline <- matrix(NA,nrow(x),ncol(x)*n_spl)
-    for(ii in 1:ncol(x)){
-      tmp.st <- ispline(x[,ii],spline.knots=spline_knots,spline.degree = spline_df)
-      spline.attr[[ii]] <- attributes(tmp.st)
-      spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
-      index <- index + spline.attr[[ii]]$dim[2]
-    }
-  }
-  colnames(spline) <- do.call(paste, c(as.list(rev(expand.grid(1:n_spl, colnames(x)))), sep='_'))
-  return(list(spline=spline,spline.attr=spline.attr))
 }
 
 
