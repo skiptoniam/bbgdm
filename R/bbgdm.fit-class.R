@@ -57,30 +57,13 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
     fit$value <- fit$objective
     fit$counts <- fit$evaluations
   }
-  if (optim.meth=='admb'){
-    init.par <- control$start
-    if(is.null(init.par)){
-      init.par <- rep(0,ncol(X))
-      if(prior)init.par<-rbeta(length(init.par),2,2)
-    }
-    base::dyn.load(TMB::dynlib("logit_reg"))
-    obj <- TMB::MakeADFun(
-      data = list(x = X[,-1], y = y, w = wt,offset=offset),
-      parameters = list(a =init.par[1], b = init.par[-1]),
-      DLL = "logit_reg",hessian=TRUE,silent=TRUE)
-    fit <- suppressWarnings(nlminb(obj$par,obj$fn,obj$gr,control =list(trace=trace)))
-    fit$value <- fit$objective
-    fit$counts <- fit$evaluations
-  }
   invisible(fit)
   fit$par <- c(fit$par[1],exp(fit$par[-1]))
   names(fit$par) <- colnames(X)
   var <- NULL
   if (est.var) {
-    # cat("Calculating the variance of the estimates.\n")
     if(optim.meth=='optim') var <- solve(fit$hessian)
     if(optim.meth=='nlmnib') var <- solve(numDeriv::hessian(loglike,init.par))
-    if(optim.meth=='admb') var <- solve(numDeriv::hessian(obj$fn,obj$par))
     colnames(var) <- rownames(var) <- names(fit$par)
   }
   out <- list(coef = fit$par, logl = fit$value,

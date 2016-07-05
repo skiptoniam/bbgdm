@@ -6,8 +6,7 @@
 \usage{
 dissim_table(sp.dat, env.dat, dism_metric = "number_non_shared",
   spline_type = "bspline", spline_df = 1, spline_knots = 2,
-  coord.names = c("X", "Y"), geo = FALSE, geo.type = "euclidean",
-  lc_data = NULL, minr = NULL, maxr = NULL)
+  coord.names = c("X", "Y"), geo = FALSE, geo.type = "euclidean")
 }
 \arguments{
 \item{sp.dat}{Presence absence matrix.}
@@ -29,12 +28,6 @@ if "number_non_shared" returns number of shared species at site_ij which can be 
 \item{geo}{logical If true geographic distance is calculated if}
 
 \item{geo.type}{type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).}
-
-\item{lc_data}{NULL lc_cost data layer, in the form of a raster.}
-
-\item{minr}{NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.}
-
-\item{maxr}{NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.}
 }
 \value{
 diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.

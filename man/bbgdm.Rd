@@ -9,9 +9,8 @@
 bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
   dism_metric = "number_non_shared", nboot = 100, spline_type = "ispline",
   spline_df = 2, spline_knots = 1, geo = TRUE, geo.type = "euclidean",
-  coord.names = c("X", "Y"), lc_data = NULL, minr = 0, maxr = NULL,
-  optim.meth = "nlmnib", est.var = FALSE, trace = FALSE, prior = FALSE,
-  control = bbgdm.control())
+  coord.names = c("X", "Y"), optim.meth = "nlmnib", est.var = FALSE,
+  trace = FALSE, prior = FALSE, control = bbgdm.control())
 
 plot.bbgdm(object, ...)
 
@@ -25,17 +24,21 @@ predict.bbgdm(object, data, neighbourhood = NULL, outer = FALSE,
 
 \item{env.dat}{environmental or spatial covariates at each site.}
 
-\item{family}{a description of the error distribution and link function to be used in the model. Currently "binomial" suppported.
-This can be a character string naming a family function, a family function or the result of a call to a family function.}
+\item{family}{a description of the error distribution and link function to be used in the model.
+Currently "binomial" suppported. This can be a character string naming a family function,
+a family function or the result of a call to a family function.}
 
 \item{link}{a character string that assigns the link function to apply within the binomial model.
 Default is 'logit', but 'negexp' and other binomial link functions can be called.}
 
-\item{dism_metric}{dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared" currently avaliable.}
+\item{dism_metric}{dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared"
+currently avaliable.}
 
-\item{nboot}{number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.}
+\item{nboot}{number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models.
+Default is 100 iterations.}
 
-\item{spline_type}{type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".}
+\item{spline_type}{type of spline to use in GDM model. Default is monotonic isplines.
+Options are: "ispline" or "bspline".}
 
 \item{spline_df}{Number of spline degrees of freedom.}
 
@@ -43,15 +46,9 @@ Default is 'logit', but 'negexp' and other binomial link functions can be called
 
 \item{geo}{logical If true geographic distance is calculated if}
 
-\item{geo.type}{type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).}
+\item{geo.type}{type of geographic distance to estimate, can call 'euclidean' and 'greater_circle'.}
 
 \item{coord.names}{character.vector names of coordinates, default is c("X","Y")}
-
-\item{lc_data}{NULL lc_cost data layer, in the form of a raster.}
-
-\item{minr}{NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.}
-
-\item{maxr}{NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.}
 
 \item{optim.meth}{optimisation method options avaliable are 'optim' and 'nlmnib'}
 
@@ -71,6 +68,9 @@ Default is 'logit', but 'negexp' and other binomial link functions can be called
 
 \item{uncertainty}{logical if TRUE predict will return a list with two rasters the mean estimate and the uncertainty (defined as the coefficent of variation)}
 
+\item{\dots}{for \code{bbgdm()}: one or more \code{plot()} and
+\code{predict()}: further arguments passed to or from other methods}
+
 \item{object}{As derived from bbgdm function}
 
 \item{neigbourhood}{int default is three, number of neighbouring cells to estimate mean dissimilarity.}
@@ -80,12 +80,17 @@ a bbgdm model object
 
 raster of mean turnover estimated based on neighbourhood distance.
 }
+\description{
+creates a \code{bbgdm} model, comprising multiple
+  gdms. \code{bbgdm} models are core of \code{bbgdm}, different parameterisation can
+  be achieve similar to a \code{\link[stats]{glm}}, see \code{bbgdm.fit} for more details.
+}
 \examples{
 sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 env.dat <- simulate_covariates(sp.dat,2)
 form <- ~ 1 + covar_1 + covar_2
-test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10,
-                    geo=FALSE,optim.meth='nlmnib')
+test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",
+                    nboot=10, geo=FALSE,optim.meth='nlmnib')
 #plot bbgdm fit
 plot(test.bbgdm)
 

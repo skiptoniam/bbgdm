@@ -5,24 +5,30 @@ NULL
 #' @title bbgdm objects
 #' @rdname bbgdm
 #' @name bbgdm
+#' @description creates a \code{bbgdm} model, comprising multiple
+#'   gdms. \code{bbgdm} models are core of \code{bbgdm}, different parameterisation can
+#'   be achieve similar to a \code{\link[stats]{glm}}, see \code{bbgdm.fit} for more details.
+#' @param \dots for \code{bbgdm()}: one or more \code{plot()} and
+#'   \code{predict()}: further arguments passed to or from other methods
 #' @param form formula for bbgdm model
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
 #' @param env.dat environmental or spatial covariates at each site.
-#' @param family a description of the error distribution and link function to be used in the model. Currently "binomial" suppported.
-#' This can be a character string naming a family function, a family function or the result of a call to a family function.
+#' @param family a description of the error distribution and link function to be used in the model.
+#' Currently "binomial" suppported. This can be a character string naming a family function,
+#' a family function or the result of a call to a family function.
 #' @param link a character string that assigns the link function to apply within the binomial model.
 #' Default is 'logit', but 'negexp' and other binomial link functions can be called.
-#' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared" currently avaliable.
-#' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models. Default is 100 iterations.
-#' @param spline_type type of spline to use in GDM model. Default is monotonic isplines. Options are: "ispline" or "bspline".
+#' @param dism_metric dissimilarity metric to calculate for model. "bray_curtis" or "number_non_shared"
+#' currently avaliable.
+#' @param nboot number of Bayesian Bootstraps to run, this is used to estimate variance around GDM models.
+#' Default is 100 iterations.
+#' @param spline_type type of spline to use in GDM model. Default is monotonic isplines.
+#' Options are: "ispline" or "bspline".
 #' @param spline_df Number of spline degrees of freedom.
 #' @param spline_knots Number of spline knots.
 #' @param geo logical If true geographic distance is calculated if
-#' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
+#' @param geo.type type of geographic distance to estimate, can call 'euclidean' and 'greater_circle'.
 #' @param coord.names character.vector names of coordinates, default is c("X","Y")
-#' @param lc_data NULL lc_cost data layer, in the form of a raster.
-#' @param minr NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.
-#' @param maxr NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.
 #' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib'
 #' @param est.var logical if true estimated parameter variance using optimiser.
 #' @param trace logical print extra optimisation outputs
@@ -34,13 +40,13 @@ NULL
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
-#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",nboot=10,
-#'                     geo=FALSE,optim.meth='nlmnib')
+#' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",
+#'                     nboot=10, geo=FALSE,optim.meth='nlmnib')
 
 bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   dism_metric="number_non_shared", nboot=100,
                   spline_type="ispline",spline_df=2,spline_knots=1,
-                  geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),lc_data=NULL,minr=0,maxr=NULL,
+                  geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
                   optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=bbgdm.control()){
 
   cat(family,"regression is on the way. \n")
@@ -64,7 +70,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   mean.env.dat <- sd.env.dat <- NA
   env.dat <- model.frame(as.data.frame(env.dat))
   dissim_dat <- dissim_table(sp.dat,env.dat,dism_metric=dism_metric,spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots,
-                             geo=geo,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
+                             geo=geo,geo.type=geo.type)
   dissim_dat_table <- as.data.frame(dissim_dat$diff_table)
   dissim_dat_params <- dissim_dat$diff_table_params
   if(dism_metric=="number_non_shared") preds <- colnames(dissim_dat_table[,3:ncol(dissim_dat_table)])
@@ -78,12 +84,14 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   nreps <- nboot
   boot_print <- nboot/10
   mods <- list()
+  pb <- txtProgressBar(min = 1, max = nreps, style = 3, char = '~')
     for (ii in 1:nreps){
       w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
       mods[[ii]] <- bbgdm.fit(X,y,wt=wij,link=link,optim.meth=optim.meth,est.var=est.var,trace=trace,prior=prior,control=control)
-      if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
+      # if(ii %% boot_print ==0 ) cat("Bayesian bootstrap ", ii, " iterations\n")
+      setTxtProgressBar(pb, ii)
     }
 
   #summary stats
@@ -117,9 +125,6 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   bbgdm.results$link <- link
   if(geo){
     bbgdm.results$geo.type <- geo.type
-    bbgdm.results$lc_data=lc_data
-    bbgdm.results$minr=minr
-    bbgdm.results$maxr=maxr
   }
   class(bbgdm.results) <- "bbgdm"
   return(bbgdm.results)

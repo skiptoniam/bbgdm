@@ -12,9 +12,6 @@
 #' @param geo logical If true geographic distance is calculated if
 #' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
 #' @param coord.names c("X","Y") character.vector names of coordinates.
-#' @param lc_data NULL lc_cost data layer, in the form of a raster.
-#' @param minr NULL range of values for marine data within the scope of the lc_cost raster. eg. min depth.
-#' @param maxr NULL range of values for marine data within the scope of the lc_cost raster. eg. max depth.
 #' @return diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
 #'  If select dissim="number_non_shared", will return "nonsharedspp_ij","sumspp_ij",
 #'  which can be used as response variables in a binomial bbgdm.
@@ -26,11 +23,11 @@
 
 dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_type="bspline",spline_df=1,
                          spline_knots=2, coord.names=c("X","Y"),
-                         geo=FALSE,geo.type="euclidean",lc_data=NULL,minr=NULL,maxr=NULL){
+                         geo=FALSE,geo.type="euclidean"){
   if(!is.matrix(env.dat)) env.dat <- as.matrix(env.dat)
   if(geo){
     coords <- as.matrix(env.dat[,which(colnames(env.dat)%in%coord.names)])
-    geos <- calc_geo_dist(coords,geo.type=geo.type,lc_data=lc_data,minr=minr,maxr=maxr)
+    geos <- calc_geo_dist(coords,geo.type=geo.type)
     env.dat <- env.dat[,-which(colnames(env.dat)%in%coord.names),drop=FALSE]
   }
   if(dism_metric=="bray_curtis"){
@@ -111,37 +108,6 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
   return(list(diff_table=diff_table_final,diff_table_params=diff_table_params))
 }
 
-least.cost.dist <- function (trans.rast, sites)
-{
-  cost <- gdistance::costDistance(trans.rast, as.matrix(sites))
-  return(round(cost))
-}
-
-trans_rast_fun <- function (data, min.range = 0, max.range = NULL)
-{ if(!is.raster(data)){
-  ras <- data
-  ras[data > min.range] <- 1e-08
-  ras[data <= min.range] <- 1
-  if (!is.null(max.range))
-    ras[data <= max.range] <- 1e-08
-  lat <- as.numeric(colnames(data))
-  lon <- as.numeric(rownames(data))
-  r <- raster::raster(ncol = nrow(data), nrow = ncol(data),
-                      xmn = min(lon), xmx = max(lon), ymn = min(lat), ymx = max(lat))
-  raster::values(r) <- as.vector(ras[, rev(1:ncol(ras))])
-  trans <- gdistance::transition(r, transitionFunction = mean,
-                                 directions = 16)
-  transC <- gdistance::geoCorrection(trans, type = "c", multpl = FALSE)
-  return(transC)
-} else {
-  r <- data
-  trans <- gdistance::transition(r, transitionFunction = mean,
-                                 directions = 16)
-  transC <- gdistance::geoCorrection(trans, type = "c", multpl = FALSE)
-  return(transC)
-}
-}
-
 gcdist <- function(x1, y1, x2, y2) {
   ##############################################################################################
   #a function called by several functions in the ncf library
@@ -162,10 +128,8 @@ gcdist <- function(x1, y1, x2, y2) {
 }
 
 
-calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle','least_cost'),
-                          lc_data=NULL,minr=0,maxr=NULL){
-
-  geo.type <- match.arg(geo.type,c('euclidean','greater_circle','least_cost'))
+calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle')){
+  geo.type <- match.arg(geo.type,c('euclidean','greater_circle'))
   if(geo.type=="euclidean"){
     cat('calculating euclidean distance\n')
     nr_df<-((nrow(coords)^2)-nrow(coords))/2
@@ -196,30 +160,6 @@ calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle','least_
         diff_table[pair,1:2]<-as.numeric(coords[i_site,])
         diff_table[pair,3:4]<-as.numeric(coords[j_site,])
         diff_table[pair,5]<-gcdist(coords[i_site,1],coords[i_site,2],coords[j_site,1],coords[i_site,2])
-        pair<-pair+1
-      }
-    }
-  }
-  if(geo.type=="least_cost"){
-    cat('calculating least cost distance\n')
-    if(is.null(lc_data)) stop("Please include matrix or raster to build least cost pathway, see help")
-    cat('This might take a while, grab a cuppa. \n')
-    if(is.null(maxr)) cat('least cost estimated between', minr,' and max range of raster values\n')
-    else cat('least cost estimated between',minr,' and ',maxr,'range of matrix/raster values\n')
-    tr <- trans_rast_fun(lc_data, min.range = minr, max.range = maxr)
-    lc <- least.cost.dist(tr,coords)
-    lcm <- as.matrix(lc)
-    nr_df<-((nrow(coords)^2)-nrow(coords))/2
-    nc_dt<-2+(ncol(coords))
-    diff_table<-matrix(NA,nr_df,nc_dt+1)
-    pair<-1
-    for(i_site in 1:(nrow(coords)-1))
-    {
-      for(j_site in (i_site+1):nrow(coords))
-      {
-        diff_table[pair,1:2]<-as.numeric(coords[i_site,])
-        diff_table[pair,3:4]<-as.numeric(coords[j_site,])
-        diff_table[pair,5]<-lcm[i_site,j_site]
         pair<-pair+1
       }
     }
