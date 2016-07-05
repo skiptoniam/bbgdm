@@ -3,7 +3,7 @@ Type: Package
 Title: Bayesian Bootstrap Generalised Dissimilarity Models.
 Version: 1.0
 Date: 2015-05-19
-Author@R: person("Skipton", "Woolley", email = "swoolley@museum.vic.gov.au",
+Authors@R: person("Skipton", "Woolley", email = "swoolley@museum.vic.gov.au",
   role = c("aut", "cre"))
   person("Scott", "Foster", email = "scott.foster@csiro.au",
   role = c("aut", "cre"))
