@@ -17,12 +17,19 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              dism_metric="number_non_shared",spline_type = 'ispline',
              nboot=100, geo=FALSE,optim.meth='nlmnib')
 
-## ---- fig.show='hold' ,echo = TRUE, fig.height=6,fig.width=8-------------
-plotResponse(fm1,plotdim = c(1,1))
+## ----fig.width = 6, fig.height = 6, fig.align='center'-------------------
+resids <- diagnostics(fm1)
+par(mfrow=c(2,2))
+plot(resids)
 
-## ---- fig.show='hold' ,echo = TRUE, fig.height=6,fig.width=8-------------
-bbgdm.check(fm1)
+## ----fig.width = 4, fig.height = 4, fig.align='center'-------------------
+response <- as.response(fm1)
+par(mfrow=c(1,1))
+plot(response)
 
-## ------------------------------------------------------------------------
-bbgdm.wald.test(fm1)
+## ----results='asis'------------------------------------------------------
+library(xtable)
+wt <- bbgdm.wald.test(fm1)
+tab <- xtable(wt)
+print(tab, type = "html")
 
