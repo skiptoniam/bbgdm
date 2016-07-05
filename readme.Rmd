@@ -60,7 +60,7 @@ print(tab, type = "html")
 ```
 
 ##### Predict BBGDM model
-```{r,fig.width = 8, fig.height = 4,fig.align='center'}
+```{r,fig.width = 8, fig.height = 3,fig.align='center'}
 #generate some random spatial autocorrelated data.
 library(raster)
 set.seed(123)
@@ -74,15 +74,17 @@ coordinates(xy) <- ~x+y
 r <- rasterize(xy, raster(points2grid(xy)), 'z')
 #give it the same name as variable in bbgdm model.
 names(r)<- 'A1'
-
+r2 <- raster(r)
+res(r2) <- 0.05
+r2 <- resample(r, r2)
 #use this layer to predict turnover.
-pred.dune.sim.dat <- predict.bbgdm(fm1,r,uncertainty = TRUE)
+pred.dune.sim.dat <- predict.bbgdm(fm1,r2,uncertainty = TRUE)
 
 #plot the data and the turnover predictions, and error.
 colram <- colorRampPalette(c("darkblue","yellow","red"))
 colram.se <- colorRampPalette(c('antiquewhite','pink','red'))
 par(mfrow=c(1,3),mar=c(3,2,2,6))
-plot(r,main='Simulated A1')
+plot(r2,main='Simulated A1')
 plot(pred.dune.sim.dat[[1]],col=colram(100),main='BBGDM turnover')
 plot(pred.dune.sim.dat[[2]],col=colram.se(100),main='BBGDM CV of turnover')
 ```
