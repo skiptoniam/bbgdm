@@ -67,7 +67,7 @@ print(tab, type = "html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Tue Jul 05 17:39:33 2016 -->
+<!-- Tue Jul 05 18:04:37 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -87,7 +87,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-12.28
+10.13
 </td>
 <td align="right">
 1.00
@@ -101,13 +101,13 @@ intercept
 A1
 </td>
 <td align="right">
-1.63
+1.61
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.65
+0.66
 </td>
 </tr>
 </table>
@@ -127,9 +127,11 @@ coordinates(xy) <- ~x+y
 r <- rasterize(xy, raster(points2grid(xy)), 'z')
 #give it the same name as variable in bbgdm model.
 names(r)<- 'A1'
-
+r2 <- raster(r)
+res(r2) <- 0.05
+r2 <- resample(r, r2)
 #use this layer to predict turnover.
-pred.dune.sim.dat <- predict.bbgdm(fm1,r,uncertainty = TRUE)
+pred.dune.sim.dat <- predict.bbgdm(fm1,r2,uncertainty = TRUE)
 ```
 
     ## using default three cell neighbourhood to estimate dissimilarity
@@ -139,7 +141,7 @@ pred.dune.sim.dat <- predict.bbgdm(fm1,r,uncertainty = TRUE)
 colram <- colorRampPalette(c("darkblue","yellow","red"))
 colram.se <- colorRampPalette(c('antiquewhite','pink','red'))
 par(mfrow=c(1,3),mar=c(3,2,2,6))
-plot(r,main='Simulated A1')
+plot(r2,main='Simulated A1')
 plot(pred.dune.sim.dat[[1]],col=colram(100),main='BBGDM turnover')
 plot(pred.dune.sim.dat[[2]],col=colram.se(100),main='BBGDM CV of turnover')
 ```
