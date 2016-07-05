@@ -38,15 +38,14 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
 ```
 
 ### Plot diagnostics
-```{r,fig.width = 4, fig.height = 4}
+```{r,fig.width = 6, fig.height = 6,fig.align='center'}
 resids <- diagnostics(fm1)
 par(mfrow=c(2,2))
 plot(resids)
 ```
 
-
 ### Plot response curves
-```{r,fig.width = 4, fig.height = 4}
+```{r,fig.width = 4, fig.height = 4,fig.align='center'}
 response <- as.response(fm1)
 par(mfrow=c(1,1))
 plot(response)
