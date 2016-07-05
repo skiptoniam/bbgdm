@@ -110,10 +110,11 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
 }
 
 #' @rdname dissimilarity
+#' @param object dissim_table class object
 #' @export
-is.dissim_table <- function (x) {
-  # test whether x is a dissim_table object
-  ans <- inherits(x, "dissim_table")
+is.dissim_table <- function (object) {
+  # test whether object is a dissim_table object
+  ans <- inherits(object, "dissim_table")
   # return the answer
   return (ans)
 

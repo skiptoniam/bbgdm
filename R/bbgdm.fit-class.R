@@ -14,7 +14,7 @@
 #' @param optim.meth optimisation method options avaliable are 'optim' and 'nlmnib',
 #' calls either method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}}.
 #' @param est.var logical if true estimated parameter variance using optimiser.
-#' @param trace trace options looks at \code{\link[stats]{optim}} for details.
+#' @param trace options looks at \code{\link[stats]{optim}} for details.
 #' @param prior numeric vector of starting values for intercept and splines.
 #' @param control control option from optim see \code{\link[bbgdm]{bbgdm.control}} or \code{\link[stats]{optim}}.
 #' @return fit single gdm
@@ -84,7 +84,6 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
 #'@name bbgdm.control
 #'@param method characters string specifying the method argument passed to optim.
 #'@param maxit  integer specifying the maxit argument (maximal number of iterations) passed to optim.
-#'@param trace	logical or integer controlling whether tracing information on the progress of the optimization should be produced (passed to optim).
 #'@param hessian	logical. Should the numerical Hessian matrix from the optim output be used for estimation of the covariance matrix? By default the analytical solution is employed. For details see below.
 #'@param start	an optional vector with starting values for all parameters.
 #'@param fsmaxit	integer specifying maximal number of additional (quasi) Fisher scoring iterations. For details see below.
@@ -133,6 +132,10 @@ gradient <- function(params,X,y,wt,link){
   sum_deri <- apply(deri,2,sum)
   return(sum_deri)
 }
+
+#' @rdname bbgdm.fit
+#' @name negexp
+#' @export
 
 negexp<- function()
 {

@@ -33,7 +33,7 @@ NULL
 #' @param est.var logical if true estimated parameter variance using optimiser.
 #' @param trace logical print extra optimisation outputs
 #' @param prior numeric vector of starting values for intercept and splines
-#' @param control control options for gdm calls \link[bbgdm]{gdm_control} as default.
+#' @param control control options for gdm calls \link[bbgdm]{bbgdm.control} as default.
 #' @return a bbgdm model object
 #' @export
 #' @examples
@@ -164,9 +164,8 @@ plot.bbgdm <- function(object,...){
 
 #' @rdname bbgdm
 #' @name predict.bbgdm
-#' @param object As derived from bbgdm function
 #' @param data raster stack of the same covariates used to fit model object for the region you wish to predict too.
-#' @param neigbourhood int default is three, number of neighbouring cells to estimate mean dissimilarity.
+#' @param neighbourhood int default is three, number of neighbouring cells to estimate mean dissimilarity.
 #' @param outer logical default is FALSE, if TRUE only calculates the outer edge of neighbourhoods area.
 #' @param uncertainty logical if TRUE predict will return a list with two rasters the mean estimate and the uncertainty (defined as the coefficent of variation)
 #' @return raster of mean turnover estimated based on neighbourhood distance.
@@ -180,10 +179,10 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncert
       class(data) != "RasterBrick") {
     stop("Prediction data need to be a raster object")
   }
-  if (nlayers(data) != ncol(object$env.dat)) {
+  if (raster::nlayers(data) != ncol(object$env.dat)) {
     stop("Number of raster layers does not equal the number used to fit the model")
   }
-  for (i in 1:nlayers(data)) {
+  for (i in 1:raster::nlayers(data)) {
     if (names(object$env.dat)[i] != names(data)[i]) {
       stop("Raster layers don't match variables used to fit the model - check they are in the correct order")
     }
@@ -200,12 +199,12 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncert
   rel<-cbind(rel,(1-((sqrt((rel[,1]^2)+(rel[,2]^2))/max.dist))))
 
   #create updated i-spline rasters (transform layers to i-spline values)
-  XYdata <- as.data.frame(na.omit(rasterToPoints(data,progress = "text")))
-  cells <- cellFromXY(data[[1]], cbind(XYdata$x, XYdata$y))
+  XYdata <- as.data.frame(na.omit(raster::rasterToPoints(data,progress = "text")))
+  cells <- raster::cellFromXY(data[[1]], cbind(XYdata$x, XYdata$y))
   data_spline <- spline.trans(XYdata[,-1:-2],spline_type = "ispline",spline_df=2)
   st_data <- as.data.frame(cbind(XYdata[,1:2], data_spline$spline))
-  coordinates(st_data) <- ~x+y
-  suppressWarnings(gridded(st_data) <- TRUE)
+  sp::coordinates(st_data) <- ~x+y
+  suppressWarnings(sp::gridded(st_data) <- TRUE)
   data_stack <- stack(st_data)
 
   beta.r <- data[[1]]

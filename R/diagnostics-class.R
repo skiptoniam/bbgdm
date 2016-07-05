@@ -40,6 +40,7 @@ diagnostics <- function (object)
 
 #' @rdname diagnostics
 #' @name plot.diagnostics
+#' @param \dots other plot arguments.
 #' @export
 #' @examples
 #' # plot residuals
@@ -57,7 +58,6 @@ plot.diagnostics<- function(object,...){
 
 #' @rdname diagnostics
 #' @name bbgdm.wald.test
-#' @param object Returned model from \link[bbgdm]{bbgdm}.
 #' @param H0 A numeric value giving the null hypothesis for the test. Generally zero.
 #' @param gdm Logic if true calculates the Wald-test using variance-covariance matrix derived from the hessian matrix. Note: These estimates are probably wrong due to hessian matrix being calulated with respect to the likelihoods.
 #' @export
@@ -226,7 +226,7 @@ ggplot.bbgdm <- function(object, pars=NULL, pars_labels = NULL,
     ggplot2::ylab('') +
     if(!is.null(xlims))ggplot2::xlim(xlims)+
     ggthemes::theme_few()+
-    ggplot2::theme(plot.margin=unit(c(5,5,5,5),"mm"))
+    ggplot2::theme(plot.margin=grid::unit(c(5,5,5,5),"mm"))
 
   if (isTRUE(zero_line)) pp <- pp + ggplot2::geom_vline(xintercept = 0)
   if (!isTRUE(horizontal)) pp <- pp + ggplot2::coord_flip()

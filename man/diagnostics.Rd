@@ -33,7 +33,7 @@ bbgdm.wald.test(object, H0 = 0, gdm = FALSE)
 
 \item{xlims}{custom xlims}
 
-\item{object}{Returned model from \link[bbgdm]{bbgdm}.}
+\item{\dots}{other plot arguments.}
 }
 \description{
 extracts diagnostics from \code{bbgdm} object, like random quantile residuals and plots them.

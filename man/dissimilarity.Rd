@@ -9,7 +9,7 @@ dissim_table(sp.dat, env.dat, dism_metric = "number_non_shared",
   spline_type = "ispline", spline_df = 1, spline_knots = 2,
   coord.names = c("X", "Y"), geo = FALSE, geo.type = "euclidean")
 
-is.dissim_table(x)
+is.dissim_table(object)
 }
 \arguments{
 \item{sp.dat}{Presence absence matrix.}
@@ -31,6 +31,8 @@ if "number_non_shared" returns number of shared species at site_ij which can be 
 \item{geo}{logical If true geographic distance is calculated if}
 
 \item{geo.type}{type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).}
+
+\item{object}{dissim_table class object}
 }
 \value{
 diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.

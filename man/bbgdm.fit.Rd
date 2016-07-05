@@ -3,6 +3,7 @@
 \name{bbgdm.fit}
 \alias{bbgdm.control}
 \alias{bbgdm.fit}
+\alias{negexp}
 \title{bbgdm.fit objects}
 \usage{
 bbgdm.fit(X, y, wt = NULL, link, optim.meth = "optim", est.var = TRUE,
@@ -10,6 +11,8 @@ bbgdm.fit(X, y, wt = NULL, link, optim.meth = "optim", est.var = TRUE,
 
 bbgdm.control(method = "BFGS", maxit = 1000, hessian = FALSE,
   trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05, ...)
+
+negexp()
 }
 \arguments{
 \item{X}{Model matirx of predictors, see \code{\link[stats]{model.matrix}}.}
@@ -26,7 +29,7 @@ calls either method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}}.}
 
 \item{est.var}{logical if true estimated parameter variance using optimiser.}
 
-\item{trace}{trace options looks at \code{\link[stats]{optim}} for details.}
+\item{trace}{options looks at \code{\link[stats]{optim}} for details.}
 
 \item{prior}{numeric vector of starting values for intercept and splines.}
 
@@ -45,8 +48,6 @@ calls either method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}}.}
 \item{fstol}{numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.}
 
 \item{\dots}{for \code{bbgdm.fit()} or more \code{bbgdm.control()}.}
-
-\item{trace}{logical or integer controlling whether tracing information on the progress of the optimization should be produced (passed to optim).}
 }
 \value{
 fit single gdm

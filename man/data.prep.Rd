@@ -9,9 +9,9 @@
 table2pam(x, site.id = "site.id", sp.id = "sp.id", abund = FALSE,
   abund.col = " No.of.specimens", siteXsp = TRUE)
 
-pam2dissim(x, dism_metric = "number_non_shared")
+pam2dissim(y, dism_metric = "number_non_shared")
 
-simulate_covariates(x, N)
+simulate_covariates(y, n)
 }
 \arguments{
 \item{x}{data to be imported into R. A table of species occurrences and site records.}
@@ -26,14 +26,19 @@ simulate_covariates(x, N)
 
 \item{siteXsp}{LOGICAL if TRUE Returns sites as rows, sites as columns, if FALSE returns species as rows and sites as cols.}
 
+\item{y}{presence-absence matrix of site x sp.}
+
 \item{dism_metric}{If "bray_curtis" calculates Bray-Curtis dissimilarity, if "number_non_shared " returns number of shared species at site_ij which can be used in a binomial model for GDM.}
 
-\item{x}{Presence Absence Matrix.}
+\item{n}{number of covariates to simulate}
 }
 \value{
 A species by sites matrix for use in dissimilarity calculation
 
 dism a vector of dissimilarities or count of shared species calcualted for the upper-triangle of a dissimilarity matrix.
+}
+\description{
+prepares table of occurrence records or precence-absence matrix for use in \code{bbgdm}.
 }
 \examples{
 x <- matrix(rbinom(16,1,.6),4,4) #toy presence absence matrix
