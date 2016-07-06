@@ -52,3 +52,18 @@ test_that('check diff_table works', {
   testthat::expect_equal(dim(diff_table_nns_gc_is$diff_table), c(190, 11))
 })
 
+
+test_that( "diff_table_cpp works", {
+
+  n  = 100
+  m = matrix(runif(n*10), ncol = 10)
+  dt <- diff_table_cpp(m)
+
+  testthat::expect_error(dt <- diff_table_cpp(as.data.frame(m)))
+  testthat::expect_error(dt <- diff_table_cpp(c(1,2,3,4,5)))
+  testthat::expect_error(dt <- diff_table_cpp(1))
+
+  testthat::expect_equal(class(diff_table_cpp(m)),'matrix')
+  testthat::expect_false(class(diff_table_cpp(m))!='matrix')
+
+})

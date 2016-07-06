@@ -1,4 +1,6 @@
 #include "Rcpp.h"
+// #include <testthat.h>
+
 using namespace Rcpp;
 
 //' diff_table cpp function
@@ -33,3 +35,27 @@ NumericMatrix diff_table_cpp(NumericMatrix env_dat){
           }
 return diff_table;
 }
+
+// Initialize a unit test context. This is similar to how you
+// might begin an R test file with 'context()', expect the
+// associated context should be wrapped in braced.
+// //
+// context("Sample unit tests") {
+//
+//   // The format for specifying tests is similar to that of
+//   // testthat's R functions. Use 'test_that()' to define a
+//   // unit test, and use 'expect_true()' and 'expect_false()'
+//   // to test the desired conditions.
+//   test_that("diff_table_works") {
+//     NumericVector x(4);
+//     NumericMatrix xx(4, 5);
+//     // Fill with value
+//     int xsize = xx.nrow() * xx.ncol();
+//     for (int i = 0; i < xsize; i++) {
+//       xx[i] = R::runif(1,1);
+//     }
+//     expect_error(diff_table_cpp(x));
+//   }
+//
+// }
+
