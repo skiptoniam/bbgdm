@@ -45,3 +45,12 @@ test_that('check bbgdm.wald.test works', {
 
 })
 
+test_that('residual plot works', {
+
+  img <- function() {
+    plot(resids)
+  }
+  expect_identical(plot(resids), img())
+  expect_equal(class(plot(resids)),'NULL')
+
+})

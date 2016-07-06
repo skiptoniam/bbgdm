@@ -27,3 +27,13 @@ test_that('check diagnostics works', {
   testthat::expect_equal(class(responses$diff_table), 'matrix')
 
 })
+
+test_that('residual plot works', {
+
+  img <- function() {
+    plot(responses)
+  }
+  expect_identical(plot(responses), img())
+  expect_equal(class(plot(responses)),'NULL')
+
+})
