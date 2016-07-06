@@ -3,6 +3,7 @@
 \name{diagnostics}
 \alias{bbgdm.wald.test}
 \alias{diagnostics}
+\alias{is.diagnostics}
 \alias{plot.diagnostics}
 \title{diagnostics objects}
 \usage{
@@ -11,6 +12,8 @@ diagnostics(object)
 \method{plot}{diagnostics}(x, ...)
 
 bbgdm.wald.test(object, H0 = 0, gdm = FALSE)
+
+is.diagnostics(x)
 }
 \arguments{
 \item{object}{bbgdm model output}
