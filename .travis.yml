@@ -7,7 +7,7 @@ r_packages:
   - covr
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - Rscript -e 'library(covr);codecov()'
 
 warnings_are_errors: false
 notifications:

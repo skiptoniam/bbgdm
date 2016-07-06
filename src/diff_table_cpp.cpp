@@ -1,4 +1,4 @@
-#include <Rcpp.h>
+#include "RcppArmadillo.h"
 using namespace Rcpp;
 
 //' diff_table cpp function
@@ -8,6 +8,7 @@ using namespace Rcpp;
 //[[Rcpp::export]]
 
 NumericMatrix diff_table_cpp(NumericMatrix env_dat){
+
       double diff_var;
       int nr = env_dat.nrow();
       //int nc = env_dat.ncol();
@@ -16,15 +17,19 @@ NumericMatrix diff_table_cpp(NumericMatrix env_dat){
       //Rcpp::Rcout <<  nr << " " << nr_dt << " " << nc_dt << std::endl;
       NumericMatrix diff_table(nr_dt,nc_dt);
       int pair = 0;
-        for(int i_site = 0; i_site<(nr-1); i_site++){
-            for(int j_site = i_site+1; j_site<nr; j_site++){
-                for(int var = 0; var<nc_dt; var++){
+
+        for(int i_site = 0; i_site<(nr-1); i_site++)
+          {
+            for(int j_site = i_site+1; j_site<nr; j_site++)
+              {
+                for(int var = 0; var<nc_dt; var++)
+                  {
                     diff_var = std::abs(env_dat(i_site,var))-std::abs(env_dat(j_site,var));
                     diff_table(pair,var) = std::abs(diff_var);
-                    }
+                   }
                     pair++;
-                  }
+               }
                   //printf("%d ", pair);
-        }
- return diff_table;
+          }
+return diff_table;
 }
