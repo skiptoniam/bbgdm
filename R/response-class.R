@@ -62,7 +62,7 @@ as.response <- function(object){
       }
 
 #' @rdname response
-#' @name is.reponse
+#' @name is.response
 #' @export
 #' @examples
 #' # Did as.response work?
