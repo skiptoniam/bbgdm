@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include "Rcpp.h"
 using namespace Rcpp;
 
 //' diff_table cpp function
