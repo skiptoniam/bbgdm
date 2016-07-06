@@ -67,7 +67,7 @@ print(tab, type = "html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Tue Jul 05 18:04:37 2016 -->
+<!-- Wed Jul 06 10:20:27 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -87,7 +87,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-10.13
+8.12
 </td>
 <td align="right">
 1.00
@@ -101,13 +101,13 @@ intercept
 A1
 </td>
 <td align="right">
-1.61
+2.04
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.66
+0.56
 </td>
 </tr>
 </table>
@@ -131,7 +131,7 @@ r2 <- raster(r)
 res(r2) <- 0.05
 r2 <- resample(r, r2)
 #use this layer to predict turnover.
-pred.dune.sim.dat <- predict.bbgdm(fm1,r2,uncertainty = TRUE)
+pred.dune.sim.dat <- predict(fm1,r2,uncertainty = TRUE)
 ```
 
     ## using default three cell neighbourhood to estimate dissimilarity

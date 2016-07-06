@@ -78,7 +78,7 @@ r2 <- raster(r)
 res(r2) <- 0.05
 r2 <- resample(r, r2)
 #use this layer to predict turnover.
-pred.dune.sim.dat <- predict.bbgdm(fm1,r2,uncertainty = TRUE)
+pred.dune.sim.dat <- predict(fm1,r2,uncertainty = TRUE)
 
 #plot the data and the turnover predictions, and error.
 colram <- colorRampPalette(c("darkblue","yellow","red"))
