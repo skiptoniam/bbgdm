@@ -123,3 +123,32 @@ test_that('model prediction works', {
 
 })
 
+
+test_that('model plot works', {
+
+   img <- function() {
+    plot(fm)
+  }
+   expect_identical(plot(fm), img())
+   expect_equal(class(plot(fm)),'NULL')
+
+})
+
+test_that('model print works', {
+
+
+# check print.dynamic works
+expect_equal(class(print(fm)),'NULL')
+
+expected <- c(" A Bayesian Bootstrap GDM fitted against:",
+              " 20 sites,"," 10 species and ",
+              " 190 dissimilarities used as observations in the model.","",
+              " A total of 10 Bayesian Bootstraps were run.",
+              ""," Spline base parameter estimates are: ",
+              " (Intercept) 0.147"," covar_1_1 0.0651"," covar_1_2 0.0176",
+              " covar_1_3 0.0132"," covar_2_1 0.0193",
+              " covar_2_2 0.0022"," covar_2_3 1e-04 ")
+
+expect_equal(capture.output(print(fm)), expected)
+
+})
