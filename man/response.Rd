@@ -2,23 +2,26 @@
 % Please edit documentation in R/response-class.R
 \name{as.response}
 \alias{as.response}
+\alias{is.reponse}
 \alias{is.response}
 \alias{plot.response}
 \title{response objects}
 \usage{
 as.response(object)
 
-is.response(object)
+is.response(x)
 
-plot.response(object, ...)
+\method{plot}{response}(x, ...)
 }
 \arguments{
 \item{object}{As derived from bbgdm function.}
 
+\item{x}{response object created using \code{as.response}}
+
 \item{\dots}{pass further arguments to \code{plot()}.}
 }
 \value{
-values for plotting i-spline responses from bbgdm.
+values for plotting spline responses from bbgdm.
 }
 \description{
 extracts spline reponses from \code{bbgdm} object and plots them.

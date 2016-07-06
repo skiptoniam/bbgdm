@@ -13,7 +13,7 @@
 #' @param geo logical If true geographic distance is calculated if
 #' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
 #' @param coord.names c("X","Y") character.vector names of coordinates.
-#' @return diff_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
+#' @return dissim_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
 #'  If select dissim="number_non_shared", will return "nonsharedspp_ij","sumspp_ij",
 #'  which can be used as response variables in a binomial bbgdm.
 #' @export
@@ -27,10 +27,15 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
                          geo=FALSE,geo.type="euclidean"){
   if(!is.matrix(env.dat)) env.dat <- as.matrix(env.dat)
   if(geo){
+    if(!all(coord.names %in% colnames(env.dat)))
+    {
+      stop(cat("Coordinates are missing, add coordinate data as columns called 'X' & 'Y'\n"))
+    }
     coords <- as.matrix(env.dat[,which(colnames(env.dat)%in%coord.names)])
     geos <- calc_geo_dist(coords,geo.type=geo.type)
     env.dat <- env.dat[,-which(colnames(env.dat)%in%coord.names),drop=FALSE]
   }
+  if(dism_metric!="bray_curtis" & dism_metric!="number_non_shared")stop(cat("This dissimilarity metric doesn't exist - check spelling."))
   if(dism_metric=="bray_curtis"){
     xdism <- pam2dissim(sp.dat,dism_metric)
     nr_df<-((nrow(sp.dat)^2)-nrow(sp.dat))/2
@@ -110,11 +115,13 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
 }
 
 #' @rdname dissimilarity
-#' @param object dissim_table class
+#' @name is.dissim_table
+#' @param x dissim_table class
 #' @export
-is.dissim_table <- function (object) {
+
+is.dissim_table <- function (x) {
   # test whether object is a dissim_table object
-  ans <- inherits(object, "dissim_table")
+  ans <- inherits(x, "dissim_table")
   # return the answer
   return (ans)
 
@@ -140,7 +147,8 @@ gcdist <- function(x1, y1, x2, y2) {
 }
 
 calc_geo_dist <- function(coords,geo.type=c('euclidean','greater_circle')){
-  geo.type <- match.arg(geo.type,c('euclidean','greater_circle'))
+  # geo.type <- match.arg(geo.type,c('euclidean','greater_circle'))
+  if(geo.type!="euclidean" & geo.type!="greater_circle")stop(cat("This geographic distance metric doesn't exist - check spelling."))
   if(geo.type=="euclidean"){
     cat('calculating euclidean distance\n')
     nr_df<-((nrow(coords)^2)-nrow(coords))/2

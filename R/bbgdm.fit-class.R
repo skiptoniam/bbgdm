@@ -22,7 +22,7 @@
 #' @author Skipton Woolley
 
 bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, trace=FALSE,prior=FALSE,
-                    control=bbgdm.control(...)){
+                    control=bbgdm.control()){
 
   loglike <- function(x) {
     -loglikelihood(x, X, y, wt, link)
@@ -34,6 +34,7 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
     if(!is.null(dim(y))) wt <- rep(1,nrow(y))
     else wt <- rep(1,length(y))
   }
+  if(length(wt)!=nrow(X))stop('Weights are not the same size as model matrix')
   if(optim.meth=="optim"){
     if(trace)control$trace <- 1
     method <- control$method

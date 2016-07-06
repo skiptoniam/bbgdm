@@ -69,3 +69,57 @@ test_that('bbgdm model fitting options work', {
 
 
 })
+
+
+test_that('model prediction works', {
+
+  #generate some fake data
+  library(raster)
+  set.seed(123)
+  xy <- expand.grid(x=seq(145, 150, 0.1), y=seq(-40, -35, 0.1))
+  d <- as.matrix(dist(xy))
+  w <- exp(-1/nrow(xy) * d)
+  ww <- chol(w)
+  xy$z <- t(ww) %*% rnorm(nrow(xy), 0, 0.1)
+  xy$z <- scales::rescale(xy$z,range(env.dat$covar_1))
+  coordinates(xy) <- ~x+y
+  r <- rasterize(xy, raster(points2grid(xy)), 'z')
+  #give it the same name as variable in bbgdm model.
+  names(r)<- 'covar_1'
+  r2 <- raster(r)
+  res(r2) <- 0.05
+  r2 <- resample(r, r2)
+  r3 <- r2
+  names(r3)<- 'covar_2'
+
+  fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+                    nboot=10,geo=FALSE,optim.meth='optim')
+
+  #expect error is name of layer doesn't match covariates in model.
+  r4<- r3
+  names(r4) <- 'foo'
+  testthat::expect_error(pred.fm.ut <- predict(fm,as.matrix(stack(r2,r4)),uncertainty = TRUE))
+
+  #use these layer to predict turnover.
+  pred.fm.ut <- predict(fm,stack(r2,r3),uncertainty = TRUE)
+  pred.fm.uf <- predict(fm,stack(r2,r3),uncertainty = FALSE)
+
+  # if wrong prediction data is submitted - should be raster, stack or brick.
+  testthat::expect_error(pred.fm.ut <- predict(fm,as.matrix(stack(r2,r3)),uncertainty = TRUE))
+  testthat::expect_error(pred.fm.uf <- predict(fm,c(stack(r2,r3)),uncertainty = FALSE))
+
+  # if wrong neighbourhood is submitted - should be an int.
+  testthat::expect_error(pred.fm.ut <- predict(fm,stack(r2,r3),neighbourhood=as.character(1),uncertainty = TRUE))
+  testthat::expect_error(pred.fm.uf <- predict(fm,stack(r2,r3),neighbourhood=c(3,2,1),uncertainty = FALSE))
+
+  # check classes
+  expect_equal(class(pred.fm.uf)[1], 'RasterLayer')
+  expect_equal(class(pred.fm.ut), 'list')
+  expect_equal(class(pred.fm.ut[[1]])[1], 'RasterLayer')
+  expect_equal(class(pred.fm.ut[[2]])[1], 'RasterLayer')
+
+  # check dimensions of prediction match input.
+  expect_equal(dim(pred.fm.uf), dim(r2))
+
+})
+

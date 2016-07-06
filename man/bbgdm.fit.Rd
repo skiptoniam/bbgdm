@@ -7,7 +7,7 @@
 \title{bbgdm.fit objects}
 \usage{
 bbgdm.fit(X, y, wt = NULL, link, optim.meth = "optim", est.var = TRUE,
-  trace = FALSE, prior = FALSE, control = bbgdm.control(...))
+  trace = FALSE, prior = FALSE, control = bbgdm.control())
 
 bbgdm.control(method = "BFGS", maxit = 1000, hessian = FALSE,
   trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05, ...)

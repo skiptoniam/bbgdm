@@ -4,7 +4,7 @@
 #' @description extracts spline reponses from \code{bbgdm} object and plots them.
 #' @param object As derived from bbgdm function.
 #' @param \dots pass further arguments to \code{plot()}.
-#' @return values for plotting i-spline responses from bbgdm.
+#' @return values for plotting spline responses from bbgdm.
 #' @export
 #' @examples
 #' # fit bbgdm and extract spline responses.
@@ -62,37 +62,39 @@ as.response <- function(object){
       }
 
 #' @rdname response
+#' @name is.reponse
 #' @export
 #' @examples
 #' # Did as.response work?
 #' is.response(responses)
 #'
-is.response <- function (object) {
-  # test whether object is a response object
-  ans <- inherits(object, "response")
+is.response <- function (x) {
+  # test whether x is a response x
+  ans <- inherits(x, "response")
   # return the answer
   return (ans)
 
 }
 
 #' @rdname response
-#' @name plot.response
+#' @method plot response
+#' @param x response object created using \code{as.response}
 #' @export
 #' @examples
 #' # plot responses
 #' par(mfrow=c(1,2))
 #' plot(responses)
 
-plot.response <- function(object,...){
+plot.response <- function(x,...){
         Splinesum <- Spline.05 <- Spline.95 <- NULL
-        Splinessum <- mapply(`%*%`, object$X, object$bspl)
-        Splines.05 <- mapply(`%*%`, object$X, object$bspl.05)
-        Splines.95 <- mapply(`%*%`, object$X, object$bspl.95)
+        Splinessum <- mapply(`%*%`, x$X, x$bspl)
+        Splines.05 <- mapply(`%*%`, x$X, x$bspl.05)
+        Splines.95 <- mapply(`%*%`, x$X, x$bspl.95)
          for (i in 1:ncol(Splinessum)) {
-              plot(object$grid_real[,i], Splinessum[,i],type='l', ylab = paste0("f(",colnames(object$diff_table)[i],")"),
-                   xlab = colnames(object$diff_table)[i],ylim = range(c(Splinessum,Splines.05,Splines.95)),...)
-              polygon(c(object$grid_real[, i],rev(object$grid_real[,i])),c(Splines.05[,i],rev(Splines.95[,i])),col="grey80",border=NA)
-              lines(object$grid_real[,i], Splinessum[,i], col = "black",type = "l", lwd=2)
+              plot(x$grid_real[,i], Splinessum[,i],type='l', ylab = paste0("f(",colnames(x$diff_table)[i],")"),
+                   xlab = colnames(x$diff_table)[i],ylim = range(c(Splinessum,Splines.05,Splines.95)),...)
+              polygon(c(x$grid_real[, i],rev(x$grid_real[,i])),c(Splines.05[,i],rev(Splines.95[,i])),col="grey80",border=NA)
+              lines(x$grid_real[,i], Splinessum[,i], col = "black",type = "l", lwd=2)
               mtext(paste0("(",letters[i],")"),adj = 0)
          }
 }

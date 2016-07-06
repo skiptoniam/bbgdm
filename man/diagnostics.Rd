@@ -3,35 +3,23 @@
 \name{diagnostics}
 \alias{bbgdm.wald.test}
 \alias{diagnostics}
-\alias{ggplot.bbgdm}
 \alias{plot.diagnostics}
 \title{diagnostics objects}
 \usage{
 diagnostics(object)
 
-plot.diagnostics(object, ...)
+\method{plot}{diagnostics}(x, ...)
 
 bbgdm.wald.test(object, H0 = 0, gdm = FALSE)
-
-\method{ggplot}{bbgdm}(object, pars = NULL, pars_labels = NULL,
-  horizontal = TRUE, zero_line = TRUE, xlims = NULL, ...)
 }
 \arguments{
 \item{object}{bbgdm model output}
 
+\item{x}{diagnostic object}
+
 \item{H0}{A numeric value giving the null hypothesis for the test. Generally zero.}
 
 \item{gdm}{Logic if true calculates the Wald-test using variance-covariance matrix derived from the hessian matrix. Note: These estimates are probably wrong due to hessian matrix being calulated with respect to the likelihoods.}
-
-\item{pars}{name of parameters to plot.}
-
-\item{pars_labels}{vector of parameter labels.}
-
-\item{horizontal}{logical. Whether or not you would like the lines to be}
-
-\item{zero_line}{logical. Whether or not to the zero #' medians.}
-
-\item{xlims}{custom xlims}
 
 \item{\dots}{other plot arguments.}
 }
@@ -54,10 +42,6 @@ plot(resids)
 
 # Undertake a wald test on bbdgm object
 bbgdm.wald.test(test.bbgdm)
-
-# plot covariate catepillar plot
-library(ggplot2)
-ggplot(test.bbgdm)
 
 }
 

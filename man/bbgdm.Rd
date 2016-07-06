@@ -4,6 +4,7 @@
 \alias{bbgdm}
 \alias{plot.bbgdm}
 \alias{predict.bbgdm}
+\alias{print.bbgdm}
 \title{bbgdm objects}
 \usage{
 bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
@@ -12,9 +13,11 @@ bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
   coord.names = c("X", "Y"), optim.meth = "nlmnib", est.var = FALSE,
   trace = FALSE, prior = FALSE, control = bbgdm.control())
 
-plot.bbgdm(object, ...)
+\method{print}{bbgdm}(x, ...)
 
-predict.bbgdm(object, data, neighbourhood = NULL, outer = FALSE,
+\method{plot}{bbgdm}(x, ...)
+
+\method{predict}{bbgdm}(x, data, neighbourhood = NULL, outer = FALSE,
   uncertainty = TRUE, ...)
 }
 \arguments{
@@ -60,7 +63,8 @@ Options are: "ispline" or "bspline".}
 
 \item{control}{control options for gdm calls \link[bbgdm]{bbgdm.control} as default.}
 
-\item{object}{As derived from bbgdm function}
+\item{x}{an object of class \code{bbgdm}, constructed by the function \code{bbgdm}
+giving a fitted bbgdm}
 
 \item{data}{raster stack of the same covariates used to fit model object for the region you wish to predict too.}
 
@@ -70,7 +74,7 @@ Options are: "ispline" or "bspline".}
 
 \item{uncertainty}{logical if TRUE predict will return a list with two rasters the mean estimate and the uncertainty (defined as the coefficent of variation)}
 
-\item{\dots}{for \code{bbgdm()}: one or more \code{plot()} and
+\item{\dots}{for \code{bbgdm()}: one or more \code{plot()}, \code{print()} and
 \code{predict()}: further arguments passed to or from other methods}
 }
 \value{
@@ -89,6 +93,9 @@ env.dat <- simulate_covariates(sp.dat,2)
 form <- ~ 1 + covar_1 + covar_2
 test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",
                     nboot=10, geo=FALSE,optim.meth='nlmnib')
+#print model summary
+print(test.bbgdm)
+
 #plot bbgdm fit
 plot(test.bbgdm)
 

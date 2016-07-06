@@ -8,7 +8,7 @@ NULL
 #' @description creates a \code{bbgdm} model, comprising multiple
 #'   gdms. \code{bbgdm} models are core of \code{bbgdm}, different parameterisation can
 #'   be achieve similar to a \code{\link[stats]{glm}}, see \code{bbgdm.fit} for more details.
-#' @param \dots for \code{bbgdm()}: one or more \code{plot()} and
+#' @param \dots for \code{bbgdm()}: one or more \code{plot()}, \code{print()} and
 #'   \code{predict()}: further arguments passed to or from other methods
 #' @param form formula for bbgdm model
 #' @param sp.dat presence absence matrix, sp as columns sites as rows.
@@ -130,28 +130,54 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
 }
 
 #' @rdname bbgdm
-#' @name plot.bbgdm
-#' @param object As derived from bbgdm function
+#'
 #' @export
+#'
+#' @param x an object of class \code{bbgdm}, constructed by the function \code{bbgdm}
+#' giving a fitted bbgdm
+#'
+#' @examples
+#' #print model summary
+#' print(test.bbgdm)
+#'
+
+print.bbgdm <- function (x, ...) {
+  cat(' A Bayesian Bootstrap GDM fitted against:\n',
+      nrow(x$sp.dat),'sites,\n',
+      ncol(x$sp.dat),'species and \n',
+      nrow(x$X), 'dissimilarities used as observations in the model.\n\n')
+
+  cat(' A total of',x$nboots, 'Bayesian Bootstraps were run.\n\n')
+
+  cat(' Spline base parameter estimates are: \n', paste(names(x$median.coefs.se),round(x$median.coefs.se,4), collapse="\n "),
+      '\n')
+}
+
+#' @rdname bbgdm
+#'
+#' @method plot bbgdm
+#'
+#' @export
+#'
 #' @examples
 #' #plot bbgdm fit
 #' plot(test.bbgdm)
 #'
-## plotting
-plot.bbgdm <- function(object,...){
-  if(nrow(object$X)>200) pred_sample <- 200
-  else pred_sample <- nrow(object$X)
-  link <-object$link
+
+plot.bbgdm <- function(x, ...){
+  if(nrow(x$X)>200) pred_sample <- 200
+  else pred_sample <- nrow(x$X)
+  link <-x$link
   if(link=='negexp') link.fun <- bbgdm::negexp()
   else link.fun <- make.link(link=link)
-  X <- object$X
-  Y <- object$starting_gdm$y
-  bb.eta <- X%*%object$median.coefs.se
-  bb.eta.05 <- X%*%object$quantiles.coefs.se[1,]
-  bb.eta.95 <- X%*%object$quantiles.coefs.se[2,]
+  X <- x$X
+  Y <- x$starting_gdm$y
+  bb.eta <- X%*%x$median.coefs.se
+  bb.eta.05 <- X%*%x$quantiles.coefs.se[1,]
+  bb.eta.95 <- X%*%x$quantiles.coefs.se[2,]
   bb.pred <- link.fun$linkinv(bb.eta)
   plot(bb.eta,Y[,1]/Y[,2], xlab = "Linear Predictor",
-       ylab = paste0("Observed ",object$dism_metric," dissimilarity"), type = "n",ylim=c(0,1),...)
+       ylab = paste0("Observed ",x$dism_metric," dissimilarity"), type = "n",ylim=c(0,1),...)
   points(bb.eta,Y[,1]/Y[,2], pch = 20, cex = 0.25)
   y.pred <- Y[sample(pred_sample),]
   y.pred <- y.pred[order(y.pred[,2], y.pred[,1]),]
@@ -163,27 +189,27 @@ plot.bbgdm <- function(object,...){
 
 
 #' @rdname bbgdm
-#' @name predict.bbgdm
+#' @export
+#' @method predict bbgdm
 #' @param data raster stack of the same covariates used to fit model object for the region you wish to predict too.
 #' @param neighbourhood int default is three, number of neighbouring cells to estimate mean dissimilarity.
 #' @param outer logical default is FALSE, if TRUE only calculates the outer edge of neighbourhoods area.
 #' @param uncertainty logical if TRUE predict will return a list with two rasters the mean estimate and the uncertainty (defined as the coefficent of variation)
 #' @return raster of mean turnover estimated based on neighbourhood distance.
-#' @export
 
 
-predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncertainty=TRUE,...)
+predict.bbgdm <- function (x, data, neighbourhood=NULL, outer=FALSE, uncertainty=TRUE,...)
 {
   options(warn.FPU = FALSE)
   if (class(data) != "RasterStack" & class(data) != "RasterLayer" &
       class(data) != "RasterBrick") {
     stop("Prediction data need to be a raster object")
   }
-  if (raster::nlayers(data) != ncol(object$env.dat)) {
+  if (raster::nlayers(data) != ncol(x$env.dat)) {
     stop("Number of raster layers does not equal the number used to fit the model")
   }
   for (i in 1:raster::nlayers(data)) {
-    if (names(object$env.dat)[i] != names(data)[i]) {
+    if (names(x$env.dat)[i] != names(data)[i]) {
       stop("Raster layers don't match variables used to fit the model - check they are in the correct order")
     }
   }
@@ -211,7 +237,7 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncert
   beta.r[cells]<-1
   intercept <- beta.r
   rs <- stack(intercept,data_stack)
-  bbgdm_coef <- as.vector(object$median.coefs.se)
+  bbgdm_coef <- as.vector(x$median.coefs.se)
   raster_data <- raster::as.array(rs)
   beta_mat <- raster::as.matrix(beta.r)
   beta.r[] <- bbgdm::pred_bbgdm_cpp(raster_data,beta_mat,rel,bbgdm_coef)
@@ -220,8 +246,8 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncert
     beta.r.up <- data[[1]]
     beta.r.lw[cells]<-1
     beta.r.up[cells]<-1
-    bbgdm_coef.lw <- as.vector(object$quantiles.coefs.se[1,])
-    bbgdm_coef.up <- as.vector(object$quantiles.coefs.se[2,])
+    bbgdm_coef.lw <- as.vector(x$quantiles.coefs.se[1,])
+    bbgdm_coef.up <- as.vector(x$quantiles.coefs.se[2,])
     beta.r.lw[] <- bbgdm::pred_bbgdm_cpp(raster_data,beta_mat,rel,bbgdm_coef.lw)
     beta.r.up[] <- bbgdm::pred_bbgdm_cpp(raster_data,beta_mat,rel,bbgdm_coef.up)
     pred.se <- abs(beta.r.up-beta.r.lw)/beta.r
@@ -229,3 +255,5 @@ predict.bbgdm <- function (object, data, neighbourhood=NULL, outer=FALSE, uncert
   if(uncertainty) return(list(mean.beta=beta.r,se.beta=pred.se))
   else return(beta.r)
 }
+
+
