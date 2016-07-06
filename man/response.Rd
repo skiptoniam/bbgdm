@@ -2,7 +2,6 @@
 % Please edit documentation in R/response-class.R
 \name{as.response}
 \alias{as.response}
-\alias{is.reponse}
 \alias{is.response}
 \alias{plot.response}
 \title{response objects}
