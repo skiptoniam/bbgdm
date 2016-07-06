@@ -37,6 +37,25 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              nboot=100, geo=FALSE,optim.meth='nlmnib')
 ```
 
+##### Print model summary
+
+``` r
+print(fm1)
+```
+
+    ##  A Bayesian Bootstrap GDM fitted against:
+    ##  20 sites,
+    ##  30 species and 
+    ##  190 dissimilarities used as observations in the model.
+    ## 
+    ##  A total of 100 Bayesian Bootstraps were run.
+    ## 
+    ##  Spline base parameter estimates are: 
+    ##  (Intercept) 0.6535
+    ##  x_1 0
+    ##  x_2 0.2768
+    ##  x_3 0.5422
+
 ##### Plot diagnostics
 
 ``` r
@@ -45,7 +64,7 @@ par(mfrow=c(2,2))
 plot(resids)
 ```
 
-<img src="readme_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="readme_files/figure-markdown_github/unnamed-chunk-6-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 ##### Plot response curves
 
@@ -55,7 +74,7 @@ par(mfrow=c(1,1))
 plot(response)
 ```
 
-<img src="readme_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="readme_files/figure-markdown_github/unnamed-chunk-7-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 ##### Run 'Wald-like' test on parameters
 
@@ -66,8 +85,8 @@ tab <- xtable(wt)
 print(tab, type = "html")
 ```
 
-<!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Wed Jul 06 10:20:27 2016 -->
+<!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
+<!-- Thu Jul 07 01:29:08 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -87,7 +106,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-8.12
+12.52
 </td>
 <td align="right">
 1.00
@@ -101,13 +120,13 @@ intercept
 A1
 </td>
 <td align="right">
-2.04
+3.77
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.56
+0.29
 </td>
 </tr>
 </table>
@@ -146,4 +165,4 @@ plot(pred.dune.sim.dat[[1]],col=colram(100),main='BBGDM turnover')
 plot(pred.dune.sim.dat[[2]],col=colram.se(100),main='BBGDM CV of turnover')
 ```
 
-<img src="readme_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="readme_files/figure-markdown_github/unnamed-chunk-9-1.png" title="" alt="" style="display: block; margin: auto;" />

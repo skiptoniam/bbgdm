@@ -37,6 +37,11 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              nboot=100, geo=FALSE,optim.meth='nlmnib')
 ```
 
+##### Print model summary
+```{r}
+print(fm1)
+```
+
 ##### Plot diagnostics
 ```{r,fig.width = 6, fig.height = 6,fig.align='center'}
 resids <- diagnostics(fm1)
