@@ -147,3 +147,15 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
   if(gdm) return(cbind(wd_vals_gdm,wd_vals))
   else return(wd_vals)
 }
+
+#' @rdname diagnostics
+#' @name is.diagnostics
+#' @export
+
+is.diagnostics <- function (x) {
+  # test whether object is a diagnostics object
+  ans <- inherits(x, "diagnostics")
+  # return the answer
+  return (ans)
+
+}
