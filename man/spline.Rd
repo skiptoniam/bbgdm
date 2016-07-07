@@ -10,8 +10,8 @@ ispline(x, spline.knots = 2, knots = NULL, spline.degree = 3)
 
 spline.trans(x, spline_type = "ispline", spline_df = 2, spline_knots = 1)
 
-spline_trans_for_pred(x, attrib = NULL, values = NULL,
-  standardization = NULL, splineInterval = NULL, splineDegree = NULL)
+spline_trans_for_pred(x, attrib = NULL, splineInterval = NULL,
+  splineDegree = NULL)
 }
 \arguments{
 \item{x}{data.frame of covariates to use as predictors in bbgdm.}
@@ -29,10 +29,6 @@ spline_trans_for_pred(x, attrib = NULL, values = NULL,
 \item{spline_knots}{The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.}
 
 \item{attrib}{Spline parameters from model.}
-
-\item{values}{NULL}
-
-\item{standardization}{NULL}
 
 \item{splineInterval}{NULL}
 

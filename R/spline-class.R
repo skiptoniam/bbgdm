@@ -18,7 +18,7 @@ ispline <- function (x, spline.knots = 2, knots = NULL, spline.degree = 3)
     knots <- unique(interval)
   }
   if (length(knots) < 2) {
-    I <- structure(normalise(x, standardize = "interval"),
+    I <- structure(normalise(x),
                    dim = c(length(x), 1))
     return(I)
   }
@@ -111,15 +111,12 @@ is.spline <- function (object) {
 #' @rdname spline
 #' @name spline_trans_for_pred
 #' @param attrib Spline parameters from model.
-#' @param values NULL
-#' @param standardization NULL
 #' @param splineInterval NULL
 #' @param splineDegree NULL
 #' @return I-Spline predictions
 #' @export
 
-spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardization = NULL,
-                                  splineInterval = NULL, splineDegree = NULL)
+spline_trans_for_pred <- function(x, attrib = NULL, splineInterval = NULL, splineDegree = NULL)
 {
   if((attrib$class)[1]=='bs'){
     if (is.list(attrib)) {
@@ -177,29 +174,10 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
 }
 
 
-normalise <- function (x, standardize = "zscore")
+normalise <- function (x)
 {
-  # if (is.list(standardize)) {
-  #   stand.a <- standardize$a
-  #   stand.b <- standardize$b
-  # }
-  # else if (standardize == "zscore") {
-  #   stand.a <- mean(x)
-  #   stand.b <- sd(x)
-  #   stand.b[stand.b == 0] <- 1
-  # }
-  else if (standardize == "interval") {
-    stand.a <- min(x)
-    stand.b <- max(x) - stand.a
-  }
-  else {
-    stand.a <- 0
-    stand.b <- 1
-  }
-  if (is.na(stand.b) || stand.b == 0) {
-    stand.a <- mean(x)
-    stand.b <- 1
-  }
+  stand.a <- min(x)
+  stand.b <- max(x) - stand.a
   X <- (x - stand.a)/stand.b
   attr(X, "standardization") <- list(a = stand.a, b = stand.b)
   return(X)

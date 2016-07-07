@@ -76,14 +76,10 @@ test_that( "Tests for spline_trans_for_pred", {
   for(i in 1:ncol(grid)) grid_real[,i] <-  scales::rescale(grid[,i],to=c(min_env[i],max_env[i]))
   X <- mapply(spline_trans_for_pred, grid, attrib = object$dissim_dat_params,
               SIMPLIFY = FALSE)
-  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
-                              standardization = NULL, splineInterval = NULL, splineDegree = NULL)
-  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
-                                standardization = NULL, splineInterval = c(1,2,3), splineDegree = NULL)
-  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params[[1]], values = NULL,
-                                standardization = NULL, splineInterval = NULL, splineDegree = NULL))
-  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params, values = NULL,
-                                             standardization = NULL, splineInterval = NULL, splineDegree = NULL))
+  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], splineInterval = NULL, splineDegree = NULL)
+  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]],  splineInterval = c(1,2,3), splineDegree = NULL)
+  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params[[1]], splineInterval = NULL, splineDegree = NULL))
+  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params, splineInterval = NULL, splineDegree = NULL))
   #test outputs
   testthat::expect_equal(class(sp_t), 'matrix')
 
@@ -108,18 +104,12 @@ test_that( "Tests for spline_trans_for_pred", {
   X <- mapply(spline_trans_for_pred, grid, attrib = object$dissim_dat_params,
               SIMPLIFY = FALSE)
   attrib <- object$dissim_dat_params[[1]]
-  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
-                                standardization = 'interval', splineInterval = NULL, splineDegree = NULL)
-  expect_error(sp_t <- spline_trans_for_pred(grid[,1], attrib = NULL, values = NULL,
-                                standardization = 'zscore', splineInterval = NULL, splineDegree = NULL))
-  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
-                                standardization = 'zscore', splineInterval = attrib$knots, splineDegree = NULL)
-  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
-                                standardization = 'zscore', splineInterval = attrib$knots, splineDegree = attrib$degree)
-  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params[[1]], values = NULL,
-                                             standardization = NULL, splineInterval = NULL, splineDegree = NULL))
-  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params, values = NULL,
-                                             standardization = NULL, splineInterval = NULL, splineDegree = NULL))
+  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], splineInterval = NULL, splineDegree = NULL)
+  expect_error(sp_t <- spline_trans_for_pred(grid[,1], attrib = NULL, splineInterval = NULL, splineDegree = NULL))
+  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]],splineInterval = attrib$knots, splineDegree = NULL)
+  sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], splineInterval = attrib$knots, splineDegree = attrib$degree)
+  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params[[1]], splineInterval = NULL, splineDegree = NULL))
+  expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params, splineInterval = NULL, splineDegree = NULL))
   #test outputs
   testthat::expect_equal(class(sp_t)[1], 'bs')
   testthat::expect_equal(class(sp_t)[2], 'basis')
