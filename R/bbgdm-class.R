@@ -50,14 +50,15 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=bbgdm.control()){
 
   cat(family,"regression is on the way. \n")
-    if (is.character(family))
+  if (family!='binomial') {
+    print(family)
+    stop("'family' not recognized")
+  }
+  if (is.character(family))
       family <- get(family, mode = "function", envir = parent.frame())
-    if (is.function(family))
+  if (is.function(family))
       family <- family()
-    if (is.null(family$family)) {
-      print(family)
-      stop("'family' not recognized")
-    }
+
   if(dism_metric=="number_non_shared") left <- "cbind(nonsharedspp_ij,sumspp_ij)"
   if(dism_metric=="bray_curtis") left <- "cbind(dissimilarity,100)"
   if(geo) { form <- update.formula(form, ~ X + Y + .)
