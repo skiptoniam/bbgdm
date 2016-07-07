@@ -1,6 +1,6 @@
 ### BBGDM
 
-[![Travis-CI Build Status](https://travis-ci.org/skiptoniam/bbgdm.svg?branch=master)](https://travis-ci.org/skiptoniam/bbgdm) [![codecov.io](https://codecov.io/github/skiptoniam/bbgdm/coverage.svg?branch=master)](https://codecov.io/github/skiptoniam/bbgdm?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/bbgdm)](https://cran.r-project.org/package=bbgdm)
+[![Travis-CI Build Status](https://travis-ci.org/skiptoniam/bbgdm.svg?branch=master)](https://travis-ci.org/skiptoniam/bbgdm) [![codecov.io](https://codecov.io/github/skiptoniam/bbgdm/coverage.svg?branch=master)](https://codecov.io/github/skiptoniam/bbgdm?branch=master)
 
 BBGDM is a R package for running Generalized Dissimilarity Models with Bayesian Bootstrap for parameter estimation. To install package run the following command in your R terminal
 
@@ -51,10 +51,10 @@ print(fm1)
     ##  A total of 100 Bayesian Bootstraps were run.
     ## 
     ##  Spline base parameter estimates are: 
-    ##  (Intercept) 0.6528
+    ##  (Intercept) 0.6663
     ##  x_1 0
-    ##  x_2 0
-    ##  x_3 0.5554
+    ##  x_2 0.0715
+    ##  x_3 0.6064
 
 ##### Plot diagnostics
 
@@ -86,7 +86,7 @@ print(tab, type = "html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Thu Jul 07 20:29:07 2016 -->
+<!-- Thu Jul 07 20:49:08 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -106,7 +106,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-9.94
+10.82
 </td>
 <td align="right">
 1.00
@@ -120,13 +120,13 @@ intercept
 A1
 </td>
 <td align="right">
-1.15
+1.76
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.77
+0.62
 </td>
 </tr>
 </table>
