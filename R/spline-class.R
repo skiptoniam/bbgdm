@@ -131,22 +131,22 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
     }
     if (!is.null(splineInterval))
       return(splines::bs(x, knots = splineInterval, degree = splineDegree,Boundary.knots=Bound.knots))
-    else if (!is.null(standardization)) {
-      I <- normalise(x, standardize = standardization)
-      attr(I, "dim") <- c(length(x), 1)
-      return(I)
-    }
-    else if (!is.null(values)) {
-      x <- factor(x, levels = values)
-      I <- model.matrix(~x - 1)
-      attr(I, "values") <- values
-      return(I)
-    }
-    else {
-      I <- as.numeric(x)
-      attr(I, "dim") <- c(length(x), 1)
-      return(I)
-    }
+    # else if (!is.null(standardization)) {
+    #   I <- normalise(x, standardize = standardization)
+    #   attr(I, "dim") <- c(length(x), 1)
+    #   return(I)
+    # }
+    # else if (!is.null(values)) {
+    #   x <- factor(x, levels = values)
+    #   I <- model.matrix(~x - 1)
+    #   attr(I, "values") <- values
+    #   return(I)
+    # }
+    # else {
+    #   I <- as.numeric(x)
+    #   attr(I, "dim") <- c(length(x), 1)
+    #   return(I)
+    # }
 
   } else{
     if (is.list(attrib)) {
@@ -157,37 +157,37 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
     }
     if (!is.null(splineInterval))
       return(ispline(x, knots = splineInterval, spline.degree = splineDegree))
-    else if (!is.null(standardization)) {
-      I <- normalise(x, standardize = standardization)
-      attr(I, "dim") <- c(length(x), 1)
-      return(I)
-    }
-    else if (!is.null(values)) {
-      x <- factor(x, levels = values)
-      I <- model.matrix(~x - 1)
-      attr(I, "values") <- values
-      return(I)
-    }
-    else {
-      I <- as.numeric(x)
-      attr(I, "dim") <- c(length(x), 1)
-      return(I)
-    }
+    # else if (!is.null(standardization)) {
+    #   I <- normalise(x, standardize = standardization)
+    #   attr(I, "dim") <- c(length(x), 1)
+    #   return(I)
+    # }
+    # else if (!is.null(values)) {
+    #   x <- factor(x, levels = values)
+    #   I <- model.matrix(~x - 1)
+    #   attr(I, "values") <- values
+    #   return(I)
+    # }
+    # else {
+    #   I <- as.numeric(x)
+    #   attr(I, "dim") <- c(length(x), 1)
+    #   return(I)
+    # }
   }
 }
 
 
 normalise <- function (x, standardize = "zscore")
 {
-  if (is.list(standardize)) {
-    stand.a <- standardize$a
-    stand.b <- standardize$b
-  }
-  else if (standardize == "zscore") {
-    stand.a <- mean(x)
-    stand.b <- sd(x)
-    stand.b[stand.b == 0] <- 1
-  }
+  # if (is.list(standardize)) {
+  #   stand.a <- standardize$a
+  #   stand.b <- standardize$b
+  # }
+  # else if (standardize == "zscore") {
+  #   stand.a <- mean(x)
+  #   stand.b <- sd(x)
+  #   stand.b[stand.b == 0] <- 1
+  # }
   else if (standardize == "interval") {
     stand.a <- min(x)
     stand.b <- max(x) - stand.a
