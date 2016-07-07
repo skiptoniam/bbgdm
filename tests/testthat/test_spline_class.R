@@ -30,23 +30,41 @@ test_that('check ispline works', {
 test_that( "spline.trans works", {
 
   x1 <- spline.trans(x, spline_type = "ispline", spline_df = 2, spline_knots = 1)
+  x1 <- spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 1)
+  x1 <- spline.trans(x, spline_type = "ispline", spline_df = 4, spline_knots = 1)
+  x1 <- spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 2)
 
   # #worng inputs
-  # expect_error(x3 <- ispline(x[,1], spline.knots = 'a', knots = NULL, spline.degree = 3))
-  # expect_error(x3 <- ispline(x[,1], spline.knots = 1, knots = x, spline.degree = 3))
-  # expect_error(x3 <- ispline(x[,1], spline.knots = 1, knots = NULL, spline.degree = letters[seq(1,6)]))
-  #
-  # #error if matrix
-  # testthat::expect_error(x <- ispline(x, spline.knots = 2, knots = NULL, spline.degree = 3))
-  # testthat::expect_error(x <- ispline(c("a","b"), spline.knots = 2, knots = NULL, spline.degree = 3))
-  #
-  # #test outputs
-  # testthat::expect_equal(class(x1), 'matrix')
-  # testthat::expect_equal(class(attributes(x1)), 'list')
+  expect_error(x3 <- spline.trans(x, spline_type = "ipline", spline_df = 2, spline_knots = 1))
+  expect_error(x3 <- spline.trans(x, spline_type = "ispline", spline_df = 'a', spline_knots = 1))
+  expect_error(x3 <- spline.trans(x, spline_type = "ispline", spline_df = 2, spline_knots = 'a'))
+
+  #test outputs
+  testthat::expect_equal(class(x1), 'spline')
+  testthat::expect_equal(class(attributes(x1)), 'list')
+  testthat::expect_equal(class(x1$spline), 'matrix')
+  testthat::expect_equal(class(x1$spline.attr), 'list')
 
 })
 
 test_that( "Tests for spline_trans_for_pred", {
+
+  spline_trans_for_pred(x1, attrib = NULL, values = NULL,
+                              standardization = NULL, splineInterval = NULL, splineDegree = NULL)
+  x1 <- spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 1)
+  x1 <- spline.trans(x, spline_type = "ispline", spline_df = 4, spline_knots = 1)
+  x1 <- spline.trans(x, spline_type = "bspline", spline_df = 2, spline_knots = 2)
+
+  # #worng inputs
+  expect_error(x3 <- spline.trans(x, spline_type = "ipline", spline_df = 2, spline_knots = 1))
+  expect_error(x3 <- spline.trans(x, spline_type = "ispline", spline_df = 'a', spline_knots = 1))
+  expect_error(x3 <- spline.trans(x, spline_type = "ispline", spline_df = 2, spline_knots = 'a'))
+
+  #test outputs
+  testthat::expect_equal(class(x1), 'spline')
+  testthat::expect_equal(class(attributes(x1)), 'list')
+  testthat::expect_equal(class(x1$spline), 'matrix')
+  testthat::expect_equal(class(x1$spline.attr), 'list')
 
 
 })
