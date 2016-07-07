@@ -126,6 +126,8 @@ test_that('model prediction works', {
 
 test_that('model plot works', {
 
+   fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+              nboot=10,geo=FALSE,optim.meth='optim')
    img <- function() {
     plot(fm)
   }
@@ -135,20 +137,17 @@ test_that('model plot works', {
 })
 
 test_that('model print works', {
+  set.seed(12345)
+  fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+              nboot=10,geo=FALSE,optim.meth='optim')
+  # check print.dynamic works
+  expect_equal(class(print(fm)),'NULL')
 
-
-# check print.dynamic works
-expect_equal(class(print(fm)),'NULL')
-
-expected <- c(" A Bayesian Bootstrap GDM fitted against:",
+  expected <- c(" A Bayesian Bootstrap GDM fitted against:",
               " 20 sites,"," 10 species and ",
               " 190 dissimilarities used as observations in the model.","",
-              " A total of 10 Bayesian Bootstraps were run.",
-              ""," Spline base parameter estimates are: ",
-              " (Intercept) 0.147"," covar_1_1 0.0651"," covar_1_2 0.0176",
-              " covar_1_3 0.0132"," covar_2_1 0.0193",
-              " covar_2_2 0.0022"," covar_2_3 1e-04 ")
+              " A total of 10 Bayesian Bootstraps were run.")
 
-expect_equal(capture.output(print(fm)), expected)
+  expect_equal(capture.output(print(fm))[1:6], expected)
 
 })

@@ -29,7 +29,10 @@ test_that('check diagnostics works', {
 })
 
 test_that('residual plot works', {
-
+  set.seed(12345)
+  fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+              nboot=10,geo=FALSE,optim.meth='optim')
+  responses <- as.response(fm)
   img <- function() {
     plot(responses)
   }
