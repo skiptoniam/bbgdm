@@ -47,6 +47,7 @@ test_that('check bbgdm.wald.test works', {
 
 test_that('residual plot works', {
 
+  resids <- diagnostics(fm)
   img <- function() {
     plot(resids)
   }
