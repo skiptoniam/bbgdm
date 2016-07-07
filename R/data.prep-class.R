@@ -50,7 +50,7 @@ table2pam <- function (x, site.id = "site.id", sp.id = "sp.id", abund = FALSE, a
 
 pam2dissim <- function(y,dism_metric="number_non_shared"){
 
-  if(!identical(as.vector(y),as.numeric(as.logical(y))))stop('bbgdm only works with presence-absence - transform your abundances to binary data\n')
+  if(!length(which(y>1))==0)stop('bbgdm only works with presence-absence - transform your abundances to binary data\n')
   cat(paste0("Calculating ",dism_metric," dissimilarity\n"))
   if(dism_metric=="bray_curtis"){
     y <- as.matrix(y)
