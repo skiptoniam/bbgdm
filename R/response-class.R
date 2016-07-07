@@ -87,12 +87,19 @@ is.response <- function (x) {
 
 plot.response <- function(x,...){
         Splinesum <- Spline.05 <- Spline.95 <- NULL
+        # if(='list')x$X <- do.call(cbind, x$X)
+
         Splinessum <- mapply(`%*%`, x$X, x$bspl)
         Splines.05 <- mapply(`%*%`, x$X, x$bspl.05)
         Splines.95 <- mapply(`%*%`, x$X, x$bspl.95)
+        # if(length(Splinessum[,1])>100){
+        #   Splinessum<-Splinessum[sort(sample(length(Splinessum[,1]),100)),]
+        #   Splines.05<-Splines.05[sort(sample(length(Splines.05[,1]),100)),]
+        #   Splines.95<-Splines.95[sort(sample(length(Splines.95[,1]),100)),]
+        # }
          for (i in 1:ncol(Splinessum)) {
               plot(x$grid_real[,i], Splinessum[,i],type='l', ylab = paste0("f(",colnames(x$diff_table)[i],")"),
-                   xlab = colnames(x$diff_table)[i],ylim = range(c(Splinessum,Splines.05,Splines.95)),...)
+                   xlab = colnames(x$diff_table)[i],ylim = range(c(Splinessum,Splines.05,Splines.95)))#,...)
               polygon(c(x$grid_real[, i],rev(x$grid_real[,i])),c(Splines.05[,i],rev(Splines.95[,i])),col="grey80",border=NA)
               lines(x$grid_real[,i], Splinessum[,i], col = "black",type = "l", lwd=2)
               mtext(paste0("(",letters[i],")"),adj = 0)

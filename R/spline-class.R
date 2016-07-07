@@ -90,6 +90,7 @@ spline.trans <- function(x,spline_type ="ispline",spline_df=2,spline_knots=1){
       spline.attr[[ii]] <- attributes(tmp.st)
       spline[,index:(index+(spline.attr[[ii]]$dim[2]-1))] <- tmp.st
       index <- index + spline.attr[[ii]]$dim[2]
+      spline.attr[[ii]]$class <- 'is'
     }
   }
   colnames(spline) <- do.call(paste, c(as.list(rev(expand.grid(1:n_spl, colnames(x)))), sep='_'))
@@ -120,7 +121,7 @@ is.spline <- function (object) {
 spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardization = NULL,
                                   splineInterval = NULL, splineDegree = NULL)
 {
-  if(!is.null(attrib$class)){#[1]=='bs'){
+  if((attrib$class)[1]=='bs'){
     if (is.list(attrib)) {
       #       values = attrib$values
       #       standardization = attrib$standardization
@@ -157,7 +158,7 @@ spline_trans_for_pred <- function(x, attrib = NULL, values = NULL, standardizati
     if (!is.null(splineInterval))
       return(ispline(x, knots = splineInterval, spline.degree = splineDegree))
     else if (!is.null(standardization)) {
-      I <- gdistance::normalize(x, standardize = standardization)
+      I <- normalise(x, standardize = standardization)
       attr(I, "dim") <- c(length(x), 1)
       return(I)
     }

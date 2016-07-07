@@ -13,6 +13,8 @@ test_that('bbgdm optimisers work', {
                nboot=10,geo=FALSE,optim.meth='optim')
   fm1_nlmnib <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
                nboot=10,geo=FALSE,optim.meth = 'nlmnib')
+  expect_error(fm1_nlmnib <- bbgdm(form,sp.dat,env.dat,family="binol",dism_metric="number_non_shared",
+                                     nboot=10,geo=FALSE,optim.meth = 'nlmnib'))
 
 })
 
@@ -102,11 +104,14 @@ test_that('model prediction works', {
   #expect error is name of layer doesn't match covariates in model.
   r4<- r3
   names(r4) <- 'foo'
-  testthat::expect_error(pred.fm.ut <- predict(fm,as.matrix(stack(r2,r4)),uncertainty = TRUE))
+  testthat::expect_error(pred.fm.ut <- predict(fm,stack(r2,r4),uncertainty = TRUE))
 
   #use these layer to predict turnover.
   pred.fm.ut <- predict(fm,stack(r2,r3),uncertainty = TRUE)
   pred.fm.uf <- predict(fm,stack(r2,r3),uncertainty = FALSE)
+
+  #expect error if dims miss match
+  expect_error(pred.fm.ut <- predict(fm,r2,uncertainty = TRUE))
 
   # if wrong prediction data is submitted - should be raster, stack or brick.
   testthat::expect_error(pred.fm.ut <- predict(fm,as.matrix(stack(r2,r3)),uncertainty = TRUE))

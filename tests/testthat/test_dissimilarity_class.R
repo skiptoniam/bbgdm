@@ -24,12 +24,13 @@ test_that('check diff_table works', {
   env.dat$X <- runif(nrow(env.dat), min=-20, max=20)
   env.dat$Y <- runif(nrow(env.dat), min=-20, max=20)
   diff_table_nns <- dissim_table(sp.dat,env.dat,geo = TRUE, dism_metric="number_non_shared")
+  diff_table_bc <- dissim_table(sp.dat,env.dat,geo = TRUE, dism_metric="bray_curtis")
 
   #test euclidean
   diff_table_nns_e_d <- dissim_table(sp.dat,env.dat,geo = TRUE,geo.type = 'euclidean', dism_metric="number_non_shared")
 
   #test gc
-  diff_table_nns_gc_d <- dissim_table(sp.dat,env.dat,geo = TRUE,geo.type = 'greater_circle', dism_metric="number_non_shared")
+  diff_table_bc_gc_d <- dissim_table(sp.dat,env.dat,geo = TRUE,geo.type = 'greater_circle', dism_metric="number_non_shared")
 
   #Miss type the distance metric
   testthat::expect_error(dissim_table(sp.dat,env.dat,geo = TRUE,geo.type = 'eucliean', dism_metric="bray_curtis"))
