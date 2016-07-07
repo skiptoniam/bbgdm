@@ -110,8 +110,8 @@ test_that( "Tests for spline_trans_for_pred", {
   attrib <- object$dissim_dat_params[[1]]
   sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
                                 standardization = 'interval', splineInterval = NULL, splineDegree = NULL)
-  sp_t <- spline_trans_for_pred(grid[,1], attrib = NULL, values = NULL,
-                                standardization = 'zscore', splineInterval = NULL, splineDegree = NULL)
+  expect_error(sp_t <- spline_trans_for_pred(grid[,1], attrib = NULL, values = NULL,
+                                standardization = 'zscore', splineInterval = NULL, splineDegree = NULL))
   sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
                                 standardization = 'zscore', splineInterval = attrib$knots, splineDegree = NULL)
   sp_t <- spline_trans_for_pred(grid[,1], attrib = object$dissim_dat_params[[1]], values = NULL,
@@ -121,6 +121,8 @@ test_that( "Tests for spline_trans_for_pred", {
   expect_error(sp_t <- spline_trans_for_pred(grid, attrib = object$dissim_dat_params, values = NULL,
                                              standardization = NULL, splineInterval = NULL, splineDegree = NULL))
   #test outputs
-  testthat::expect_equal(class(sp_t), 'matrix')
+  testthat::expect_equal(class(sp_t)[1], 'bs')
+  testthat::expect_equal(class(sp_t)[2], 'basis')
+  testthat::expect_equal(class(sp_t)[3], 'matrix')
 
 })
