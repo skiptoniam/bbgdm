@@ -92,6 +92,10 @@ test_that('model prediction works', {
   r3 <- r2
   names(r3)<- 'covar_2'
 
+  set.seed(12345)
+  sp.dat <- matrix(rbinom(200,1,.5),20,10)
+  env.dat <- simulate_covariates(sp.dat,2)
+  form <- ~ 1 + covar_1 + covar_2
   fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
                     nboot=10,geo=FALSE,optim.meth='optim')
 
@@ -138,6 +142,9 @@ test_that('model plot works', {
 
 test_that('model print works', {
   set.seed(12345)
+  sp.dat <- matrix(rbinom(200,1,.5),20,10)
+  env.dat <- simulate_covariates(sp.dat,2)
+  form <- ~ 1 + covar_1 + covar_2
   fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
               nboot=10,geo=FALSE,optim.meth='optim')
   # check print.dynamic works

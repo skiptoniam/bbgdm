@@ -5,7 +5,7 @@ set.seed(12345)
 sp.dat <- matrix(rbinom(200,1,.5),20,10)
 x <- simulate_covariates(sp.dat,2)
 form <- ~ 1 + covar_1 + covar_2
-fm <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
+fm <- bbgdm(form,sp.dat,x,family="binomial",dism_metric="number_non_shared",
             nboot=10,geo=FALSE,optim.meth='optim')
 
 test_that('check ispline works', {

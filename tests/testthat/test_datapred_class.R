@@ -50,7 +50,7 @@ test_that('check pam2dissim works', {
 
 })
 
-test_that('residual plot works', {
+test_that('simulate works', {
 
   set.seed(12345)
   sp.dat <- matrix(rbinom(200,1,.5),20,10)
