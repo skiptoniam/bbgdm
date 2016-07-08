@@ -28,7 +28,7 @@ dune_pa <- ifelse(dune>0,1,0)
 
 ##### Fit a bbgdm
 
-Now we have a species by sites matrix of simulated data and a set data for a one dimensional gradient.
+Now we have a species by sites matrix of vegetation data and the associated environmental data for these sites.
 
 ``` r
 form <- ~1+A1
@@ -38,6 +38,8 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
 ```
 
 ##### Print model summary
+
+Here we print out the basic details of the model.
 
 ``` r
 print(fm1)
@@ -51,12 +53,14 @@ print(fm1)
     ##  A total of 100 Bayesian Bootstraps were run.
     ## 
     ##  Spline base parameter estimates are: 
-    ##  (Intercept) 0.6663
+    ##  (Intercept) 0.6163
     ##  x_1 0
-    ##  x_2 0.0715
-    ##  x_3 0.6064
+    ##  x_2 0.1612
+    ##  x_3 0.5474
 
 ##### Plot diagnostics
+
+Using the function we can extract Random Qunatile Residuals for plotting.
 
 ``` r
 resids <- diagnostics(fm1)
@@ -64,9 +68,11 @@ par(mfrow=c(2,2))
 plot(resids)
 ```
 
-<img src="readme_files/figure-markdown_github/unnamed-chunk-6-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="readme_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
 ##### Plot response curves
+
+We can use to look at the spline responses in our BBGDM. The black line represents the median fit, while the grey shaded area is the uncertainty in this fit.
 
 ``` r
 response <- as.response(fm1)
@@ -74,7 +80,7 @@ par(mfrow=c(1,1))
 plot(response)
 ```
 
-<img src="readme_files/figure-markdown_github/unnamed-chunk-7-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="readme_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 ##### Run 'Wald-like' test on parameters
 
@@ -85,8 +91,8 @@ tab <- xtable(wt)
 print(tab, type = "html")
 ```
 
-<!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Thu Jul 07 20:49:08 2016 -->
+<!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
+<!-- Fri Jul 08 10:53:52 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -106,7 +112,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-10.82
+9.31
 </td>
 <td align="right">
 1.00
@@ -120,13 +126,13 @@ intercept
 A1
 </td>
 <td align="right">
-1.76
+2.16
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.62
+0.54
 </td>
 </tr>
 </table>
@@ -165,4 +171,4 @@ plot(pred.dune.sim.dat[[1]],col=colram(100),main='BBGDM turnover')
 plot(pred.dune.sim.dat[[2]],col=colram.se(100),main='BBGDM CV of turnover')
 ```
 
-<img src="readme_files/figure-markdown_github/unnamed-chunk-9-1.png" title="" alt="" style="display: block; margin: auto;" />
+<img src="readme_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />

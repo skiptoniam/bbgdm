@@ -31,7 +31,7 @@ dune_pa <- ifelse(dune>0,1,0)
 ```
 
 ##### Fit a bbgdm
-Now we have a species by sites matrix of simulated data and a set data for a one dimensional gradient.
+Now we have a species by sites matrix of vegetation data and the associated environmental data for these sites.
 ```{r,message=FALSE,warning=FALSE,error=FALSE,results='hide'}
 form <- ~1+A1
 fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
@@ -40,11 +40,13 @@ fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
 ```
 
 ##### Print model summary
+Here we print out the basic details of the model.
 ```{r}
 print(fm1)
 ```
 
 ##### Plot diagnostics
+Using the \code{diagnostics} function we can extract Random Qunatile Residuals for plotting.
 ```{r,fig.width = 6, fig.height = 6,fig.align='center'}
 resids <- diagnostics(fm1)
 par(mfrow=c(2,2))
@@ -52,6 +54,8 @@ plot(resids)
 ```
 
 ##### Plot response curves
+We can use \code{as.response} to look at the spline responses in our BBGDM.
+The black line represents the median fit, while the grey shaded area is the uncertainty in this fit. 
 ```{r,fig.width = 4, fig.height = 4,fig.align='center'}
 response <- as.response(fm1)
 par(mfrow=c(1,1))
