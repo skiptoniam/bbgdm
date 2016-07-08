@@ -53,10 +53,10 @@ print(fm1)
     ##  A total of 100 Bayesian Bootstraps were run.
     ## 
     ##  Spline base parameter estimates are: 
-    ##  (Intercept) 0.6593
+    ##  (Intercept) 0.6547
     ##  x_1 0
-    ##  x_2 0.1793
-    ##  x_3 0.544
+    ##  x_2 0.1959
+    ##  x_3 0.4745
 
 ##### Plot diagnostics
 
@@ -92,7 +92,7 @@ print(tab, type = "html")
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Fri Jul 08 11:02:42 2016 -->
+<!-- Fri Jul 08 12:24:07 2016 -->
 <table border="1">
 <tr>
 <th>
@@ -112,13 +112,13 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-6.21
+11.05
 </td>
 <td align="right">
 1.00
 </td>
 <td align="right">
-0.01
+0.00
 </td>
 </tr>
 <tr>
@@ -126,13 +126,13 @@ intercept
 A1
 </td>
 <td align="right">
-3.11
+1.80
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.37
+0.61
 </td>
 </tr>
 </table>
