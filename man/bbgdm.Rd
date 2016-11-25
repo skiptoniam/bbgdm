@@ -9,7 +9,7 @@
 \usage{
 bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
   dism_metric = "number_non_shared", nboot = 100, spline_type = "ispline",
-  spline_df = 2, spline_knots = 1, geo = TRUE, geo.type = "euclidean",
+  spline_df = 2, spline_knots = 1, geo = FALSE, geo.type = "euclidean",
   coord.names = c("X", "Y"), optim.meth = "nlmnib", est.var = FALSE,
   trace = FALSE, prior = FALSE, control = bbgdm.control())
 
@@ -99,5 +99,9 @@ print(test.bbgdm)
 #plot bbgdm fit
 plot(test.bbgdm)
 
+}
+\references{
+Woolley, S.N.C., Foster, S.D., O'Hara T.D., Wintle, B.A., & P.K Dunstan, (Accepted) Characterising
+uncertainty in Generalised Dissimilarity Modelling. Methods in Ecology and Evolution.
 }
 

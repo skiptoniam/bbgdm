@@ -3,12 +3,9 @@ Type: Package
 Title: Bayesian Bootstrap Generalised Dissimilarity Models.
 Version: 1.0
 Date: 2015-05-19
-Authors@R: person("Skipton", "Woolley", email = "swoolley@museum.vic.gov.au",
-  role = c("aut", "cre"))
-  person("Scott", "Foster", email = "scott.foster@csiro.au",
-  role = c("aut", "cre"))
-  person("Piers", "Dunstan", email = "Piers.Dunstan@csiro.au",
-  role = c("aut", "cre"))
+Authors@R: c(person("Skipton", "Woolley", email = "swoolley@museum.vic.gov.au", role = c("aut", "cre")),
+             person("Scott", "Foster", email = "scott.foster@csiro.au", role = c("aut")),
+             person("Piers", "Dunstan", email = "Piers.Dunstan@csiro.au",  role = c("aut")))
 Maintainer: Skipton Woolley <swoolley@museum.vic.gov.au>
 Description: Bayesian Bootstrap implementation of Generalised Dissimilarity Modelling using Generalised Linear Models.
 License: GPL (>= 2)

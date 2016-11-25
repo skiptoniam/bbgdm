@@ -8,7 +8,8 @@
 \usage{
 dissim_table(sp.dat, env.dat, dism_metric = "number_non_shared",
   spline_type = "ispline", spline_df = 1, spline_knots = 2,
-  coord.names = c("X", "Y"), geo = FALSE, geo.type = "euclidean")
+  coord.names = c("X", "Y"), intercept = FALSE, geo = FALSE,
+  geo.type = "euclidean")
 
 is.dissim_table(x)
 
@@ -30,6 +31,8 @@ if "number_non_shared" returns number of shared species at site_ij which can be 
 \item{spline_knots}{The internal breakpoints that define the spline. Default = NULL for bs spline and 1 for ispline.}
 
 \item{coord.names}{c("X","Y") character.vector names of coordinates.}
+
+\item{intercept}{logical if TRUE it only returns the dissimilarities.}
 
 \item{geo}{logical If true geographic distance is calculated if}
 

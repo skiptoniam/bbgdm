@@ -13,6 +13,7 @@
 #' @param geo logical If true geographic distance is calculated if
 #' @param geo.type type of geographic distance to estimate, can call 'euclidean','greater_circle' or 'least_cost'. If least_cost is called extra parameters are required (lc_data, minr and maxr).
 #' @param coord.names c("X","Y") character.vector names of coordinates.
+#' @param intercept logical if TRUE it only returns the dissimilarities.
 #' @return dissim_table dissimilarity table; creates a table of dissimilarities, and difference of covariates between each sites_ij.
 #'  If select dissim="number_non_shared", will return "nonsharedspp_ij","sumspp_ij",
 #'  which can be used as response variables in a binomial bbgdm.
@@ -23,7 +24,7 @@
 #' diff_table <- dissim_table(x,y,dism_metric="number_non_shared")
 
 dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_type="ispline",spline_df=1,
-                         spline_knots=2, coord.names=c("X","Y"),
+                         spline_knots=2, coord.names=c("X","Y"),intercept=FALSE,
                          geo=FALSE,geo.type="euclidean"){
   if(!is.matrix(env.dat)) env.dat <- as.matrix(env.dat)
   if(geo){
@@ -85,6 +86,10 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
   }
   cat("Transforming covariates to ",spline_type," with ",spline_df,"degrees of freedom.\n")
   if(dism_metric=='number_non_shared'){
+    if(intercept){
+      diff_table <- cbind(diff_table[,2:3],1)
+    } else {
+
     if(geo){
       diff_table <- cbind(diff_table[,2:3],geos=geos[,5],diff_table[,4:ncol(diff_table),drop=FALSE])
       tmp <- spline.trans(x=diff_table[,3:ncol(diff_table)],spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots)
@@ -97,7 +102,11 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
       diff_table_final <- cbind(diff_table[,2:3],diff_table_final)
       diff_table_params <- tmp$spline.attr
     }
+    }
   } else {
+    if(intercept){
+      diff_table <- cbind(diff_table[,2],1)
+    } else {
     if(geo){
       diff_table <- cbind(dissimilarity=diff_table[,2],geos=geos[,5],diff_table[,3:ncol(diff_table)])
       tmp<-spline.trans(x=diff_table[,2:ncol(diff_table)],spline_type=spline_type,spline_df=spline_df,spline_knots=spline_knots)
@@ -110,8 +119,10 @@ dissim_table <- function(sp.dat,env.dat,dism_metric="number_non_shared",spline_t
       diff_table_final <- cbind(dissimilarity=diff_table[,2],diff_table_final)
       diff_table_params <- tmp$spline.attr
     }
+    }
   }
-  structure(list(diff_table=diff_table_final,diff_table_params=diff_table_params),class='dissim_table')
+  if (intercept) structure(list(diff_table=diff_table),class='dissim_table')
+  else structure(list(diff_table=diff_table_final,diff_table_params=diff_table_params),class='dissim_table')
 }
 
 #' @rdname dissimilarity

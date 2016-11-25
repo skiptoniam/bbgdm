@@ -35,6 +35,8 @@ NULL
 #' @param prior numeric vector of starting values for intercept and splines
 #' @param control control options for gdm calls \link[bbgdm]{bbgdm.control} as default.
 #' @return a bbgdm model object
+#' @references Woolley, S.N.C., Foster, S.D., O'Hara T.D., Wintle, B.A., & P.K Dunstan, (Accepted) Characterising
+#' uncertainty in Generalised Dissimilarity Modelling. Methods in Ecology and Evolution.
 #' @export
 #' @examples
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
@@ -46,7 +48,7 @@ NULL
 bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   dism_metric="number_non_shared", nboot=100,
                   spline_type="ispline",spline_df=2,spline_knots=1,
-                  geo=TRUE,geo.type='euclidean',coord.names=c("X","Y"),
+                  geo=FALSE,geo.type='euclidean',coord.names=c("X","Y"),
                   optim.meth="nlmnib", est.var=FALSE, trace=FALSE,prior=FALSE,control=bbgdm.control()){
 
   cat(family,"regression is on the way. \n")
@@ -83,15 +85,15 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   mod  <- bbgdm.fit(X,y,link=link,optim.meth=optim.meth,est.var=TRUE,trace=trace,prior=prior,control=control)
   Nsite <- nrow(sp.dat)
   nreps <- nboot
-  boot_print <- nboot/10
+  # boot_print <- nboot/10
   mods <- list()
-  pb <- txtProgressBar(min = 1, max = nreps, style = 3, char = '~')
+  if(nboot>1) pb <- txtProgressBar(min = 1, max = nreps, style = 3, char = '~')
     for (ii in 1:nreps){
       w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
       wij <- w%*%t(w)
       wij <- wij[upper.tri(wij)]
       mods[[ii]] <- bbgdm.fit(X,y,wt=wij,link=link,optim.meth=optim.meth,est.var=est.var,trace=trace,prior=prior,control=control)
-      setTxtProgressBar(pb, ii)
+      if(nboot>1) setTxtProgressBar(pb, ii)
     }
 
   #summary stats
@@ -177,8 +179,7 @@ plot.bbgdm <- function(x, ...){
   bb.eta.05 <- X%*%x$quantiles.coefs.se[1,]
   bb.eta.95 <- X%*%x$quantiles.coefs.se[2,]
   bb.pred <- link.fun$linkinv(bb.eta)
-  plot(bb.eta,Y[,1]/Y[,2], xlab = "Linear Predictor",
-       ylab = paste0("Observed ",x$dism_metric," dissimilarity"), type = "n",ylim=c(0,1),...)
+  plot(bb.eta,Y[,1]/Y[,2], type = "n",ylim=c(0,1),...)
   points(bb.eta,Y[,1]/Y[,2], pch = 20, cex = 0.25)
   y.pred <- Y[sample(pred_sample),]
   y.pred <- y.pred[order(y.pred[,2], y.pred[,1]),]
