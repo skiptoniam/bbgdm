@@ -85,16 +85,8 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   mod  <- bbgdm.fit(X,y,link=link,optim.meth=optim.meth,est.var=TRUE,trace=trace,prior=prior,control=control)
   Nsite <- nrow(sp.dat)
   nreps <- nboot
-  # boot_print <- nboot/10
-  mods <- list()
-  if(nboot>1) pb <- txtProgressBar(min = 1, max = nreps, style = 3, char = '~')
-    for (ii in 1:nreps){
-      w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
-      wij <- w%*%t(w)
-      wij <- wij[upper.tri(wij)]
-      mods[[ii]] <- bbgdm.fit(X,y,wt=wij,link=link,optim.meth=optim.meth,est.var=est.var,trace=trace,prior=prior,control=control)
-      if(nboot>1) setTxtProgressBar(pb, ii)
-    }
+  cl <- parallel::makeCluster(control$cores)
+  mods <- parallel::parLapply(cl, 1:nreps, bb_apply, Nsite,X,y,link,optim.meth,est.var,trace,prior,control)
 
   #summary stats
   all.stats.ll <- plyr::ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
@@ -258,4 +250,16 @@ predict.bbgdm <- function (x, data, neighbourhood=NULL, outer=FALSE, uncertainty
   else return(beta.r)
 }
 
+#' @rdname bbgdm
+
+bb_apply <- function(x,Nsite,X,y,link,optim.meth,est.var,trace,prior,control){
+  # if(nboot>1) pb <- txtProgressBar(min = 1, max = nreps, style = 3, char = '~')
+  # for (ii in 1:nreps){
+  w <- gtools::rdirichlet(Nsite, rep(1/Nsite,Nsite))
+  wij <- w%*%t(w)
+  wij <- wij[upper.tri(wij)]
+  x <- bbgdm.fit(X,y,wt=wij,link=link,optim.meth=optim.meth,est.var=est.var,trace=trace,prior=prior,control=control)
+  return(x)
+  # if(nboot>1) setTxtProgressBar(pb, ii)
+}
 

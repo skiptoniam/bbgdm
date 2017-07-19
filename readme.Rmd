@@ -36,7 +36,7 @@ Now we have a species by sites matrix of simulated data and a set data for a one
 form <- ~1+A1
 fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              dism_metric="number_non_shared",spline_type = 'ispline',
-             nboot=100, geo=FALSE,optim.meth='nlmnib')
+             nboot=100, geo=FALSE,optim.meth='nlmnib',control = bbgdm.control(cores = 8))
 ```
 
 ##### Print model summary

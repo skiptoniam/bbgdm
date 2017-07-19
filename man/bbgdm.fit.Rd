@@ -10,7 +10,8 @@ bbgdm.fit(X, y, wt = NULL, link, optim.meth = "optim", est.var = TRUE,
   trace = FALSE, prior = FALSE, control = bbgdm.control())
 
 bbgdm.control(method = "BFGS", maxit = 1000, hessian = FALSE,
-  trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05, ...)
+  trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05, cores = 1,
+  ...)
 
 negexp()
 }
@@ -46,6 +47,8 @@ calls either method \code{\link[stats]{optim}} or \code{\link[stats]{nlminb}}.}
 \item{fsmaxit}{integer specifying maximal number of additional (quasi) Fisher scoring iterations. For details see below.}
 
 \item{fstol}{numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.}
+
+\item{cores}{the number of cores to use in fitting.}
 
 \item{\dots}{for \code{bbgdm.fit()} or more \code{bbgdm.control()}.}
 }

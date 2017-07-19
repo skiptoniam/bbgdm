@@ -89,14 +89,14 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
 #'@param start	an optional vector with starting values for all parameters.
 #'@param fsmaxit	integer specifying maximal number of additional (quasi) Fisher scoring iterations. For details see below.
 #'@param fstol	numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.
+#'@param cores the number of cores to use in fitting.
 #'@export
 
 bbgdm.control <- function (method = "BFGS", maxit = 1000, hessian = FALSE,
-                         trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05,
+                         trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05,cores=1,
                          ...)
 {
-  rval <- list(method = method, maxit = maxit, hessian = hessian, trace = trace, start = start, fsmaxit = fsmaxit,
-               fstol = fstol)
+  rval <- list(method = method, maxit = maxit, hessian = hessian, trace = trace, start = start, fsmaxit = fsmaxit, fstol = fstol,cores=cores)
   rval <- c(rval, list(...))
   if (!is.null(rval$fnscale))
     warning("fnscale must not be modified")
