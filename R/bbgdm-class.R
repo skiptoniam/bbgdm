@@ -142,7 +142,7 @@ print.bbgdm <- function (x, ...) {
       ncol(x$sp.dat),'species and \n',
       nrow(x$X), 'dissimilarities used as observations in the model.\n\n')
 
-  cat(' A total of',x$nboots, 'Bayesian Bootstraps were run.\n\n')
+  cat(' A total of',x$nboots, 'Bayesian Bootstraps were ran.\n\n')
 
   cat(' Spline base parameter estimates are: \n', paste(names(x$median.coefs.se),round(x$median.coefs.se,4), collapse="\n "),
       '\n')
@@ -171,7 +171,11 @@ plot.bbgdm <- function(x, ...){
   bb.eta.05 <- X%*%x$quantiles.coefs.se[1,]
   bb.eta.95 <- X%*%x$quantiles.coefs.se[2,]
   bb.pred <- link.fun$linkinv(bb.eta)
+<<<<<<< HEAD
   plot(bb.eta,Y[,1]/Y[,2], type = "n",ylim=c(0,1),...)
+=======
+  plot(bb.eta,Y[,1]/Y[,2], xlab = "Linear Predictor", ylab='Observed Dissimilarities', type = "n",...)
+>>>>>>> c60ec30441d96f7cc929ab306ac209814fb607fe
   points(bb.eta,Y[,1]/Y[,2], pch = 20, cex = 0.25)
   y.pred <- Y[sample(pred_sample),]
   y.pred <- y.pred[order(y.pred[,2], y.pred[,1]),]

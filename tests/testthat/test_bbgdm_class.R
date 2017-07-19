@@ -158,7 +158,7 @@ test_that('model print works', {
   expected <- c(" A Bayesian Bootstrap GDM fitted against:",
               " 20 sites,"," 10 species and ",
               " 190 dissimilarities used as observations in the model.","",
-              " A total of 10 Bayesian Bootstraps were run.")
+              " A total of 10 Bayesian Bootstraps were ran.")
 
   expect_equal(capture.output(print(fm))[1:6], expected)
 
