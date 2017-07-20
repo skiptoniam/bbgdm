@@ -86,7 +86,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   Nsite <- nrow(sp.dat)
   nreps <- nboot
   cl <- parallel::makeCluster(control$cores)
-  mods <- parallel::parLapply(cl, 1:nreps, bb_apply, Nsite,X,y,link,optim.meth,est.var,trace,prior,control)
+  mods <- parallel::parLapply(cl, 1:nreps, bb_apply,Nsite,X,y,link,optim.meth,est.var,trace,prior,control)
 
   #summary stats
   all.stats.ll <- plyr::ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
@@ -171,11 +171,7 @@ plot.bbgdm <- function(x, ...){
   bb.eta.05 <- X%*%x$quantiles.coefs.se[1,]
   bb.eta.95 <- X%*%x$quantiles.coefs.se[2,]
   bb.pred <- link.fun$linkinv(bb.eta)
-<<<<<<< HEAD
   plot(bb.eta,Y[,1]/Y[,2], type = "n",ylim=c(0,1),...)
-=======
-  plot(bb.eta,Y[,1]/Y[,2], xlab = "Linear Predictor", ylab='Observed Dissimilarities', type = "n",...)
->>>>>>> c60ec30441d96f7cc929ab306ac209814fb607fe
   points(bb.eta,Y[,1]/Y[,2], pch = 20, cex = 0.25)
   y.pred <- Y[sample(pred_sample),]
   y.pred <- y.pred[order(y.pred[,2], y.pred[,1]),]

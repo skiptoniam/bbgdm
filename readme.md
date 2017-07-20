@@ -34,7 +34,7 @@ Now we have a species by sites matrix of vegetation data and the associated envi
 form <- ~1+A1
 fm1 <- bbgdm(form,dune_pa, dune.env,family="binomial",link='logit',
              dism_metric="number_non_shared",spline_type = 'ispline',
-             nboot=100, geo=FALSE,optim.meth='nlmnib')
+             nboot=100, geo=FALSE,optim.meth='nlmnib',control = bbgdm.control(cores = 8))
 ```
 
 ##### Print model summary
@@ -50,13 +50,13 @@ print(fm1)
     ##  30 species and 
     ##  190 dissimilarities used as observations in the model.
     ## 
-    ##  A total of 100 Bayesian Bootstraps were run.
+    ##  A total of 100 Bayesian Bootstraps were ran.
     ## 
     ##  Spline base parameter estimates are: 
-    ##  (Intercept) 0.6547
+    ##  (Intercept) 0.6346
     ##  x_1 0
-    ##  x_2 0.1959
-    ##  x_3 0.4745
+    ##  x_2 0.0172
+    ##  x_3 0.6756
 
 ##### Plot diagnostics
 
@@ -91,8 +91,8 @@ tab <- xtable(wt)
 print(tab, type = "html")
 ```
 
-<!-- html table generated in R 3.2.2 by xtable 1.8-2 package -->
-<!-- Fri Jul 08 12:24:07 2016 -->
+<!-- html table generated in R 3.4.1 by xtable 1.8-2 package -->
+<!-- Thu Jul 20 15:16:24 2017 -->
 <table border="1">
 <tr>
 <th>
@@ -112,7 +112,7 @@ bbgdm\_p-value
 intercept
 </td>
 <td align="right">
-11.05
+9.19
 </td>
 <td align="right">
 1.00
@@ -126,13 +126,13 @@ intercept
 A1
 </td>
 <td align="right">
-1.80
+1.60
 </td>
 <td align="right">
 3.00
 </td>
 <td align="right">
-0.61
+0.66
 </td>
 </tr>
 </table>

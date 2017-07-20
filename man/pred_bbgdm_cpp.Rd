@@ -18,4 +18,3 @@ pred_bbgdm_cpp(raster_stack, output_raster, neighbourhood, bbgdm_coef)
 \description{
 predict bbgdm cpp function
 }
-
