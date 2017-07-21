@@ -55,3 +55,4 @@ x <- matrix(rbinom(100,1,.5),10,10) #toy presence absence matrix
 y <- simulate_covariates(x,4)
 diff_table <- dissim_table(x,y,dism_metric="number_non_shared")
 }
+

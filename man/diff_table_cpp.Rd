@@ -15,3 +15,4 @@ diff_table difference between covariates between site-pairs
 \description{
 diff_table cpp function
 }
+
