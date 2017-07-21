@@ -30,5 +30,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    vegan
+    vegan,
+    xtable
 VignetteBuilder: knitr
