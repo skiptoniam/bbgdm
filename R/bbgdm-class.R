@@ -35,15 +35,15 @@ NULL
 #' @param prior numeric vector of starting values for intercept and splines
 #' @param control control options for gdm calls \link[bbgdm]{bbgdm.control} as default.
 #' @return a bbgdm model object
-#' @references Woolley, S.N.C., Foster, S.D., O'Hara T.D., Wintle, B.A., & P.K Dunstan, (Accepted) Characterising
-#' uncertainty in Generalised Dissimilarity Modelling. Methods in Ecology and Evolution.
+#' @references Woolley, S. N., Foster, S. D., O'Hara, T. D., Wintle, B. A., & Dunstan, P. K. (2017). Characterising uncertainty in generalised dissimilarity models. Methods in Ecology and Evolution.
 #' @export
 #' @examples
+#' \donotrun{}
 #' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",
-#'                     nboot=10, geo=FALSE,optim.meth='nlmnib')
+#'                     nboot=10, geo=FALSE,optim.meth='nlmnib',,control=bbgdm.control(cores=3))}
 
 bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   dism_metric="number_non_shared", nboot=100,
@@ -86,7 +86,8 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
   Nsite <- nrow(sp.dat)
   nreps <- nboot
   cl <- parallel::makeCluster(control$cores)
-  mods <- parallel::parLapply(cl, 1:nreps, bb_apply,Nsite,X,y,link,optim.meth,est.var,trace,prior,control)
+  # mods <- lapply(1:nreps,bb_apply,Nsite,X,y,link,optim.meth,est.var,trace,prior,control)
+  mods <- surveillance::plapply(1:nreps, bb_apply, Nsite,X,y,link,optim.meth,est.var,trace,prior,control,.parallel = cl)
 
   #summary stats
   all.stats.ll <- plyr::ldply(mods, function(x) c(ll=x$logl,AIC=x$AIC,BIC=x$BIC,x$null.deviance,x$gdm.deviance,x$deviance.explained))
@@ -98,7 +99,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
 
   bbgdm.results <- list()
   bbgdm.results$starting_gdm <- mod
-  bbgdm.results$bb_gdms <- mods
+  # bbgdm.results$bb_gdms <- mods //hopefully this will mean less memory for each model.
   bbgdm.results$all.stats.ll <- all.stats.ll
   bbgdm.results$median.ll <- median.ll
   bbgdm.results$quantiles.ll <- quantiles.ll
@@ -133,7 +134,8 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
 #'
 #' @examples
 #' #print model summary
-#' print(test.bbgdm)
+#' \donotrun{
+#' print(test.bbgdm)}
 #'
 
 print.bbgdm <- function (x, ...) {
@@ -156,7 +158,8 @@ print.bbgdm <- function (x, ...) {
 #'
 #' @examples
 #' #plot bbgdm fit
-#' plot(test.bbgdm)
+#'  \donotrun{
+#' plot(test.bbgdm)}
 #'
 
 plot.bbgdm <- function(x, ...){

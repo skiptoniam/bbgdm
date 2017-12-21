@@ -44,4 +44,3 @@ I-Spline predictions
 \description{
 create and transform covariates to isplines or bsplines from use in \code{bbgdm}.
 }
-

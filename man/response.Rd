@@ -41,4 +41,3 @@ is.response(responses)
 par(mfrow=c(1,2))
 plot(responses)
 }
-
