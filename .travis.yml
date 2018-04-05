@@ -1,7 +1,8 @@
 # Sample .travis.yml for R projects
 language: r
+sudo: false
 cache: packages
-sudo: required
+
 
 r_packages:
   - covr
