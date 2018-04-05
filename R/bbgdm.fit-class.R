@@ -42,7 +42,7 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
     init.par <- control$start
     fsmaxit <- control$fsmaxit
     fstol <- control$fstol
-    control$method <- control$hessian <- control$start <- control$fsmaxit <- control$fstol <- NULL
+    control$method <- control$hessian <- control$start <- control$fsmaxit <- control$fstol <- control$cores <- NULL
     if(is.null(init.par)){
       if(link=='negexp')fm.b <- glm.fit(X,y,family=binomial(link=negexp()))
       else fm.b <- glm.fit(X,y,family=binomial(link=link))
@@ -84,11 +84,16 @@ bbgdm.fit <- function(X, y, wt=NULL, link, optim.meth="optim", est.var=TRUE, tra
 #'@rdname bbgdm.fit
 #'@name bbgdm.control
 #'@param method characters string specifying the method argument passed to optim.
-#'@param maxit  integer specifying the maxit argument (maximal number of iterations) passed to optim.
-#'@param hessian	logical. Should the numerical Hessian matrix from the optim output be used for estimation of the covariance matrix? By default the analytical solution is employed. For details see below.
+#'@param maxit  integer specifying the maxit argument (maximal number of iterations)
+#'passed to optim.
+#'@param hessian	logical. Should the numerical Hessian matrix from the optim output
+#' be used for estimation of the covariance matrix? By default the analytical solution
+#' is employed. For details see below.
 #'@param start	an optional vector with starting values for all parameters.
-#'@param fsmaxit	integer specifying maximal number of additional (quasi) Fisher scoring iterations. For details see below.
-#'@param fstol	numeric tolerance for convergence in (quasi) Fisher scoring. For details see \code{\link[stats]{optim}}.
+#'@param fsmaxit	integer specifying maximal number of additional (quasi) Fisher scoring
+#' iterations. For details see below.
+#'@param fstol	numeric tolerance for convergence in (quasi) Fisher scoring.
+#'For details see \code{\link[stats]{optim}}.
 #'@param cores the number of cores to use in fitting.
 #'@export
 
@@ -96,7 +101,8 @@ bbgdm.control <- function (method = "BFGS", maxit = 1000, hessian = FALSE,
                          trace = FALSE, start = NULL, fsmaxit = 20, fstol = 1e-05,cores=1,
                          ...)
 {
-  rval <- list(method = method, maxit = maxit, hessian = hessian, trace = trace, start = start, fsmaxit = fsmaxit, fstol = fstol,cores=cores)
+  rval <- list(method = method, maxit = maxit, hessian = hessian, trace = trace,
+               start = start, fsmaxit = fsmaxit, fstol = fstol, cores=cores)
   rval <- c(rval, list(...))
   if (!is.null(rval$fnscale))
     warning("fnscale must not be modified")

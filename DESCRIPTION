@@ -11,7 +11,7 @@ Description: Bayesian Bootstrap implementation of Generalised Dissimilarity
     Modelling using Generalised Linear Models.
 License: GPL (>= 2)
 Imports:
-    Rcpp (>= 0.11.4)
+    Rcpp
 RoxygenNote: 6.0.1
 Depends:
     numDeriv,

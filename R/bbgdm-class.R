@@ -38,12 +38,13 @@ NULL
 #' @references Woolley, S. N., Foster, S. D., O'Hara, T. D., Wintle, B. A., & Dunstan, P. K. (2017). Characterising uncertainty in generalised dissimilarity models. Methods in Ecology and Evolution.
 #' @export
 #' @examples
-#' \donotrun{}
-#' sp.dat <- matrix(rbinom(200,1,.6),20,10)# presence absence matrix
+#' \dontrun{
+#' sp.dat <- matrix(rbinom(2000,1,.6),200,10)# presence absence matrix
 #' env.dat <- simulate_covariates(sp.dat,2)
 #' form <- ~ 1 + covar_1 + covar_2
 #' test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",
-#'                     nboot=10, geo=FALSE,optim.meth='nlmnib',,control=bbgdm.control(cores=3))}
+#'                     nboot=10, geo=FALSE,optim.meth='nlmnib',,control=bbgdm.control(cores=3))
+#'}
 
 bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
                   dism_metric="number_non_shared", nboot=100,
@@ -134,7 +135,7 @@ bbgdm <- function(form, sp.dat, env.dat, family="binomial",link='logit',
 #'
 #' @examples
 #' #print model summary
-#' \donotrun{
+#' \dontrun{
 #' print(test.bbgdm)}
 #'
 
@@ -158,7 +159,7 @@ print.bbgdm <- function (x, ...) {
 #'
 #' @examples
 #' #plot bbgdm fit
-#'  \donotrun{
+#'  \dontrun{
 #' plot(test.bbgdm)}
 #'
 
@@ -252,8 +253,6 @@ predict.bbgdm <- function (x, data, neighbourhood=NULL, outer=FALSE, uncertainty
   if(uncertainty) return(list(mean.beta=beta.r,se.beta=pred.se))
   else return(beta.r)
 }
-
-#' @rdname bbgdm
 
 bb_apply <- function(x,Nsite,X,y,link,optim.meth,est.var,trace,prior,control){
   # if(nboot>1) pb <- txtProgressBar(min = 1, max = nreps, style = 3, char = '~')

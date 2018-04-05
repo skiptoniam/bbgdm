@@ -5,7 +5,6 @@
 \alias{print.bbgdm}
 \alias{plot.bbgdm}
 \alias{predict.bbgdm}
-\alias{bb_apply}
 \title{bbgdm objects}
 \usage{
 bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
@@ -20,8 +19,6 @@ bbgdm(form, sp.dat, env.dat, family = "binomial", link = "logit",
 
 \method{predict}{bbgdm}(x, data, neighbourhood = NULL, outer = FALSE,
   uncertainty = TRUE, ...)
-
-bb_apply(x, Nsite, X, y, link, optim.meth, est.var, trace, prior, control)
 }
 \arguments{
 \item{form}{formula for bbgdm model}
@@ -91,12 +88,19 @@ creates a \code{bbgdm} model, comprising multiple
   be achieve similar to a \code{\link[stats]{glm}}, see \code{bbgdm.fit} for more details.
 }
 \examples{
+\dontrun{
+sp.dat <- matrix(rbinom(2000,1,.6),200,10)# presence absence matrix
+env.dat <- simulate_covariates(sp.dat,2)
+form <- ~ 1 + covar_1 + covar_2
+test.bbgdm <- bbgdm(form,sp.dat, env.dat,family="binomial",dism_metric="number_non_shared",
+                    nboot=10, geo=FALSE,optim.meth='nlmnib',,control=bbgdm.control(cores=3))
+}
 #print model summary
-\\donotrun{
+\dontrun{
 print(test.bbgdm)}
 
 #plot bbgdm fit
- \\donotrun{
+ \dontrun{
 plot(test.bbgdm)}
 
 }

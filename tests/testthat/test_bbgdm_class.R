@@ -13,7 +13,7 @@ test_that('bbgdm optimisers work', {
                nboot=10,geo=FALSE,optim.meth='optim')
   fm1_nlmnib <- bbgdm(form,sp.dat,env.dat,family="binomial",dism_metric="number_non_shared",
                nboot=10,geo=FALSE,optim.meth = 'nlmnib')
-  expect_error(fm1_nlmnib <- bbgdm(form,sp.dat,env.dat,family="binol",dism_metric="number_non_shared",
+  testthat::expect_error(fm1_nlmnib <- bbgdm(form,sp.dat,env.dat,family="binol",dism_metric="number_non_shared",
                                      nboot=10,geo=FALSE,optim.meth = 'nlmnib'))
 
 })

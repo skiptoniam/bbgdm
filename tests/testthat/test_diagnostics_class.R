@@ -62,7 +62,7 @@ test_that('residual plot works', {
   img <- function() {
     plot(resids)
   }
-  expect_identical(plot(resids), img())
-  expect_equal(class(plot(resids)),'NULL')
+  testthat::expect_identical(plot(resids), img())
+  testthat::expect_equal(class(plot(resids)),'NULL')
 
 })
