@@ -94,7 +94,7 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
       Terms <- seq(val1[i],val2[i],1)
       for (ii in 1:w) L[ii, Terms[ii]] <- 1
       vcov1 <- try(solve(L %*% vcov %*% t(L)),silent = TRUE)
-      if ((class(vcov1)=="try-error")||(class(vcov1)=="try-error"))
+      if(inherits(vcov1, "try-error"))
       {
         wd <- 0
       }else{
@@ -131,7 +131,7 @@ bbgdm.wald.test <- function(object,H0=0,gdm=FALSE){
     Terms <- seq(val1[i],val2[i],1)
     for (ii in 1:w) L[ii, Terms[ii]] <- 1
     vcov2 <- try(solve(L %*% esti.var %*% t(L)),silent = TRUE)
-    if ((class(vcov2)=="try-error")||(class(vcov2)=="try-error"))
+    if(inherits(vcov2, "try-error"))
     {
       wd <- 0
     }else{
